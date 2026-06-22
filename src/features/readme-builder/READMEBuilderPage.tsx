@@ -1,16 +1,13 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Button, Input, Textarea } from '@/components';
+import React from 'react';
+import { Button } from '@/components';
+import { Input } from '@/components';
+import { Textarea } from '@/components';
+import { useReadmeStore } from '@/store/readme';
 
 const READMEBuilderPage: React.FC = () => {
-  const [name, setName] = useState('');
-  const [role, setRole] = useState('');
-  const [about, setAbout] = useState('');
-  const [skills, setSkills] = useState('');
-  const [projects, setProjects] = useState('');
-  const [socials, setSocials] = useState('');
-
+  const { name, role, about, skills, projects, socials, setName, setRole, setAbout, setSkills, setProjects, setSocials } = useReadmeStore();
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100 dark:bg-[#1e1e1e]">
       <h1 className="text-4xl font-bold text-black dark:text-white mb-8">Create Your GitHub README</h1>
