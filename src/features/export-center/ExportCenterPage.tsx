@@ -19,6 +19,8 @@ const ExportCenterPage = () => {
       await navigator.clipboard.writeText(combinedMarkdown);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      useReadmeStore.getState().incrementReadmeExports();
+      useRoadmapStore.getState().incrementRoadmapExports();
     } catch (err) {
       console.error('Failed to copy markdown:', err);
     }
@@ -34,6 +36,7 @@ const ExportCenterPage = () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    useReadmeStore.getState().incrementReadmeExports();
   };
 
   const handleDownloadRoadmap = () => {
@@ -46,6 +49,7 @@ const ExportCenterPage = () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    useRoadmapStore.getState().incrementRoadmapExports();
   };
 
   return (

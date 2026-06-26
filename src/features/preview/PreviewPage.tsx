@@ -48,6 +48,8 @@ const PreviewPage = () => {
       await navigator.clipboard.writeText(markdown);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+      useReadmeStore.getState().incrementReadmeExports();
+      useRoadmapStore.getState().incrementRoadmapExports();
     } catch (err) {
       console.error('Failed to copy markdown:', err);
     }
@@ -63,6 +65,8 @@ const PreviewPage = () => {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    useReadmeStore.getState().incrementReadmeExports();
+    useRoadmapStore.getState().incrementRoadmapExports();
   };
 
   const colorMode = (theme === 'dark' || theme === 'gradient' || theme === 'terminal') ? 'dark' : 'light';

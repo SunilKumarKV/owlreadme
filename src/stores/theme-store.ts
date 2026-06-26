@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 
 interface ThemeState {
   theme: 'minimal' | 'dark' | 'gradient' | 'terminal';
+  templatesUsedCount: number;
   setTheme: (theme: 'minimal' | 'dark' | 'gradient' | 'terminal') => void;
 }
 
@@ -10,7 +11,12 @@ const useThemeStore = create<ThemeState>()(
   persist(
     (set) => ({
       theme: 'minimal',
-      setTheme: (theme) => set({ theme }),
+      templatesUsedCount: 0,
+      setTheme: (theme) =>
+        set((state) => ({
+          theme,
+          templatesUsedCount: state.templatesUsedCount + 1,
+        })),
     }),
     { name: 'theme-store' }
   )

@@ -12,7 +12,7 @@ const GitHubUsernameInput: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (username.trim()) {
-      router.push(`/readme-builder?username=${encodeURIComponent(username.trim())}`);
+      router.push(`/dashboard?username=${encodeURIComponent(username.trim())}`);
     }
   };
 

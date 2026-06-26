@@ -14,7 +14,9 @@ export type READMEField =
   | 'followers'
   | 'following'
   | 'publicRepos'
-  | 'template';
+  | 'template'
+  | 'readmeExportsCount'
+  | 'templatesUsedCount';
 
 interface READMEState {
   name: string;
@@ -28,6 +30,8 @@ interface READMEState {
   following: number | undefined;
   publicRepos: number | undefined;
   template: READMEStyleTemplate;
+  readmeExportsCount: number;
+  templatesUsedCount: number;
   setField: (field: READMEField, value: any) => void;
   setName: (value: string) => void;
   setRole: (value: string) => void;
@@ -40,6 +44,8 @@ interface READMEState {
   setFollowing: (value: number | undefined) => void;
   setPublicRepos: (value: number | undefined) => void;
   setTemplate: (value: READMEStyleTemplate) => void;
+  incrementReadmeExports: () => void;
+  incrementTemplatesUsed: () => void;
   reset: () => void;
 }
 
@@ -57,6 +63,8 @@ const useREADMEStore = create<READMEState>()(
       following: undefined,
       publicRepos: undefined,
       template: 'minimal',
+      readmeExportsCount: 0,
+      templatesUsedCount: 0,
       setField: (field, value) => set({ [field]: value } as Partial<READMEState>),
       setName: (value) => set({ name: value }),
       setRole: (value) => set({ role: value }),
@@ -68,7 +76,14 @@ const useREADMEStore = create<READMEState>()(
       setFollowers: (value) => set({ followers: value }),
       setFollowing: (value) => set({ following: value }),
       setPublicRepos: (value) => set({ publicRepos: value }),
-      setTemplate: (value) => set({ template: value }),
+      setTemplate: (value) => {
+        set((state) => ({
+          template: value,
+          templatesUsedCount: state.templatesUsedCount + 1,
+        }));
+      },
+      incrementReadmeExports: () => set((state) => ({ readmeExportsCount: state.readmeExportsCount + 1 })),
+      incrementTemplatesUsed: () => set((state) => ({ templatesUsedCount: state.templatesUsedCount + 1 })),
       reset: () =>
         set({
           name: '',
@@ -82,6 +97,8 @@ const useREADMEStore = create<READMEState>()(
           following: undefined,
           publicRepos: undefined,
           template: 'minimal',
+          readmeExportsCount: 0,
+          templatesUsedCount: 0,
         }),
     }),
     { name: 'readme-store' }
