@@ -1,7 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-type READMEField =
+export type READMEStyleTemplate = 'minimal' | 'professional' | 'developer' | 'open-source' | 'portfolio';
+
+export type READMEField =
   | 'name'
   | 'role'
   | 'about'
@@ -11,7 +13,8 @@ type READMEField =
   | 'avatarUrl'
   | 'followers'
   | 'following'
-  | 'publicRepos';
+  | 'publicRepos'
+  | 'template';
 
 interface READMEState {
   name: string;
@@ -24,6 +27,7 @@ interface READMEState {
   followers: number | undefined;
   following: number | undefined;
   publicRepos: number | undefined;
+  template: READMEStyleTemplate;
   setField: (field: READMEField, value: any) => void;
   setName: (value: string) => void;
   setRole: (value: string) => void;
@@ -35,6 +39,7 @@ interface READMEState {
   setFollowers: (value: number | undefined) => void;
   setFollowing: (value: number | undefined) => void;
   setPublicRepos: (value: number | undefined) => void;
+  setTemplate: (value: READMEStyleTemplate) => void;
   reset: () => void;
 }
 
@@ -51,6 +56,7 @@ const useREADMEStore = create<READMEState>()(
       followers: undefined,
       following: undefined,
       publicRepos: undefined,
+      template: 'minimal',
       setField: (field, value) => set({ [field]: value } as Partial<READMEState>),
       setName: (value) => set({ name: value }),
       setRole: (value) => set({ role: value }),
@@ -62,6 +68,7 @@ const useREADMEStore = create<READMEState>()(
       setFollowers: (value) => set({ followers: value }),
       setFollowing: (value) => set({ following: value }),
       setPublicRepos: (value) => set({ publicRepos: value }),
+      setTemplate: (value) => set({ template: value }),
       reset: () =>
         set({
           name: '',
@@ -74,6 +81,7 @@ const useREADMEStore = create<READMEState>()(
           followers: undefined,
           following: undefined,
           publicRepos: undefined,
+          template: 'minimal',
         }),
     }),
     { name: 'readme-store' }

@@ -5,7 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Textarea from '@/components/Textarea';
-import useReadmeStore from '@/stores/readme-store';
+import useReadmeStore, { READMEStyleTemplate } from '@/stores/readme-store';
 import { fetchGithubProfile, fetchGithubRepos } from '@/utils/github-api';
 
 const READMEBuilderPage = () => {
@@ -21,6 +21,7 @@ const READMEBuilderPage = () => {
     skills,
     projects,
     socials,
+    template,
     setName,
     setRole,
     setAbout,
@@ -31,6 +32,7 @@ const READMEBuilderPage = () => {
     setFollowers,
     setFollowing,
     setPublicRepos,
+    setTemplate,
     reset,
   } = useReadmeStore();
 
@@ -124,6 +126,22 @@ const READMEBuilderPage = () => {
           <span className="block sm:inline">{error}</span>
         </div>
       )}
+
+      {/* Template Selector */}
+      <div className="w-full max-w-lg mb-6">
+        <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300 font-semibold">README Style Template</label>
+        <select
+          value={template}
+          onChange={(e) => setTemplate(e.target.value as READMEStyleTemplate)}
+          className="w-full px-4 py-2 rounded-md border border-gray-300 dark:bg-[#1e1e1e] dark:text-white dark:border-gray-600 focus:border-blue-500 focus:ring-2 ring-blue-500 transition duration-200"
+        >
+          <option value="minimal">Minimal</option>
+          <option value="professional">Professional</option>
+          <option value="developer">Developer</option>
+          <option value="open-source">Open Source</option>
+          <option value="portfolio">Portfolio</option>
+        </select>
+      </div>
 
       <form className="space-y-4 w-full max-w-lg">
         <div>
