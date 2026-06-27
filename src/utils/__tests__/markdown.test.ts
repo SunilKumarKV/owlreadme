@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateReadmeMarkdown, generateRoadmapMarkdown, combineMarkdown, READMEData, generateGithubStatsMarkdown, generateTechStackMarkdown, generateSocialLinksMarkdown, generateAchievementsMarkdown } from '../markdown';
+import { generateReadmeMarkdown, generateRoadmapMarkdown, combineMarkdown, READMEData, generateGithubStatsMarkdown, generateTechStackMarkdown, generateSocialLinksMarkdown, generateAchievementsMarkdown, generateHeaderMarkdown } from '../markdown';
 
 describe('markdown utilities', () => {
   describe('generateReadmeMarkdown', () => {
@@ -65,6 +65,27 @@ describe('markdown utilities', () => {
       const markdown = generateReadmeMarkdown(data);
       expect(markdown).toContain('<img src="https://example.com/bob.png"');
       expect(markdown).toContain('👥 <b>Followers:</b> 12 | 👥 <b>Following:</b> 15 | 📦 <b>Repos:</b> 8');
+    });
+
+    it('should utilize custom header when enabled', () => {
+      const data: READMEData = {
+        ...baseData,
+        header: {
+          enabled: true,
+          name: 'Sunil Kumar',
+          title: 'Full Stack Developer',
+          alignment: 'center',
+          badges: { openToWork: true, freelance: false, learning: '', building: '' },
+          visitorPlacement: 'hidden',
+        } as any,
+      };
+      const markdown = generateReadmeMarkdown(data);
+      expect(markdown).toContain('<h1 align="center">Hi 👋, I\'m Sunil Kumar</h1>');
+      expect(markdown).toContain('<h3 align="center">Full Stack Developer</h3>');
+      expect(markdown).toContain('### Skills\nReact, TypeScript, CSS');
+      // Should not contain default name title or bio markdown
+      expect(markdown).not.toContain('# Alice Developer');
+      expect(markdown).not.toContain('Frontend Engineer');
     });
   });
 
@@ -281,9 +302,57 @@ describe('markdown utilities', () => {
       const result = generateAchievementsMarkdown(config);
       expect(result).toContain('## 🏆 GitHub Achievements');
       // order check: graph first, trophy second
-      expect(result).toMatch(/Activity Graph.*GitHub Trophies/s);
+      expect(result.indexOf('Activity Graph')).toBeLessThan(result.indexOf('GitHub Trophies'));
       expect(result).toContain('https://github-readme-activity-graph.vercel.app/graph?username=alice&theme=tokyonight&hide_border=true');
       expect(result).toContain('https://github-profile-trophy.vercel.app/?username=alice&theme= radical&no-frame=true&no-bg=true&row=2&column=5');
+    });
+  });
+
+  describe('generateHeaderMarkdown', () => {
+    it('should return empty string if header is disabled', () => {
+      expect(generateHeaderMarkdown(undefined)).toBe('');
+      expect(generateHeaderMarkdown({ enabled: false } as any)).toBe('');
+    });
+
+    it('should generate header html elements with correct alignment and values', () => {
+      const config = {
+        enabled: true,
+        name: 'Sunil Kumar',
+        pronouns: 'he/him',
+        location: 'India',
+        title: 'Architect',
+        intro: 'Hello world',
+        alignment: 'center' as any,
+        bannerType: 'capsule' as any,
+        bannerTheme: 'dracula',
+        bannerText: 'Welcome',
+        typingEnabled: true,
+        typingLines: ['Line A', 'Line B'],
+        typingSpeed: 180,
+        typingDelay: 900,
+        typingColor: 'FFAA00',
+        typingCenter: true,
+        badges: {
+          openToWork: true,
+          freelance: true,
+          learning: 'Rust',
+          building: 'Next.js',
+        },
+        visitorPlacement: 'top' as any,
+      };
+
+      const result = generateHeaderMarkdown(config, 'sunilkumar');
+      expect(result).toContain('<p align="center">');
+      expect(result).toContain('https://capsule-render.vercel.app/api?type=waving&color=dracula&height=120&section=header&text=Welcome&fontSize=30');
+      expect(result).toContain('<h1 align="center">Hi 👋, I\'m Sunil Kumar (he/him)</h1>');
+      expect(result).toContain('<h3 align="center">Architect based in India</h3>');
+      expect(result).toContain('<p align="center">Hello world</p>');
+      expect(result).toContain('https://readme-typing-svg.herokuapp.com/?lines=Line%20A;Line%20B&color=FFAA00&center=true&width=450&height=30&speed=180&pause=900');
+      expect(result).toContain('Open%20to%20Work');
+      expect(result).toContain('Freelance');
+      expect(result).toContain('Learning');
+      expect(result).toContain('Building');
+      expect(result).toContain('komarev.com/ghpvc/?username=sunilkumar');
     });
   });
 });

@@ -1,4 +1,4 @@
-import { READMEStyleTemplate, GitHubStatsConfig, TechStackConfig, SocialLinksConfig, AchievementsConfig } from '@/stores/readme-store';
+import { READMEStyleTemplate, GitHubStatsConfig, TechStackConfig, SocialLinksConfig, AchievementsConfig, HeaderConfig } from '@/stores/readme-store';
 import { TECHNOLOGY_REGISTRY, CATEGORIES, Technology } from './tech-registry';
 import { SOCIAL_PLATFORM_REGISTRY, SocialPlatform } from './social-registry';
 
@@ -18,6 +18,7 @@ export interface READMEData {
   techStack?: TechStackConfig;
   socialLinks?: SocialLinksConfig;
   achievements?: AchievementsConfig;
+  header?: HeaderConfig;
 }
 
 export interface RoadmapData {
@@ -75,76 +76,86 @@ export function generateReadmeMarkdown(data: READMEData): string {
     ? `<p align="center">\n  👥 <b>Followers:</b> ${data.followers} | 👥 <b>Following:</b> ${data.following} | 📦 <b>Repos:</b> ${data.publicRepos}\n</p>`
     : '';
 
+  const headerMarkdown = generateHeaderMarkdown(data.header, data.githubStats?.username || '');
   let body = '';
-  switch (template) {
-    case 'professional':
-      body = [
-        avatarMarkdown,
-        data.name ? `# ${data.name}` : '',
-        data.role ? `### *${data.role}*` : '',
-        statsMarkdown,
-        '---',
-        data.about ? `### 🎯 About Me\n${data.about}` : '',
-        data.skills ? `### 🛠️ Skills\n${data.skills}` : '',
-        data.projects ? `### 📂 Featured Projects\n${data.projects}` : '',
-        data.socials ? `### 🌐 Socials & Contact\n${data.socials}` : '',
-      ].filter(Boolean).join('\n\n');
-      break;
 
-    case 'developer':
-      body = [
-        avatarMarkdown,
-        data.name ? `# 💻 ${data.name}` : '',
-        data.role ? `> ${data.role}` : '',
-        statsMarkdown,
-        '---',
-        data.skills ? `### 🚀 Tech Stack & Skills\n${data.skills}` : '',
-        data.about ? `### 🌟 Profile\n${data.about}` : '',
-        data.projects ? `### 📂 Projects & Codebases\n${data.projects}` : '',
-        data.socials ? `### 📨 Connect with Me\n${data.socials}` : '',
-      ].filter(Boolean).join('\n\n');
-      break;
+  if (headerMarkdown) {
+    body = [
+      headerMarkdown,
+      data.skills ? `### Skills\n${data.skills}` : '',
+      data.projects ? `### Projects\n${data.projects}` : '',
+    ].filter(Boolean).join('\n\n');
+  } else {
+    switch (template) {
+      case 'professional':
+        body = [
+          avatarMarkdown,
+          data.name ? `# ${data.name}` : '',
+          data.role ? `### *${data.role}*` : '',
+          statsMarkdown,
+          '---',
+          data.about ? `### 🎯 About Me\n${data.about}` : '',
+          data.skills ? `### 🛠️ Skills\n${data.skills}` : '',
+          data.projects ? `### 📂 Featured Projects\n${data.projects}` : '',
+          data.socials ? `### 🌐 Socials & Contact\n${data.socials}` : '',
+        ].filter(Boolean).join('\n\n');
+        break;
 
-    case 'open-source':
-      body = [
-        avatarMarkdown,
-        data.name ? `# 🤝 ${data.name} | Open Source` : '',
-        data.role ? `**${data.role}**` : '',
-        statsMarkdown,
-        '---',
-        data.projects ? `### 📦 Open Source Contributions & Repositories\n${data.projects}` : '',
-        data.about ? `### 🌟 About Me\n${data.about}` : '',
-        data.skills ? `### 🛠️ Core Skills\n${data.skills}` : '',
-        data.socials ? `### 💬 Collaboration & Get in touch\n${data.socials}` : '',
-      ].filter(Boolean).join('\n\n');
-      break;
+      case 'developer':
+        body = [
+          avatarMarkdown,
+          data.name ? `# 💻 ${data.name}` : '',
+          data.role ? `> ${data.role}` : '',
+          statsMarkdown,
+          '---',
+          data.skills ? `### 🚀 Tech Stack & Skills\n${data.skills}` : '',
+          data.about ? `### 🌟 Profile\n${data.about}` : '',
+          data.projects ? `### 📂 Projects & Codebases\n${data.projects}` : '',
+          data.socials ? `### 📨 Connect with Me\n${data.socials}` : '',
+        ].filter(Boolean).join('\n\n');
+        break;
 
-    case 'portfolio':
-      body = [
-        avatarMarkdown,
-        data.name ? `# ✨ ${data.name} - Portfolio` : '',
-        data.role ? `*${data.role}*` : '',
-        statsMarkdown,
-        '---',
-        data.projects ? `### 🌐 Featured Work\n${data.projects}` : '',
-        data.about || data.skills ? `### 🎨 About & Skills\n${[data.about, data.skills].filter(Boolean).join('\n\n')}` : '',
-        data.socials ? `### 🔗 Links & Contact\n${data.socials}` : '',
-      ].filter(Boolean).join('\n\n');
-      break;
+      case 'open-source':
+        body = [
+          avatarMarkdown,
+          data.name ? `# 🤝 ${data.name} | Open Source` : '',
+          data.role ? `**${data.role}**` : '',
+          statsMarkdown,
+          '---',
+          data.projects ? `### 📦 Open Source Contributions & Repositories\n${data.projects}` : '',
+          data.about ? `### 🌟 About Me\n${data.about}` : '',
+          data.skills ? `### 🛠️ Core Skills\n${data.skills}` : '',
+          data.socials ? `### 💬 Collaboration & Get in touch\n${data.socials}` : '',
+        ].filter(Boolean).join('\n\n');
+        break;
 
-    case 'minimal':
-    default:
-      body = [
-        avatarMarkdown,
-        data.name ? `# ${data.name}` : '',
-        data.role ? `## ${data.role}` : '',
-        statsMarkdown,
-        data.about ? data.about : '',
-        data.skills ? `### Skills\n${data.skills}` : '',
-        data.projects ? `### Projects\n${data.projects}` : '',
-        data.socials ? `### Socials\n${data.socials}` : '',
-      ].filter(Boolean).join('\n\n');
-      break;
+      case 'portfolio':
+        body = [
+          avatarMarkdown,
+          data.name ? `# ✨ ${data.name} - Portfolio` : '',
+          data.role ? `*${data.role}*` : '',
+          statsMarkdown,
+          '---',
+          data.projects ? `### 🌐 Featured Work\n${data.projects}` : '',
+          data.about || data.skills ? `### 🎨 About & Skills\n${[data.about, data.skills].filter(Boolean).join('\n\n')}` : '',
+          data.socials ? `### 🔗 Links & Contact\n${data.socials}` : '',
+        ].filter(Boolean).join('\n\n');
+        break;
+
+      case 'minimal':
+      default:
+        body = [
+          avatarMarkdown,
+          data.name ? `# ${data.name}` : '',
+          data.role ? `## ${data.role}` : '',
+          statsMarkdown,
+          data.about ? data.about : '',
+          data.skills ? `### Skills\n${data.skills}` : '',
+          data.projects ? `### Projects\n${data.projects}` : '',
+          data.socials ? `### Socials\n${data.socials}` : '',
+        ].filter(Boolean).join('\n\n');
+        break;
+    }
   }
 
   let output = body;
@@ -287,4 +298,121 @@ export function generateRoadmapMarkdown(data: RoadmapData): string {
 
 export function combineMarkdown(readme: string, roadmap: string): string {
   return [readme, roadmap].filter(Boolean).join('\n\n');
+}
+
+export function generateHeaderMarkdown(config?: HeaderConfig, username?: string): string {
+  if (!config || !config.enabled) return '';
+
+  const align = config.alignment || 'center';
+  const alignAttr = align === 'left' ? 'left' : align === 'right' ? 'right' : 'center';
+  const lines: string[] = [];
+
+  // 1. Animated Wave Banner
+  if (config.bannerType && config.bannerType !== 'none') {
+    const bannerText = encodeURIComponent(config.bannerText || '');
+    const bannerTheme = config.bannerTheme || 'gradient';
+    let bannerUrl = '';
+    
+    if (config.bannerType === 'capsule') {
+      bannerUrl = `https://capsule-render.vercel.app/api?type=waving&color=${bannerTheme}&height=120&section=header${bannerText ? `&text=${bannerText}` : ''}&fontSize=30`;
+    } else if (config.bannerType === 'wave') {
+      bannerUrl = `https://capsule-render.vercel.app/api?type=soft&color=${bannerTheme}&height=100&section=header${bannerText ? `&text=${bannerText}` : ''}`;
+    } else if (config.bannerType === 'gradient') {
+      bannerUrl = `https://capsule-render.vercel.app/api?type=rect&color=${bannerTheme}&height=120&section=header${bannerText ? `&text=${bannerText}` : ''}&fontSize=30`;
+    }
+
+    if (bannerUrl) {
+      lines.push(`<p align="${alignAttr}">\n  <img src="${bannerUrl}" alt="Banner" />\n</p>\n`);
+    }
+  }
+
+  // Helper for aligned wrap
+  const addAlignedElement = (tag: string, content: string) => {
+    lines.push(`<${tag} align="${alignAttr}">${content}</${tag}>\n`);
+  };
+
+  // 2. Visitor Counter Top
+  if (config.visitorPlacement === 'top' && username) {
+    const user = username.trim();
+    if (user) {
+      const visitorUrl = `https://komarev.com/ghpvc/?username=${user}&color=green&style=flat`;
+      lines.push(`<p align="${alignAttr}">\n  <img src="${visitorUrl}" alt="Visitor Counter" />\n</p>\n`);
+    }
+  }
+
+  // 3. Name Section
+  if (config.name) {
+    let nameText = `Hi 👋, I'm ${config.name}`;
+    if (config.pronouns) {
+      nameText += ` (${config.pronouns})`;
+    }
+    addAlignedElement('h1', nameText);
+  }
+
+  // 4. Professional Title & Location
+  if (config.title || config.location) {
+    let subText = config.title || '';
+    if (config.location) {
+      subText += subText ? ` based in ${config.location}` : `Based in ${config.location}`;
+    }
+    if (subText) {
+      addAlignedElement('h3', subText);
+    }
+  }
+
+  // 5. Short Introduction
+  if (config.intro) {
+    addAlignedElement('p', config.intro);
+  }
+
+  // 6. Typing SVG
+  if (config.typingEnabled && config.typingLines && config.typingLines.length > 0) {
+    const activeLines = config.typingLines.filter(Boolean);
+    if (activeLines.length > 0) {
+      const encodedLines = activeLines.map(l => encodeURIComponent(l)).join(';');
+      const speed = config.typingSpeed || 200;
+      const delay = config.typingDelay || 1000;
+      const color = config.typingColor || '36BCF7';
+      const typingCenter = config.typingCenter !== false;
+      const typingUrl = `https://readme-typing-svg.herokuapp.com/?lines=${encodedLines}&color=${color}&center=${typingCenter}&width=450&height=30&speed=${speed}&pause=${delay}`;
+
+      lines.push(`<p align="${alignAttr}">\n  <img src="${typingUrl}" alt="Typing SVG" />\n</p>\n`);
+    }
+  }
+
+  // 7. Badges
+  const badgeLines: string[] = [];
+  if (config.badges.openToWork) {
+    badgeLines.push(`[![Open To Work](https://img.shields.io/badge/Open%20to%20Work-blue?style=flat-square)](https://github.com)`);
+  }
+  if (config.badges.freelance) {
+    badgeLines.push(`[![Freelance](https://img.shields.io/badge/Freelance-Available-green?style=flat-square)](https://github.com)`);
+  }
+  if (config.badges.learning) {
+    const val = config.badges.learning.trim();
+    if (val) {
+      badgeLines.push(`[![Learning](https://img.shields.io/badge/Learning-${encodeURIComponent(val)}-orange?style=flat-square)](https://github.com)`);
+    }
+  }
+  if (config.badges.building) {
+    const val = config.badges.building.trim();
+    if (val) {
+      badgeLines.push(`[![Building](https://img.shields.io/badge/Building-${encodeURIComponent(val)}-purple?style=flat-square)](https://github.com)`);
+    }
+  }
+
+  if (badgeLines.length > 0) {
+    lines.push(`<p align="${alignAttr}">\n  ${badgeLines.join('\n  ')}\n</p>\n`);
+  }
+
+  // 8. Visitor Counter Bottom
+  if (config.visitorPlacement === 'bottom' && username) {
+    const user = username.trim();
+    if (user) {
+      const visitorUrl = `https://komarev.com/ghpvc/?username=${user}&color=green&style=flat`;
+      lines.push(`<p align="${alignAttr}">\n  <img src="${visitorUrl}" alt="Visitor Counter" />\n</p>\n`);
+    }
+  }
+
+  return lines.join('\n');
 }

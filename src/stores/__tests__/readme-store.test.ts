@@ -179,6 +179,24 @@ describe('useREADMEStore', () => {
     expect(updated.achievements.order).toEqual(['visitor', 'graph']);
   });
 
+  it('should support updating header configuration', () => {
+    const store = useREADMEStore.getState();
+    expect(store.header.enabled).toBe(false);
+
+    store.setHeader({
+      enabled: true,
+      name: 'Sunil Kumar',
+      title: 'Architect',
+      alignment: 'center',
+    });
+
+    const updated = useREADMEStore.getState();
+    expect(updated.header.enabled).toBe(true);
+    expect(updated.header.name).toBe('Sunil Kumar');
+    expect(updated.header.title).toBe('Architect');
+    expect(updated.header.alignment).toBe('center');
+  });
+
   it('should reset state to initial values', () => {
     const store = useREADMEStore.getState();
     store.setName('John');
@@ -187,6 +205,7 @@ describe('useREADMEStore', () => {
     store.setTechStack({ enabled: true, selectedIds: ['javascript'] });
     store.setSocialLinks({ enabled: true, platforms: { github: { enabled: true, value: 'john' } } });
     store.setAchievements({ enabled: true, username: 'john' });
+    store.setHeader({ enabled: true, name: 'John' });
 
     store.reset();
 
@@ -200,5 +219,7 @@ describe('useREADMEStore', () => {
     expect(resetState.socialLinks.platforms).toEqual({});
     expect(resetState.achievements.enabled).toBe(false);
     expect(resetState.achievements.username).toBe('');
+    expect(resetState.header.enabled).toBe(false);
+    expect(resetState.header.name).toBe('');
   });
 });
