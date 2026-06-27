@@ -1,4 +1,4 @@
-import { READMEStyleTemplate } from '@/stores/readme-store';
+import { READMEStyleTemplate, GitHubStatsConfig } from '@/stores/readme-store';
 
 export interface READMEData {
   name?: string;
@@ -12,11 +12,51 @@ export interface READMEData {
   following?: number;
   publicRepos?: number;
   template?: READMEStyleTemplate;
+  githubStats?: GitHubStatsConfig;
 }
 
 export interface RoadmapData {
   title?: string;
   steps?: string[];
+}
+
+export function generateGithubStatsMarkdown(stats?: GitHubStatsConfig): string {
+  if (!stats || !stats.enabled || !stats.username) return '';
+  const { username, theme, hideBorder, showIcons, compactMode, layout, cardOrder, cardConfigs } = stats;
+  
+  const themeParam = theme && theme !== 'default' ? `&theme=${theme}` : '';
+  const borderParam = hideBorder ? '&hide_border=true' : '';
+  const iconsParam = showIcons ? '&show_icons=true' : '';
+  
+  const statsMarkdownBlocks: string[] = [];
+  cardOrder.forEach((cardId) => {
+    if (cardConfigs[cardId]?.enabled) {
+      if (cardId === 'stats') {
+        const layoutParam = layout === 'compact' ? '&layout=compact' : '';
+        statsMarkdownBlocks.push(
+          `<img src="https://github-readme-stats.vercel.app/api?username=${username}${themeParam}${borderParam}${iconsParam}${layoutParam}" alt="GitHub Stats" />`
+        );
+      } else if (cardId === 'languages') {
+        const compactParam = compactMode ? '&layout=compact' : '';
+        statsMarkdownBlocks.push(
+          `<img src="https://github-readme-stats.vercel.app/api/top-langs/?username=${username}${themeParam}${borderParam}${compactParam}" alt="Top Languages" />`
+        );
+      } else if (cardId === 'streak') {
+        statsMarkdownBlocks.push(
+          `<img src="https://github-readme-streak-stats.herokuapp.com/?user=${username}${themeParam}${borderParam}" alt="GitHub Streak" />`
+        );
+      }
+    }
+  });
+  
+  if (statsMarkdownBlocks.length === 0) return '';
+  
+  return [
+    '### 📊 GitHub Stats',
+    '<p align="center">',
+    statsMarkdownBlocks.map((block) => `  ${block}`).join('\n  &nbsp;&nbsp;\n'),
+    '</p>',
+  ].join('\n');
 }
 
 export function generateReadmeMarkdown(data: READMEData): string {
@@ -30,9 +70,10 @@ export function generateReadmeMarkdown(data: READMEData): string {
     ? `<p align="center">\n  👥 <b>Followers:</b> ${data.followers} | 👥 <b>Following:</b> ${data.following} | 📦 <b>Repos:</b> ${data.publicRepos}\n</p>`
     : '';
 
+  let body = '';
   switch (template) {
     case 'professional':
-      return [
+      body = [
         avatarMarkdown,
         data.name ? `# ${data.name}` : '',
         data.role ? `### *${data.role}*` : '',
@@ -43,9 +84,10 @@ export function generateReadmeMarkdown(data: READMEData): string {
         data.projects ? `### 📂 Featured Projects\n${data.projects}` : '',
         data.socials ? `### 🌐 Socials & Contact\n${data.socials}` : '',
       ].filter(Boolean).join('\n\n');
+      break;
 
     case 'developer':
-      return [
+      body = [
         avatarMarkdown,
         data.name ? `# 💻 ${data.name}` : '',
         data.role ? `> ${data.role}` : '',
@@ -56,9 +98,10 @@ export function generateReadmeMarkdown(data: READMEData): string {
         data.projects ? `### 📂 Projects & Codebases\n${data.projects}` : '',
         data.socials ? `### 📨 Connect with Me\n${data.socials}` : '',
       ].filter(Boolean).join('\n\n');
+      break;
 
     case 'open-source':
-      return [
+      body = [
         avatarMarkdown,
         data.name ? `# 🤝 ${data.name} | Open Source` : '',
         data.role ? `**${data.role}**` : '',
@@ -69,9 +112,10 @@ export function generateReadmeMarkdown(data: READMEData): string {
         data.skills ? `### 🛠️ Core Skills\n${data.skills}` : '',
         data.socials ? `### 💬 Collaboration & Get in touch\n${data.socials}` : '',
       ].filter(Boolean).join('\n\n');
+      break;
 
     case 'portfolio':
-      return [
+      body = [
         avatarMarkdown,
         data.name ? `# ✨ ${data.name} - Portfolio` : '',
         data.role ? `*${data.role}*` : '',
@@ -81,10 +125,11 @@ export function generateReadmeMarkdown(data: READMEData): string {
         data.about || data.skills ? `### 🎨 About & Skills\n${[data.about, data.skills].filter(Boolean).join('\n\n')}` : '',
         data.socials ? `### 🔗 Links & Contact\n${data.socials}` : '',
       ].filter(Boolean).join('\n\n');
+      break;
 
     case 'minimal':
     default:
-      return [
+      body = [
         avatarMarkdown,
         data.name ? `# ${data.name}` : '',
         data.role ? `## ${data.role}` : '',
@@ -94,7 +139,15 @@ export function generateReadmeMarkdown(data: READMEData): string {
         data.projects ? `### Projects\n${data.projects}` : '',
         data.socials ? `### Socials\n${data.socials}` : '',
       ].filter(Boolean).join('\n\n');
+      break;
   }
+
+  const githubStatsMarkdown = generateGithubStatsMarkdown(data.githubStats);
+  if (githubStatsMarkdown) {
+    return [body, githubStatsMarkdown].filter(Boolean).join('\n\n');
+  }
+
+  return body;
 }
 
 export function generateRoadmapMarkdown(data: RoadmapData): string {

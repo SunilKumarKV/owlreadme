@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import useReadmeStore from './readme-store';
+import useReadmeStore, { GitHubStatsConfig } from './readme-store';
 import useRoadmapStore from './roadmap-store';
 import useThemeStore from './theme-store';
 
@@ -24,6 +24,7 @@ export interface Workspace {
     repoAnalysis: any;
     aiSuggestions: any;
     aiGenerationsCount: number;
+    githubStats: GitHubStatsConfig;
   };
   roadmapData: {
     title: string;
@@ -74,6 +75,21 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             repoAnalysis: null,
             aiSuggestions: null,
             aiGenerationsCount: 0,
+            githubStats: {
+              enabled: false,
+              username: '',
+              theme: 'default',
+              hideBorder: false,
+              showIcons: true,
+              compactMode: false,
+              layout: 'default',
+              cardOrder: ['stats', 'languages', 'streak'],
+              cardConfigs: {
+                stats: { enabled: true },
+                languages: { enabled: true },
+                streak: { enabled: true },
+              },
+            },
           },
           roadmapData: {
             title: '',
@@ -166,6 +182,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               repoAnalysis: readme.repoAnalysis,
               aiSuggestions: readme.aiSuggestions,
               aiGenerationsCount: readme.aiGenerationsCount,
+              githubStats: readme.githubStats,
             },
             roadmapData: {
               title: roadmap.title,
@@ -201,6 +218,21 @@ export const useWorkspaceStore = create<WorkspaceState>()(
           repoAnalysis: workspace.readmeData.repoAnalysis,
           aiSuggestions: workspace.readmeData.aiSuggestions,
           aiGenerationsCount: workspace.readmeData.aiGenerationsCount || 0,
+          githubStats: workspace.readmeData.githubStats || {
+            enabled: false,
+            username: '',
+            theme: 'default',
+            hideBorder: false,
+            showIcons: true,
+            compactMode: false,
+            layout: 'default',
+            cardOrder: ['stats', 'languages', 'streak'],
+            cardConfigs: {
+              stats: { enabled: true },
+              languages: { enabled: true },
+              streak: { enabled: true },
+            },
+          },
         });
 
         useRoadmapStore.setState({
@@ -246,6 +278,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             repoAnalysis: readme.repoAnalysis,
             aiSuggestions: readme.aiSuggestions,
             aiGenerationsCount: readme.aiGenerationsCount,
+            githubStats: readme.githubStats,
           },
           roadmapData: {
             title: roadmap.title,

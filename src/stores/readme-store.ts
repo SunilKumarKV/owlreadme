@@ -40,6 +40,34 @@ export interface AISuggestions {
   } | null;
 }
 
+export interface GitHubStatsConfig {
+  enabled: boolean;
+  username: string;
+  theme: string;
+  hideBorder: boolean;
+  showIcons: boolean;
+  compactMode: boolean;
+  layout: 'default' | 'compact';
+  cardOrder: ('stats' | 'languages' | 'streak')[];
+  cardConfigs: Record<'stats' | 'languages' | 'streak', { enabled: boolean }>;
+}
+
+export const DEFAULT_GITHUB_STATS: GitHubStatsConfig = {
+  enabled: false,
+  username: '',
+  theme: 'default',
+  hideBorder: false,
+  showIcons: true,
+  compactMode: false,
+  layout: 'default',
+  cardOrder: ['stats', 'languages', 'streak'],
+  cardConfigs: {
+    stats: { enabled: true },
+    languages: { enabled: true },
+    streak: { enabled: true },
+  },
+};
+
 export type READMEField =
   | 'name'
   | 'role'
@@ -53,7 +81,8 @@ export type READMEField =
   | 'publicRepos'
   | 'template'
   | 'readmeExportsCount'
-  | 'templatesUsedCount';
+  | 'templatesUsedCount'
+  | 'githubStats';
 
 interface READMEState {
   name: string;
@@ -73,6 +102,7 @@ interface READMEState {
   repoAnalysis: RepoAnalysisResult | null;
   aiSuggestions: AISuggestions | null;
   aiGenerationsCount: number;
+  githubStats: GitHubStatsConfig;
   setField: (field: READMEField, value: any) => void;
   setName: (value: string) => void;
   setRole: (value: string) => void;
@@ -91,6 +121,7 @@ interface READMEState {
   addExportHistoryItem: (format: string, projectName: string) => void;
   setRepoAnalysis: (analysis: RepoAnalysisResult | null) => void;
   setAiSuggestions: (suggestions: AISuggestions | null) => void;
+  setGithubStats: (stats: Partial<GitHubStatsConfig>) => void;
   reset: () => void;
 }
 
@@ -114,6 +145,7 @@ const useREADMEStore = create<READMEState>()(
       repoAnalysis: null,
       aiSuggestions: null,
       aiGenerationsCount: 0,
+      githubStats: { ...DEFAULT_GITHUB_STATS },
       setField: (field, value) => set({ [field]: value } as Partial<READMEState>),
       setName: (value) => set({ name: value }),
       setRole: (value) => set({ role: value }),
@@ -148,6 +180,13 @@ const useREADMEStore = create<READMEState>()(
         })),
       setRepoAnalysis: (analysis) => set({ repoAnalysis: analysis }),
       setAiSuggestions: (suggestions) => set({ aiSuggestions: suggestions }),
+      setGithubStats: (stats) =>
+        set((state) => ({
+          githubStats: {
+            ...state.githubStats,
+            ...stats,
+          },
+        })),
       reset: () =>
         set({
           name: '',
@@ -167,6 +206,7 @@ const useREADMEStore = create<READMEState>()(
           repoAnalysis: null,
           aiSuggestions: null,
           aiGenerationsCount: 0,
+          githubStats: { ...DEFAULT_GITHUB_STATS },
         }),
     }),
     { name: 'readme-store' }
