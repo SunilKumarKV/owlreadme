@@ -355,4 +355,87 @@ describe('markdown utilities', () => {
       expect(result).toContain('komarev.com/ghpvc/?username=sunilkumar');
     });
   });
+
+  describe('generateSupportMarkdown', () => {
+    it('should generate support buttons for buy me a coffee and kofi', () => {
+      const config = {
+        enabled: true,
+        buyMeACoffeeUsername: 'alice',
+        kofiUsername: 'bob',
+        style: 'flat-square' as any,
+      };
+      const result = generateSupportMarkdown(config);
+      expect(result).toContain('## 💖 Support Me');
+      expect(result).toContain('https://buymeacoffee.com/alice');
+      expect(result).toContain('https://ko-fi.com/bob');
+      expect(result).toContain('style=flat-square');
+    });
+  });
+
+  describe('generateQuotesMarkdown', () => {
+    it('should generate programming quotes badge', () => {
+      const config = {
+        enabled: true,
+        theme: 'dracula',
+        quoteType: 'programming' as any,
+      };
+      const result = generateQuotesMarkdown(config);
+      expect(result).toContain('## 💬 Quote');
+      expect(result).toContain('https://github-readme-quotes.vercel.app/api?theme=dracula&type=programming');
+    });
+  });
+
+  describe('generateStandaloneVisitorMarkdown', () => {
+    it('should generate standalone visitor counter', () => {
+      const config = {
+        enabled: true,
+        username: 'alice',
+        color: 'blue',
+        style: 'plastic',
+      };
+      const result = generateStandaloneVisitorMarkdown(config);
+      expect(result).toContain('## 👀 Profile Views');
+      expect(result).toContain('https://komarev.com/ghpvc/?username=alice&color=blue&style=plastic');
+    });
+  });
+
+  describe('generateReadmeMarkdown with Section Manager Ordering', () => {
+    it('should compile sections in custom order and skip disabled ones', () => {
+      const data: READMEData = {
+        name: 'Alice',
+        about: 'I build software.',
+        customMarkdown: { enabled: true, content: '### Special Note\nSome text.' },
+        support: { enabled: true, buyMeACoffeeUsername: 'alice', kofiUsername: '', style: 'flat' as any },
+        sections: {
+          order: ['custom', 'about', 'support', 'header'],
+          sections: {
+            custom: { id: 'custom', name: 'Custom Markdown', enabled: true, collapsed: false },
+            about: { id: 'about', name: 'About Me', enabled: true, collapsed: false },
+            support: { id: 'support', name: 'Support', enabled: true, collapsed: false },
+            header: { id: 'header', name: 'Header', enabled: false, collapsed: false },
+            socials: { id: 'socials', name: 'Socials', enabled: false, collapsed: false },
+            techStack: { id: 'techStack', name: 'Tech Stack', enabled: false, collapsed: false },
+            stats: { id: 'stats', name: 'Stats', enabled: false, collapsed: false },
+            achievements: { id: 'achievements', name: 'Achievements', enabled: false, collapsed: false },
+            projects: { id: 'projects', name: 'Projects', enabled: false, collapsed: false },
+            quotes: { id: 'quotes', name: 'Quotes', enabled: false, collapsed: false },
+            visitor: { id: 'visitor', name: 'Visitor', enabled: false, collapsed: false },
+          },
+        },
+      };
+
+      const result = generateReadmeMarkdown(data);
+      // 'custom' first, then 'about', then 'support', 'header' is disabled so omitted
+      expect(result).toContain('### Special Note\nSome text.');
+      expect(result).toContain('I build software.');
+      expect(result).toContain('## 💖 Support Me');
+
+      const customIndex = result.indexOf('### Special Note');
+      const aboutIndex = result.indexOf('I build software.');
+      const supportIndex = result.indexOf('## 💖 Support Me');
+
+      expect(customIndex).toBeLessThan(aboutIndex);
+      expect(aboutIndex).toBeLessThan(supportIndex);
+    });
+  });
 });

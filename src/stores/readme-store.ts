@@ -195,6 +195,118 @@ export const DEFAULT_HEADER: HeaderConfig = {
   visitorPlacement: 'hidden',
 };
 
+export type SectionId =
+  | 'header'
+  | 'about'
+  | 'socials'
+  | 'techStack'
+  | 'stats'
+  | 'achievements'
+  | 'projects'
+  | 'support'
+  | 'quotes'
+  | 'visitor'
+  | 'custom';
+
+export interface SectionConfig {
+  id: SectionId;
+  name: string;
+  enabled: boolean;
+  collapsed: boolean;
+}
+
+export interface SectionOrderConfig {
+  sections: Record<SectionId, SectionConfig>;
+  order: SectionId[];
+}
+
+export interface SupportConfig {
+  enabled: boolean;
+  buyMeACoffeeUsername: string;
+  kofiUsername: string;
+  style: 'flat' | 'flat-square' | 'for-the-badge';
+}
+
+export interface QuotesConfig {
+  enabled: boolean;
+  theme: string;
+  quoteType: 'programming' | 'funny' | 'motivational';
+}
+
+export interface CustomMarkdownConfig {
+  enabled: boolean;
+  content: string;
+}
+
+export interface StandaloneVisitorConfig {
+  enabled: boolean;
+  username: string;
+  color: string;
+  style: string;
+}
+
+export const DEFAULT_SECTIONS: SectionOrderConfig = {
+  order: [
+    'header',
+    'about',
+    'socials',
+    'techStack',
+    'stats',
+    'achievements',
+    'projects',
+    'support',
+    'quotes',
+    'visitor',
+    'custom',
+  ],
+  sections: {
+    header: { id: 'header', name: 'Profile Header', enabled: true, collapsed: false },
+    about: { id: 'about', name: 'About Me', enabled: true, collapsed: false },
+    socials: { id: 'socials', name: 'Social Links', enabled: true, collapsed: false },
+    techStack: { id: 'techStack', name: 'Tech Stack', enabled: true, collapsed: false },
+    stats: { id: 'stats', name: 'GitHub Stats', enabled: true, collapsed: false },
+    achievements: { id: 'achievements', name: 'Achievements', enabled: true, collapsed: false },
+    projects: { id: 'projects', name: 'Featured Projects', enabled: true, collapsed: false },
+    support: { id: 'support', name: 'Support Me', enabled: false, collapsed: false },
+    quotes: { id: 'quotes', name: 'Quotes', enabled: false, collapsed: false },
+    visitor: { id: 'visitor', name: 'Visitor Counter', enabled: false, collapsed: false },
+    custom: { id: 'custom', name: 'Custom Markdown', enabled: false, collapsed: false },
+  },
+};
+
+export const DEFAULT_SUPPORT: SupportConfig = {
+  enabled: false,
+  buyMeACoffeeUsername: '',
+  kofiUsername: '',
+  style: 'for-the-badge',
+};
+
+export const DEFAULT_QUOTES: QuotesConfig = {
+  enabled: false,
+  theme: 'radical',
+  quoteType: 'programming',
+};
+
+export const DEFAULT_CUSTOM_MARKDOWN: CustomMarkdownConfig = {
+  enabled: false,
+  content: '',
+};
+
+export const DEFAULT_STANDALONE_VISITOR: StandaloneVisitorConfig = {
+  enabled: false,
+  username: '',
+  color: 'green',
+  style: 'flat',
+};
+
+export const PRESETS: Record<string, SectionId[]> = {
+  minimal: ['header', 'about', 'socials'],
+  modern: ['header', 'about', 'techStack', 'stats', 'achievements', 'socials'],
+  developer: ['header', 'about', 'techStack', 'projects', 'stats', 'visitor'],
+  'open-source': ['header', 'about', 'projects', 'techStack', 'achievements'],
+  'gprm-style': ['header', 'about', 'socials', 'techStack', 'stats', 'achievements', 'visitor'],
+};
+
 export type READMEField =
   | 'name'
   | 'role'
@@ -213,7 +325,12 @@ export type READMEField =
   | 'techStack'
   | 'socialLinks'
   | 'achievements'
-  | 'header';
+  | 'header'
+  | 'sections'
+  | 'support'
+  | 'quotes'
+  | 'customMarkdown'
+  | 'standaloneVisitor';
 
 interface READMEState {
   name: string;
@@ -238,6 +355,11 @@ interface READMEState {
   socialLinks: SocialLinksConfig;
   achievements: AchievementsConfig;
   header: HeaderConfig;
+  sections: SectionOrderConfig;
+  support: SupportConfig;
+  quotes: QuotesConfig;
+  customMarkdown: CustomMarkdownConfig;
+  standaloneVisitor: StandaloneVisitorConfig;
   setField: (field: READMEField, value: any) => void;
   setName: (value: string) => void;
   setRole: (value: string) => void;
@@ -261,6 +383,12 @@ interface READMEState {
   setSocialLinks: (links: Partial<SocialLinksConfig>) => void;
   setAchievements: (achievements: Partial<AchievementsConfig>) => void;
   setHeader: (header: Partial<HeaderConfig>) => void;
+  setSections: (sections: Partial<SectionOrderConfig>) => void;
+  setSupport: (support: Partial<SupportConfig>) => void;
+  setQuotes: (quotes: Partial<QuotesConfig>) => void;
+  setCustomMarkdown: (custom: Partial<CustomMarkdownConfig>) => void;
+  setStandaloneVisitor: (visitor: Partial<StandaloneVisitorConfig>) => void;
+  applyPreset: (presetName: string) => void;
   reset: () => void;
 }
 
@@ -289,6 +417,11 @@ const useREADMEStore = create<READMEState>()(
       socialLinks: { ...DEFAULT_SOCIAL_LINKS },
       achievements: { ...DEFAULT_ACHIEVEMENTS },
       header: { ...DEFAULT_HEADER },
+      sections: { ...DEFAULT_SECTIONS },
+      support: { ...DEFAULT_SUPPORT },
+      quotes: { ...DEFAULT_QUOTES },
+      customMarkdown: { ...DEFAULT_CUSTOM_MARKDOWN },
+      standaloneVisitor: { ...DEFAULT_STANDALONE_VISITOR },
       setField: (field, value) => set({ [field]: value } as Partial<READMEState>),
       setName: (value) => set({ name: value }),
       setRole: (value) => set({ role: value }),
@@ -358,6 +491,67 @@ const useREADMEStore = create<READMEState>()(
             ...header,
           },
         })),
+      setSections: (sections) =>
+        set((state) => ({
+          sections: {
+            ...state.sections,
+            ...sections,
+          },
+        })),
+      setSupport: (support) =>
+        set((state) => ({
+          support: {
+            ...state.support,
+            ...support,
+          },
+        })),
+      setQuotes: (quotes) =>
+        set((state) => ({
+          quotes: {
+            ...state.quotes,
+            ...quotes,
+          },
+        })),
+      setCustomMarkdown: (custom) =>
+        set((state) => ({
+          customMarkdown: {
+            ...state.customMarkdown,
+            ...custom,
+          },
+        })),
+      setStandaloneVisitor: (visitor) =>
+        set((state) => ({
+          standaloneVisitor: {
+            ...state.standaloneVisitor,
+            ...visitor,
+          },
+        })),
+      applyPreset: (presetName) =>
+        set((state) => {
+          const activeIds = PRESETS[presetName] || PRESETS.minimal;
+          const updatedSections = { ...state.sections.sections };
+
+          Object.keys(updatedSections).forEach((key) => {
+            const sectionId = key as SectionId;
+            updatedSections[sectionId] = {
+              ...updatedSections[sectionId],
+              enabled: activeIds.includes(sectionId),
+            };
+          });
+
+          // Order active ids first, then inactive ones
+          const newOrder = [
+            ...activeIds,
+            ...state.sections.order.filter((id) => !activeIds.includes(id)),
+          ];
+
+          return {
+            sections: {
+              sections: updatedSections,
+              order: newOrder,
+            },
+          };
+        }),
       reset: () =>
         set({
           name: '',
@@ -382,6 +576,11 @@ const useREADMEStore = create<READMEState>()(
           socialLinks: { ...DEFAULT_SOCIAL_LINKS },
           achievements: { ...DEFAULT_ACHIEVEMENTS },
           header: { ...DEFAULT_HEADER },
+          sections: { ...DEFAULT_SECTIONS },
+          support: { ...DEFAULT_SUPPORT },
+          quotes: { ...DEFAULT_QUOTES },
+          customMarkdown: { ...DEFAULT_CUSTOM_MARKDOWN },
+          standaloneVisitor: { ...DEFAULT_STANDALONE_VISITOR },
         }),
     }),
     { name: 'readme-store' }
