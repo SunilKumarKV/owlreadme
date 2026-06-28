@@ -761,6 +761,26 @@ const useREADMEStore = create<READMEState>()(
               ...template.config.quotes,
               enabled: template.config.quotes?.enabled || false,
             },
+            customMarkdown: template.config.customMarkdown ? {
+              ...state.customMarkdown,
+              ...template.config.customMarkdown,
+            } : state.customMarkdown,
+            support: template.config.support ? {
+              ...state.support,
+              ...template.config.support,
+            } : state.support,
+            standaloneVisitor: template.config.standaloneVisitor ? {
+              ...state.standaloneVisitor,
+              ...template.config.standaloneVisitor,
+            } : state.standaloneVisitor,
+            featuredProjects: template.config.featuredProjects ? {
+              ...state.featuredProjects,
+              ...template.config.featuredProjects,
+            } : state.featuredProjects,
+            animatedComponents: template.config.animatedComponents ? {
+              ...state.animatedComponents,
+              ...template.config.animatedComponents,
+            } : state.animatedComponents,
           };
         }),
       importReadmeData: (importedData, selectedSectionIds) =>

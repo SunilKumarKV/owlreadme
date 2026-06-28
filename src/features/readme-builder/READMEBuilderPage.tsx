@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 import { 
   Search, Eye, Code, Edit, GripVertical, Maximize2, Minimize2, Copy, Download, RefreshCw, 
   ChevronLeft, ChevronRight, Layout, Moon, Sun, PanelLeftClose, PanelLeft, PanelRightClose, 
-  PanelRight, FolderPlus, ArrowLeftRight
+  PanelRight, FolderPlus, ArrowLeftRight, Heart, Share2, Trash2, FolderHeart, Award, Star, History, Sparkles, MessageCircle, FileDown, Upload
 } from 'lucide-react';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
@@ -16,6 +16,7 @@ import useReadmeStore, { READMEStyleTemplate, GitHubStatsConfig, TechStackConfig
 import useWorkspaceStore from '@/stores/workspace-store';
 import usePanelStore from '@/stores/panel-store';
 import useThemeStore from '@/stores/theme-store';
+import { useTemplateStore, CommunityTemplate, TemplateCategory as CommCategory } from '@/stores/template-store';
 import { TECHNOLOGY_REGISTRY, CATEGORIES, Technology } from '@/utils/tech-registry';
 import { SOCIAL_PLATFORM_REGISTRY, SOCIAL_CATEGORIES, SocialPlatform } from '@/utils/social-registry';
 import { fetchGithubProfile, fetchGithubRepos } from '@/utils/github-api';
@@ -96,6 +97,19 @@ const READMEBuilderPage = () => {
     reset,
   } = useReadmeStore();
 
+  const {
+    templates: communityTemplates,
+    favorites: templateFavorites,
+    recentlyUsed: templateRecentlyUsed,
+    publishTemplate,
+    deleteTemplate,
+    toggleLike,
+    incrementDownloads,
+    toggleFavorite: toggleCommunityFavorite,
+    addRecentlyUsed,
+    importTemplate,
+  } = useTemplateStore();
+
   // ── Featured Projects local state ─────────────────────────────────────────
   const [repoSearchQuery, setRepoSearchQuery] = useState('');
   const [reposLoading, setReposLoading] = useState(false);
@@ -150,12 +164,28 @@ const READMEBuilderPage = () => {
   const [sectionsSearchQuery, setSectionsSearchQuery] = useState('');
 
   // ── Template Marketplace States ────────────────────────────────────────────
-  const [activeBuilderTab, setActiveBuilderTab] = useState<'editor' | 'marketplace' | 'analyzer' | 'improver'>('editor');
+  const [activeBuilderTab, setActiveBuilderTab] = useState<'editor' | 'marketplace' | 'community' | 'analyzer' | 'improver'>('editor');
   const [marketplaceSearch, setMarketplaceSearch] = useState('');
   const [selectedMarketplaceCategory, setSelectedMarketplaceCategory] = useState<string>('all');
   const [favoriteTemplates, setFavoriteTemplates] = useState<string[]>([]);
   const [recentlyUsedTemplates, setRecentlyUsedTemplates] = useState<string[]>([]);
   const [previewingTemplate, setPreviewingTemplate] = useState<any | null>(null);
+
+  // ── Community Templates States ─────────────────────────────────────────────
+  const [communitySearch, setCommunitySearch] = useState('');
+  const [selectedCommunityCategory, setSelectedCommunityCategory] = useState<string>('all');
+  const [activeCollection, setActiveCollection] = useState<'all' | 'trending' | 'picks' | 'favorites' | 'recents'>('all');
+  const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+  const [previewingCommunityTemplate, setPreviewingCommunityTemplate] = useState<CommunityTemplate | null>(null);
+
+  // Publish Template Form Fields State
+  const [publishForm, setPublishForm] = useState({
+    name: '',
+    description: '',
+    author: '',
+    category: 'minimal' as CommCategory,
+    tagsInput: '',
+  });
 
   // ── README Import Wizard States ────────────────────────────────────────────
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -3167,6 +3197,307 @@ jobs:
     );
   };
 
+  // ── Community Templates Handlers ──────────────────────────────────────────
+  const applyCommunityTemplate = (tpl: CommunityTemplate) => {
+    applyTemplate(tpl);
+    incrementDownloads(tpl.id);
+    addRecentlyUsed(tpl.id);
+  };
+
+  const handleExportTemplate = (tpl: CommunityTemplate) => {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tpl, null, 2));
+    const downloadAnchor = document.createElement('a');
+    downloadAnchor.setAttribute("href", dataStr);
+    downloadAnchor.setAttribute("download", `${tpl.name.toLowerCase().replace(/\s+/g, '-')}-template.json`);
+    document.body.appendChild(downloadAnchor);
+    downloadAnchor.click();
+    downloadAnchor.remove();
+  };
+
+  const handleImportTemplateFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const content = event.target?.result as string;
+      const res = importTemplate(content);
+      if (res.success) {
+        alert('Template imported successfully!');
+      } else {
+        alert(`Failed to import: ${res.error}`);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+
+  const handlePublishActiveConfig = () => {
+    const state = useReadmeStore.getState();
+    const config = {
+      header: state.header,
+      githubStats: state.githubStats,
+      techStack: state.techStack,
+      socialLinks: state.socialLinks,
+      achievements: state.achievements,
+      quotes: state.quotes,
+      customMarkdown: state.customMarkdown,
+      support: state.support,
+      standaloneVisitor: state.standaloneVisitor,
+      featuredProjects: state.featuredProjects,
+      animatedComponents: state.animatedComponents,
+    };
+
+    publishTemplate({
+      name: publishForm.name || 'My Custom Template',
+      description: publishForm.description || 'Custom template created in OwlRoadmap',
+      author: publishForm.author || 'Developer',
+      category: publishForm.category,
+      tags: publishForm.tagsInput ? publishForm.tagsInput.split(',').map((t) => t.trim()).filter(Boolean) : [],
+      sections: state.sections.order.filter(id => state.sections.sections[id].enabled),
+      theme: state.template === 'minimal' ? 'minimal' : 'dark',
+      config,
+    });
+
+    setPublishForm({
+      name: '',
+      description: '',
+      author: '',
+      category: 'minimal',
+      tagsInput: '',
+    });
+    setIsPublishModalOpen(false);
+  };
+
+  const renderCommunityTemplatesPanel = () => {
+    // 1. Filter templates by search and category
+    let filtered = communityTemplates.filter((tpl) => {
+      const matchesSearch =
+        tpl.name.toLowerCase().includes(communitySearch.toLowerCase()) ||
+        tpl.description.toLowerCase().includes(communitySearch.toLowerCase()) ||
+        tpl.author.toLowerCase().includes(communitySearch.toLowerCase()) ||
+        tpl.tags.some(tag => tag.toLowerCase().includes(communitySearch.toLowerCase()));
+      
+      const matchesCategory =
+        selectedCommunityCategory === 'all' || tpl.category === selectedCommunityCategory;
+
+      // Filter by Collection tabs
+      if (activeCollection === 'favorites') {
+        return matchesSearch && matchesCategory && templateFavorites.includes(tpl.id);
+      }
+      if (activeCollection === 'recents') {
+        return matchesSearch && matchesCategory && templateRecentlyUsed.includes(tpl.id);
+      }
+      if (activeCollection === 'picks') {
+        return matchesSearch && matchesCategory && !tpl.isCustom;
+      }
+      return matchesSearch && matchesCategory;
+    });
+
+    // 2. Sort templates
+    if (activeCollection === 'trending') {
+      filtered = [...filtered].sort((a, b) => b.likes - a.likes);
+    } else {
+      // Default: sort by newest or custom created timestamp
+      filtered = [...filtered].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    }
+
+    return (
+      <div className="space-y-4 text-xs text-left">
+        {/* Search, Import/Export, and Publish Active controls */}
+        <div className="space-y-3 select-none">
+          <div className="flex gap-2">
+            <div className="relative flex-1">
+              <Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search community templates or tags..."
+                value={communitySearch}
+                onChange={(e) => setCommunitySearch(e.target.value)}
+                className="pl-8 pr-4 py-1.5 w-full text-xs rounded border border-gray-200 dark:bg-[#18181b] dark:border-gray-700 focus:border-blue-500 focus:outline-none transition"
+              />
+            </div>
+            
+            <button
+              onClick={() => setIsPublishModalOpen(true)}
+              className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded font-bold cursor-pointer transition flex items-center gap-1 flex-shrink-0"
+              title="Publish current profile configuration as a template"
+            >
+              <Upload className="h-3 w-3" /> Publish Active
+            </button>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-2 items-center justify-between border-t border-b border-gray-150 dark:border-gray-800/80 py-2">
+            {/* Collection tabs */}
+            <div className="flex gap-1 overflow-x-auto pb-0.5 scrollbar-thin w-full sm:w-auto">
+              {[
+                { id: 'all', label: '🌍 All' },
+                { id: 'trending', label: '🔥 Trending' },
+                { id: 'picks', label: 'Staff Picks' },
+                { id: 'favorites', label: '💖 Favorites' },
+                { id: 'recents', label: '🕒 Recent' },
+              ].map((tab) => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveCollection(tab.id as any)}
+                  className={`px-2 py-0.5 text-3xs font-extrabold rounded uppercase tracking-wider cursor-pointer transition flex-shrink-0 ${
+                    activeCollection === tab.id
+                      ? 'bg-blue-100 text-blue-600 dark:bg-blue-900/30 dark:text-blue-400'
+                      : 'text-gray-400 hover:text-gray-600 dark:hover:text-gray-300'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Import Trigger */}
+            <label className="px-2.5 py-1 text-3xs font-bold rounded border border-gray-200 dark:border-gray-700 bg-gray-50 hover:bg-gray-100 dark:bg-gray-850 dark:hover:bg-gray-800 text-gray-500 hover:text-gray-700 dark:text-gray-400 transition cursor-pointer flex items-center gap-1 flex-shrink-0 w-full sm:w-auto justify-center">
+              <FileDown className="h-3 w-3" /> Import Template JSON
+              <input
+                type="file"
+                accept=".json"
+                onChange={handleImportTemplateFile}
+                className="hidden"
+              />
+            </label>
+          </div>
+
+          {/* Categories Grid */}
+          <div className="flex gap-1 overflow-x-auto pb-1.5 scrollbar-none">
+            {['all', 'minimal', 'modern', 'frontend', 'full-stack', 'open-source', 'ai', 'anime', 'gprm'].map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCommunityCategory(cat)}
+                className={`px-2.5 py-1 text-[10px] font-bold rounded-full cursor-pointer transition flex-shrink-0 ${
+                  selectedCommunityCategory === cat
+                    ? 'bg-blue-600 text-white shadow-xs'
+                    : 'bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-750 text-gray-500 dark:text-gray-400'
+                }`}
+              >
+                {cat === 'all' ? '🌟 All' : cat.toUpperCase().replace('-', ' ')}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Gallery Cards Grid */}
+        <div className="grid grid-cols-1 gap-4">
+          {filtered.length === 0 ? (
+            <div className="text-center py-8 text-gray-400 border border-dashed border-gray-200 dark:border-gray-800 rounded-lg">
+              No community templates match your criteria.
+            </div>
+          ) : (
+            filtered.map((tpl) => {
+              const isFav = templateFavorites.includes(tpl.id);
+              const isLiked = tpl.isLiked;
+
+              return (
+                <div
+                  key={tpl.id}
+                  className="group p-4 bg-gray-50/40 dark:bg-[#151518] hover:bg-gray-50/70 dark:hover:bg-[#1c1c20] border border-gray-250 dark:border-gray-800 rounded-xl transition duration-200 flex flex-col justify-between"
+                >
+                  <div className="flex items-center justify-between mb-2 select-none">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-100 dark:border-blue-900/10">
+                        {tpl.category}
+                      </span>
+                      {tpl.isCustom && (
+                        <span className="text-[9px] font-bold uppercase px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-500 border border-amber-500/20">
+                          Custom
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => toggleCommunityFavorite(tpl.id)}
+                        className={`text-xs transition cursor-pointer hover:scale-110 ${isFav ? 'text-red-550' : 'text-gray-400'}`}
+                        title={isFav ? "Remove from Favorites" : "Add to Favorites"}
+                      >
+                        {isFav ? '❤️' : '🖤'}
+                      </button>
+
+                      {tpl.isCustom && (
+                        <button
+                          onClick={() => {
+                            if (confirm('Delete this custom template?')) {
+                              deleteTemplate(tpl.id);
+                            }
+                          }}
+                          className="text-gray-400 hover:text-red-550 transition cursor-pointer"
+                          title="Delete Template"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mb-2 text-left">
+                    <h4 className="text-xs font-bold text-gray-850 dark:text-gray-200 mb-0.5">{tpl.name}</h4>
+                    <p className="text-[10px] text-gray-400 dark:text-gray-500 leading-relaxed mb-2">{tpl.description}</p>
+                    
+                    <div className="flex items-center gap-1 text-[10px] text-gray-400 font-mono">
+                      <span>By:</span>
+                      <span className="font-semibold text-blue-500">@{tpl.author}</span>
+                    </div>
+                  </div>
+
+                  {/* Tags */}
+                  {tpl.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {tpl.tags.map((tag) => (
+                        <span key={tag} className="text-[9px] px-1.5 py-0.2 bg-gray-100 dark:bg-gray-800 text-gray-450 dark:text-gray-400 rounded">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Metrics bar */}
+                  <div className="flex items-center justify-between py-2 border-t border-gray-150/40 dark:border-gray-850/60 mt-auto select-none">
+                    <div className="flex items-center gap-3 text-[10px] text-gray-405">
+                      <button
+                        onClick={() => toggleLike(tpl.id)}
+                        className={`flex items-center gap-1 cursor-pointer transition ${isLiked ? 'text-red-500 font-bold' : 'hover:text-red-500'}`}
+                      >
+                        👍 {tpl.likes}
+                      </button>
+                      <span>📥 {tpl.downloads} downloads</span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5">
+                      <button
+                        onClick={() => applyCommunityTemplate(tpl)}
+                        className="px-2.5 py-1 text-2xs font-extrabold rounded bg-blue-600 hover:bg-blue-700 text-white transition text-center cursor-pointer"
+                      >
+                        Apply
+                      </button>
+                      <button
+                        onClick={() => setPreviewingCommunityTemplate(tpl)}
+                        className="px-2 py-1 text-2xs font-bold rounded bg-gray-150 hover:bg-gray-200 dark:bg-gray-850 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-300 transition text-center cursor-pointer"
+                      >
+                        Preview
+                      </button>
+                      <button
+                        onClick={() => handleExportTemplate(tpl)}
+                        className="p-1 rounded bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-550 dark:text-gray-400 transition cursor-pointer"
+                        title="Export Template to JSON"
+                      >
+                        <Share2 className="h-3 w-3" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+    );
+  };
+
   const renderAIImprovePanel = () => {
     const originalText = getCurrentImproverText();
 
@@ -3478,7 +3809,7 @@ jobs:
                     >
                       ✏️ Edit Sections
                     </button>
-                    <button
+                     <button
                       onClick={() => setActiveBuilderTab('marketplace')}
                       className={`px-3 py-2 text-[11px] font-bold uppercase tracking-wider border-b-2 cursor-pointer transition ${
                         activeBuilderTab === 'marketplace'
@@ -3487,6 +3818,16 @@ jobs:
                       }`}
                     >
                       🛍️ Marketplace ({TEMPLATE_MARKETPLACE.length})
+                    </button>
+                    <button
+                      onClick={() => setActiveBuilderTab('community')}
+                      className={`px-3 py-2 text-[11px] font-bold uppercase tracking-wider border-b-2 cursor-pointer transition ${
+                        activeBuilderTab === 'community'
+                          ? 'border-blue-500 text-blue-600 dark:text-blue-400 bg-blue-500/5'
+                          : 'border-transparent text-gray-400'
+                      }`}
+                    >
+                      👥 Community
                     </button>
                     <button
                       onClick={() => setActiveBuilderTab('analyzer')}
@@ -3875,6 +4216,7 @@ jobs:
                     </div>
                   )}
 
+                  {activeBuilderTab === 'community' && renderCommunityTemplatesPanel()}
                   {activeBuilderTab === 'analyzer' && renderQualityAnalyzerPanel()}
                   {activeBuilderTab === 'improver' && renderAIImprovePanel()}
                 </div>
@@ -4053,6 +4395,16 @@ jobs:
                   🛍️ Marketplace ({TEMPLATE_MARKETPLACE.length})
                 </button>
                 <button
+                  onClick={() => setActiveBuilderTab('community')}
+                  className={`flex-1 py-2 text-xs font-bold border-b-2 cursor-pointer transition ${
+                    activeBuilderTab === 'community'
+                      ? 'border-blue-500 text-blue-500 bg-blue-500/5'
+                      : 'border-transparent text-gray-405'
+                  }`}
+                >
+                  👥 Community
+                </button>
+                <button
                   onClick={() => setActiveBuilderTab('analyzer')}
                   className={`flex-1 py-2 text-xs font-bold border-b-2 cursor-pointer transition ${
                     activeBuilderTab === 'analyzer'
@@ -4174,6 +4526,7 @@ jobs:
                   </div>
                 )}
 
+                {activeBuilderTab === 'community' && renderCommunityTemplatesPanel()}
                 {activeBuilderTab === 'analyzer' && renderQualityAnalyzerPanel()}
                 {activeBuilderTab === 'improver' && renderAIImprovePanel()}
               </div>
@@ -4589,6 +4942,186 @@ jobs:
                 className="px-4 py-2 rounded text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
               >
                 Accept & Apply Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Community Template Preview Modal Overlay ── */}
+      {previewingCommunityTemplate && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
+          <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150 text-left">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10">
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-550">Community Template Preview</span>
+              <button
+                onClick={() => setPreviewingCommunityTemplate(null)}
+                className="text-gray-400 hover:text-gray-600 transition font-bold cursor-pointer text-sm"
+              >
+                ✕
+              </button>
+            </div>
+            {/* Modal Content */}
+            <div className="p-6 space-y-5 flex-1 overflow-y-auto custom-editor-scrollbar text-xs">
+              <div className="space-y-1">
+                <div className="flex items-center gap-1.5">
+                  <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                    {previewingCommunityTemplate.category}
+                  </span>
+                  <span className="text-[10px] text-gray-405 font-mono">By @{previewingCommunityTemplate.author}</span>
+                </div>
+                <h3 className="text-base font-bold text-black dark:text-white mt-1.5">{previewingCommunityTemplate.name}</h3>
+                <p className="text-gray-400 dark:text-gray-550 leading-relaxed mt-0.5">{previewingCommunityTemplate.description}</p>
+              </div>
+
+              {previewingCommunityTemplate.tags.length > 0 && (
+                <div className="space-y-2 border-t border-gray-100 dark:border-gray-850 pt-4">
+                  <span className="font-semibold text-gray-500 dark:text-gray-450 block">Tags:</span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {previewingCommunityTemplate.tags.map((tag) => (
+                      <span key={tag} className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-650 dark:text-gray-300 font-mono text-[10px]">
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-2 border-t border-gray-100 dark:border-gray-850 pt-4">
+                <span className="font-semibold text-gray-500 dark:text-gray-450 block">Included Sections:</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {previewingCommunityTemplate.sections.map((id) => (
+                    <span key={id} className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-650 dark:text-gray-300 font-medium">
+                      📂 {id}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="space-y-2 border-t border-gray-100 dark:border-gray-850 pt-4">
+                <span className="font-semibold text-gray-500 dark:text-gray-450 block">Theme:</span>
+                <span className="inline-block capitalize px-2.5 py-0.5 rounded bg-blue-500/10 text-blue-500 font-bold border border-blue-500/20">
+                  🎨 {previewingCommunityTemplate.theme} Theme
+                </span>
+              </div>
+            </div>
+            {/* Footer Actions */}
+            <div className="px-6 py-4 bg-gray-50/50 dark:bg-gray-900/5 border-t border-gray-100 dark:border-gray-800 flex items-center justify-end gap-3 select-none">
+              <button
+                onClick={() => setPreviewingCommunityTemplate(null)}
+                className="px-4 py-2 rounded text-xs font-bold bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => {
+                  applyCommunityTemplate(previewingCommunityTemplate);
+                  setPreviewingCommunityTemplate(null);
+                }}
+                className="px-4 py-2 rounded text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+              >
+                Apply Template
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Publish Active Config Form Modal Overlay ── */}
+      {isPublishModalOpen && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
+          <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150 text-left">
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10">
+              <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-550">Publish Active Profile</span>
+              <button
+                onClick={() => setIsPublishModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600 transition font-bold cursor-pointer text-sm"
+              >
+                ✕
+              </button>
+            </div>
+            {/* Modal Content */}
+            <div className="p-6 space-y-4 text-xs">
+              <p className="text-gray-400 dark:text-gray-500 leading-relaxed mb-1">
+                Save and share your current README configurations in the local community gallery.
+              </p>
+
+              <div className="space-y-1.5">
+                <label className="block text-2xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Template Name</label>
+                <Input
+                  value={publishForm.name}
+                  onChange={(e) => setPublishForm({ ...publishForm, name: e.target.value })}
+                  placeholder="e.g. Creative Neon Portfolio"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-2xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Author Username</label>
+                <Input
+                  value={publishForm.author}
+                  onChange={(e) => setPublishForm({ ...publishForm, author: e.target.value })}
+                  placeholder="e.g. dev_jane"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-2xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Description</label>
+                <Textarea
+                  value={publishForm.description}
+                  onChange={(e) => setPublishForm({ ...publishForm, description: e.target.value })}
+                  placeholder="Describe your template layout, choice of widgets, styling themes..."
+                  rows={3}
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="block text-2xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Category</label>
+                  <select
+                    value={publishForm.category}
+                    onChange={(e) => setPublishForm({ ...publishForm, category: e.target.value as CommCategory })}
+                    className="w-full px-3 py-2 text-xs rounded border border-gray-350 dark:bg-gray-850 dark:text-white dark:border-gray-700 focus:outline-none cursor-pointer"
+                  >
+                    <option value="minimal">Minimal</option>
+                    <option value="modern">Modern</option>
+                    <option value="frontend">Frontend</option>
+                    <option value="full-stack">Full Stack</option>
+                    <option value="open-source">Open Source</option>
+                    <option value="ai">AI Engineer</option>
+                    <option value="anime">Anime</option>
+                    <option value="gprm">GPRM Style</option>
+                  </select>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="block text-2xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Tags (comma separated)</label>
+                  <Input
+                    value={publishForm.tagsInput}
+                    onChange={(e) => setPublishForm({ ...publishForm, tagsInput: e.target.value })}
+                    placeholder="react, css, simple"
+                  />
+                </div>
+              </div>
+            </div>
+            {/* Footer actions */}
+            <div className="px-6 py-4 bg-gray-50/50 dark:bg-gray-900/5 border-t border-gray-100 dark:border-gray-850 flex items-center justify-end gap-3 select-none">
+              <button
+                onClick={() => setIsPublishModalOpen(false)}
+                className="px-4 py-2 rounded text-xs font-bold bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handlePublishActiveConfig}
+                disabled={!publishForm.name || !publishForm.author}
+                className="px-4 py-2 rounded text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Publish Template
               </button>
             </div>
           </div>
