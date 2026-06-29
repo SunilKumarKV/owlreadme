@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import useReadmeStore, { GitHubStatsConfig, TechStackConfig, SocialLinksConfig, AchievementsConfig, HeaderConfig } from './readme-store';
+import useReadmeStore, { GitHubStatsConfig, TechStackConfig, SocialLinksConfig, AchievementsConfig, HeaderConfig, SectionOrderConfig, SupportConfig, QuotesConfig, CustomMarkdownConfig, StandaloneVisitorConfig } from './readme-store';
 import useRoadmapStore from './roadmap-store';
 import useThemeStore from './theme-store';
 
@@ -29,6 +29,11 @@ export interface Workspace {
     socialLinks: SocialLinksConfig;
     achievements: AchievementsConfig;
     header: HeaderConfig;
+    sections: SectionOrderConfig;
+    support: SupportConfig;
+    quotes: QuotesConfig;
+    customMarkdown: CustomMarkdownConfig;
+    standaloneVisitor: StandaloneVisitorConfig;
   };
   roadmapData: {
     title: string;
@@ -150,6 +155,26 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               },
               visitorPlacement: 'hidden',
             },
+            sections: {
+              order: ['header', 'about', 'socials', 'techStack', 'stats', 'achievements', 'projects', 'support', 'quotes', 'visitor', 'custom'],
+              sections: {
+                header: { id: 'header', name: 'Profile Header', enabled: true, collapsed: false },
+                about: { id: 'about', name: 'About Me', enabled: true, collapsed: false },
+                socials: { id: 'socials', name: 'Social Links', enabled: true, collapsed: false },
+                techStack: { id: 'techStack', name: 'Tech Stack', enabled: true, collapsed: false },
+                stats: { id: 'stats', name: 'GitHub Stats', enabled: true, collapsed: false },
+                achievements: { id: 'achievements', name: 'Achievements', enabled: true, collapsed: false },
+                projects: { id: 'projects', name: 'Featured Projects', enabled: true, collapsed: false },
+                support: { id: 'support', name: 'Support Me', enabled: false, collapsed: false },
+                quotes: { id: 'quotes', name: 'Quotes', enabled: false, collapsed: false },
+                visitor: { id: 'visitor', name: 'Visitor Counter', enabled: false, collapsed: false },
+                custom: { id: 'custom', name: 'Custom Markdown', enabled: false, collapsed: false },
+              },
+            },
+            support: { enabled: false, buyMeACoffeeUsername: '', kofiUsername: '', style: 'for-the-badge' },
+            quotes: { enabled: false, theme: 'radical', quoteType: 'programming' },
+            customMarkdown: { enabled: false, content: '' },
+            standaloneVisitor: { enabled: false, username: '', color: 'green', style: 'flat' },
           },
           roadmapData: {
             title: '',
@@ -247,6 +272,11 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               socialLinks: readme.socialLinks,
               achievements: readme.achievements,
               header: readme.header,
+              sections: readme.sections,
+              support: readme.support,
+              quotes: readme.quotes,
+              customMarkdown: readme.customMarkdown,
+              standaloneVisitor: readme.standaloneVisitor,
             },
             roadmapData: {
               title: roadmap.title,
@@ -353,6 +383,26 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             },
             visitorPlacement: 'hidden',
           },
+          sections: workspace.readmeData.sections || {
+            order: ['header', 'about', 'socials', 'techStack', 'stats', 'achievements', 'projects', 'support', 'quotes', 'visitor', 'custom'],
+            sections: {
+              header: { id: 'header', name: 'Profile Header', enabled: true, collapsed: false },
+              about: { id: 'about', name: 'About Me', enabled: true, collapsed: false },
+              socials: { id: 'socials', name: 'Social Links', enabled: true, collapsed: false },
+              techStack: { id: 'techStack', name: 'Tech Stack', enabled: true, collapsed: false },
+              stats: { id: 'stats', name: 'GitHub Stats', enabled: true, collapsed: false },
+              achievements: { id: 'achievements', name: 'Achievements', enabled: true, collapsed: false },
+              projects: { id: 'projects', name: 'Featured Projects', enabled: true, collapsed: false },
+              support: { id: 'support', name: 'Support Me', enabled: false, collapsed: false },
+              quotes: { id: 'quotes', name: 'Quotes', enabled: false, collapsed: false },
+              visitor: { id: 'visitor', name: 'Visitor Counter', enabled: false, collapsed: false },
+              custom: { id: 'custom', name: 'Custom Markdown', enabled: false, collapsed: false },
+            },
+          },
+          support: workspace.readmeData.support || { enabled: false, buyMeACoffeeUsername: '', kofiUsername: '', style: 'for-the-badge' },
+          quotes: workspace.readmeData.quotes || { enabled: false, theme: 'radical', quoteType: 'programming' },
+          customMarkdown: workspace.readmeData.customMarkdown || { enabled: false, content: '' },
+          standaloneVisitor: workspace.readmeData.standaloneVisitor || { enabled: false, username: '', color: 'green', style: 'flat' },
         });
 
         useRoadmapStore.setState({
@@ -403,6 +453,11 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             socialLinks: readme.socialLinks,
             achievements: readme.achievements,
             header: readme.header,
+            sections: readme.sections,
+            support: readme.support,
+            quotes: readme.quotes,
+            customMarkdown: readme.customMarkdown,
+            standaloneVisitor: readme.standaloneVisitor,
           },
           roadmapData: {
             title: roadmap.title,

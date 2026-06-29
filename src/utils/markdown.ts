@@ -1,4 +1,4 @@
-import { READMEStyleTemplate, GitHubStatsConfig, TechStackConfig, SocialLinksConfig, AchievementsConfig, HeaderConfig } from '@/stores/readme-store';
+import { READMEStyleTemplate, GitHubStatsConfig, TechStackConfig, SocialLinksConfig, AchievementsConfig, HeaderConfig, SectionOrderConfig, SupportConfig, QuotesConfig, CustomMarkdownConfig, StandaloneVisitorConfig } from '@/stores/readme-store';
 import { TECHNOLOGY_REGISTRY, CATEGORIES, Technology } from './tech-registry';
 import { SOCIAL_PLATFORM_REGISTRY, SocialPlatform } from './social-registry';
 
@@ -19,6 +19,11 @@ export interface READMEData {
   socialLinks?: SocialLinksConfig;
   achievements?: AchievementsConfig;
   header?: HeaderConfig;
+  sections?: SectionOrderConfig;
+  support?: SupportConfig;
+  quotes?: QuotesConfig;
+  customMarkdown?: CustomMarkdownConfig;
+  standaloneVisitor?: StandaloneVisitorConfig;
 }
 
 export interface RoadmapData {
@@ -66,6 +71,96 @@ export function generateGithubStatsMarkdown(stats?: GitHubStatsConfig): string {
 }
 
 export function generateReadmeMarkdown(data: READMEData): string {
+  // If dynamic section ordering is enabled, generate sections in order
+  if (data.sections && data.sections.order && data.sections.order.length > 0) {
+    const { order, sections } = data.sections;
+    const blocks: string[] = [];
+
+    for (const sectionId of order) {
+      const sectionConfig = sections[sectionId];
+      // Skip if explicitly disabled
+      if (sectionConfig && !sectionConfig.enabled) continue;
+
+      let sectionMarkdown = '';
+      switch (sectionId) {
+        case 'header':
+          if (data.header && data.header.enabled) {
+            sectionMarkdown = generateHeaderMarkdown(data.header, data.githubStats?.username || '');
+          } else {
+            const avatarMarkdown = data.avatarUrl
+              ? `<p align="center">\n  <img src="${data.avatarUrl}" alt="Avatar" width="120" height="120" style="border-radius: 50%;" />\n</p>`
+              : '';
+            const statsMarkdown = (data.followers !== undefined && data.following !== undefined && data.publicRepos !== undefined)
+              ? `<p align="center">\n  👥 <b>Followers:</b> ${data.followers} | 👥 <b>Following:</b> ${data.following} | 📦 <b>Repos:</b> ${data.publicRepos}\n</p>`
+              : '';
+            sectionMarkdown = [
+              avatarMarkdown,
+              data.name ? `# ${data.name}` : '',
+              data.role ? `## ${data.role}` : '',
+              statsMarkdown,
+            ].filter(Boolean).join('\n\n');
+          }
+          break;
+
+        case 'about':
+          sectionMarkdown = [
+            data.about ? data.about : '',
+            data.skills ? `### Skills\n${data.skills}` : '',
+          ].filter(Boolean).join('\n\n');
+          break;
+
+        case 'socials':
+          if (data.socialLinks && data.socialLinks.enabled) {
+            sectionMarkdown = generateSocialLinksMarkdown(data.socialLinks);
+          } else {
+            sectionMarkdown = data.socials ? `### Socials\n${data.socials}` : '';
+          }
+          break;
+
+        case 'techStack':
+          sectionMarkdown = generateTechStackMarkdown(data.techStack);
+          break;
+
+        case 'stats':
+          sectionMarkdown = generateGithubStatsMarkdown(data.githubStats);
+          break;
+
+        case 'achievements':
+          sectionMarkdown = generateAchievementsMarkdown(data.achievements);
+          break;
+
+        case 'projects':
+          sectionMarkdown = data.projects ? `### Projects\n${data.projects}` : '';
+          break;
+
+        case 'support':
+          sectionMarkdown = generateSupportMarkdown(data.support);
+          break;
+
+        case 'quotes':
+          sectionMarkdown = generateQuotesMarkdown(data.quotes);
+          break;
+
+        case 'visitor':
+          sectionMarkdown = generateStandaloneVisitorMarkdown(data.standaloneVisitor, data.githubStats?.username);
+          break;
+
+        case 'custom':
+          if (data.customMarkdown && data.customMarkdown.enabled) {
+            sectionMarkdown = data.customMarkdown.content;
+          }
+          break;
+      }
+
+      if (sectionMarkdown && sectionMarkdown.trim()) {
+        blocks.push(sectionMarkdown.trim());
+      }
+    }
+
+    return blocks.join('\n\n');
+  }
+
+  // Fallback to legacy hardcoded template generation
   const template = data.template || 'minimal';
 
   const avatarMarkdown = data.avatarUrl
@@ -180,6 +275,45 @@ export function generateReadmeMarkdown(data: READMEData): string {
   }
 
   return output;
+}
+
+export function generateSupportMarkdown(config?: SupportConfig): string {
+  if (!config || !config.enabled) return '';
+  const style = config.style || 'for-the-badge';
+  const badges: string[] = [];
+
+  if (config.buyMeACoffeeUsername) {
+    const user = config.buyMeACoffeeUsername.trim();
+    if (user) {
+      badges.push(`[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-FFDD00?style=${style}&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/${user})`);
+    }
+  }
+  if (config.kofiUsername) {
+    const user = config.kofiUsername.trim();
+    if (user) {
+      badges.push(`[![Ko-fi](https://img.shields.io/badge/Ko--fi-F16061?style=${style}&logo=ko-fi&logoColor=white)](https://ko-fi.com/${user})`);
+    }
+  }
+
+  if (badges.length === 0) return '';
+  return `## 💖 Support Me\n\n${badges.join(' &nbsp;&nbsp; ')}`;
+}
+
+export function generateQuotesMarkdown(config?: QuotesConfig): string {
+  if (!config || !config.enabled) return '';
+  const theme = config.theme || 'radical';
+  const type = config.quoteType || 'programming';
+  return `## 💬 Quote\n\n![Quote](https://github-readme-quotes.vercel.app/api?theme=${theme}&type=${type})`;
+}
+
+export function generateStandaloneVisitorMarkdown(config?: StandaloneVisitorConfig, username?: string): string {
+  if (!config || !config.enabled) return '';
+  const user = (config.username || username || '').trim();
+  if (!user) return '';
+  const color = config.color || 'green';
+  const style = config.style || 'flat';
+  const visitorUrl = `https://komarev.com/ghpvc/?username=${user}&color=${color}&style=${style}`;
+  return `## 👀 Profile Views\n\n![Visitor Counter](${visitorUrl})`;
 }
 
 export function generateAchievementsMarkdown(config?: AchievementsConfig): string {
