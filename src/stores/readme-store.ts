@@ -143,6 +143,58 @@ export const DEFAULT_ACHIEVEMENTS: AchievementsConfig = {
   order: ['trophy', 'visitor', 'graph', 'snake'],
 };
 
+export interface HeaderConfig {
+  enabled: boolean;
+  name: string;
+  pronouns: string;
+  location: string;
+  title: string;
+  intro: string;
+  alignment: 'left' | 'center' | 'right';
+  bannerType: 'none' | 'capsule' | 'wave' | 'gradient';
+  bannerTheme: string;
+  bannerText: string;
+  typingEnabled: boolean;
+  typingLines: string[];
+  typingSpeed: number;
+  typingDelay: number;
+  typingColor: string;
+  typingCenter: boolean;
+  badges: {
+    openToWork: boolean;
+    freelance: boolean;
+    learning: string;
+    building: string;
+  };
+  visitorPlacement: 'top' | 'bottom' | 'hidden';
+}
+
+export const DEFAULT_HEADER: HeaderConfig = {
+  enabled: false,
+  name: '',
+  pronouns: '',
+  location: '',
+  title: '',
+  intro: '',
+  alignment: 'center',
+  bannerType: 'none',
+  bannerTheme: 'gradient',
+  bannerText: '',
+  typingEnabled: false,
+  typingLines: [],
+  typingSpeed: 200,
+  typingDelay: 1000,
+  typingColor: '36BCF7',
+  typingCenter: true,
+  badges: {
+    openToWork: false,
+    freelance: false,
+    learning: '',
+    building: '',
+  },
+  visitorPlacement: 'hidden',
+};
+
 export type READMEField =
   | 'name'
   | 'role'
@@ -160,7 +212,8 @@ export type READMEField =
   | 'githubStats'
   | 'techStack'
   | 'socialLinks'
-  | 'achievements';
+  | 'achievements'
+  | 'header';
 
 interface READMEState {
   name: string;
@@ -184,6 +237,7 @@ interface READMEState {
   techStack: TechStackConfig;
   socialLinks: SocialLinksConfig;
   achievements: AchievementsConfig;
+  header: HeaderConfig;
   setField: (field: READMEField, value: any) => void;
   setName: (value: string) => void;
   setRole: (value: string) => void;
@@ -206,6 +260,7 @@ interface READMEState {
   setTechStack: (stack: Partial<TechStackConfig>) => void;
   setSocialLinks: (links: Partial<SocialLinksConfig>) => void;
   setAchievements: (achievements: Partial<AchievementsConfig>) => void;
+  setHeader: (header: Partial<HeaderConfig>) => void;
   reset: () => void;
 }
 
@@ -233,6 +288,7 @@ const useREADMEStore = create<READMEState>()(
       techStack: { ...DEFAULT_TECH_STACK },
       socialLinks: { ...DEFAULT_SOCIAL_LINKS },
       achievements: { ...DEFAULT_ACHIEVEMENTS },
+      header: { ...DEFAULT_HEADER },
       setField: (field, value) => set({ [field]: value } as Partial<READMEState>),
       setName: (value) => set({ name: value }),
       setRole: (value) => set({ role: value }),
@@ -295,6 +351,13 @@ const useREADMEStore = create<READMEState>()(
             ...achievements,
           },
         })),
+      setHeader: (header) =>
+        set((state) => ({
+          header: {
+            ...state.header,
+            ...header,
+          },
+        })),
       reset: () =>
         set({
           name: '',
@@ -318,6 +381,7 @@ const useREADMEStore = create<READMEState>()(
           techStack: { ...DEFAULT_TECH_STACK },
           socialLinks: { ...DEFAULT_SOCIAL_LINKS },
           achievements: { ...DEFAULT_ACHIEVEMENTS },
+          header: { ...DEFAULT_HEADER },
         }),
     }),
     { name: 'readme-store' }

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import useReadmeStore, { GitHubStatsConfig, TechStackConfig, SocialLinksConfig, AchievementsConfig } from './readme-store';
+import useReadmeStore, { GitHubStatsConfig, TechStackConfig, SocialLinksConfig, AchievementsConfig, HeaderConfig } from './readme-store';
 import useRoadmapStore from './roadmap-store';
 import useThemeStore from './theme-store';
 
@@ -28,6 +28,7 @@ export interface Workspace {
     techStack: TechStackConfig;
     socialLinks: SocialLinksConfig;
     achievements: AchievementsConfig;
+    header: HeaderConfig;
   };
   roadmapData: {
     title: string;
@@ -123,6 +124,31 @@ export const useWorkspaceStore = create<WorkspaceState>()(
                 graph: { enabled: true, theme: 'github', hideBorder: false },
               },
               order: ['trophy', 'visitor', 'graph', 'snake'],
+            },
+            header: {
+              enabled: false,
+              name: '',
+              pronouns: '',
+              location: '',
+              title: '',
+              intro: '',
+              alignment: 'center',
+              bannerType: 'none',
+              bannerTheme: 'gradient',
+              bannerText: '',
+              typingEnabled: false,
+              typingLines: [],
+              typingSpeed: 200,
+              typingDelay: 1000,
+              typingColor: '36BCF7',
+              typingCenter: true,
+              badges: {
+                openToWork: false,
+                freelance: false,
+                learning: '',
+                building: '',
+              },
+              visitorPlacement: 'hidden',
             },
           },
           roadmapData: {
@@ -220,6 +246,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               techStack: readme.techStack,
               socialLinks: readme.socialLinks,
               achievements: readme.achievements,
+              header: readme.header,
             },
             roadmapData: {
               title: roadmap.title,
@@ -301,6 +328,31 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             },
             order: ['trophy', 'visitor', 'graph', 'snake'],
           },
+          header: workspace.readmeData.header || {
+            enabled: false,
+            name: '',
+            pronouns: '',
+            location: '',
+            title: '',
+            intro: '',
+            alignment: 'center',
+            bannerType: 'none',
+            bannerTheme: 'gradient',
+            bannerText: '',
+            typingEnabled: false,
+            typingLines: [],
+            typingSpeed: 200,
+            typingDelay: 1000,
+            typingColor: '36BCF7',
+            typingCenter: true,
+            badges: {
+              openToWork: false,
+              freelance: false,
+              learning: '',
+              building: '',
+            },
+            visitorPlacement: 'hidden',
+          },
         });
 
         useRoadmapStore.setState({
@@ -350,6 +402,7 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             techStack: readme.techStack,
             socialLinks: readme.socialLinks,
             achievements: readme.achievements,
+            header: readme.header,
           },
           roadmapData: {
             title: roadmap.title,
