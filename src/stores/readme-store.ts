@@ -1,5 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { FeaturedProjectsConfig, DEFAULT_FEATURED_PROJECTS } from '@/types/featured-projects';
+export type { FeaturedProject, FeaturedProjectsConfig, ProjectCardStyle, ProjectLayout, ProjectSortMode } from '@/types/featured-projects';
+export { DEFAULT_FEATURED_PROJECTS } from '@/types/featured-projects';
 
 export type READMEStyleTemplate = 'minimal' | 'professional' | 'developer' | 'open-source' | 'portfolio';
 
@@ -112,6 +115,301 @@ export const DEFAULT_SOCIAL_LINKS: SocialLinksConfig = {
   ],
 };
 
+export interface AchievementWidgetConfig {
+  enabled: boolean;
+  theme?: string;
+  color?: string;
+  style?: string;
+  hideBorder?: boolean;
+  noFrame?: boolean;
+  noBg?: boolean;
+  rows?: number;
+  columns?: number;
+}
+
+export interface AchievementsConfig {
+  enabled: boolean;
+  username: string;
+  widgets: Record<'trophy' | 'visitor' | 'snake' | 'graph', AchievementWidgetConfig>;
+  order: ('trophy' | 'visitor' | 'snake' | 'graph')[];
+}
+
+export const DEFAULT_ACHIEVEMENTS: AchievementsConfig = {
+  enabled: false,
+  username: '',
+  widgets: {
+    trophy: { enabled: true, theme: 'flat', noFrame: false, noBg: false, rows: 1, columns: 6 },
+    visitor: { enabled: true, color: '0078d7', style: 'flat' },
+    snake: { enabled: true },
+    graph: { enabled: true, theme: 'github', hideBorder: false },
+  },
+  order: ['trophy', 'visitor', 'graph', 'snake'],
+};
+
+export interface HeaderConfig {
+  enabled: boolean;
+  name: string;
+  pronouns: string;
+  location: string;
+  title: string;
+  intro: string;
+  alignment: 'left' | 'center' | 'right';
+  bannerType: 'none' | 'capsule' | 'wave' | 'gradient';
+  bannerTheme: string;
+  bannerText: string;
+  typingEnabled: boolean;
+  typingLines: string[];
+  typingSpeed: number;
+  typingDelay: number;
+  typingColor: string;
+  typingCenter: boolean;
+  badges: {
+    openToWork: boolean;
+    freelance: boolean;
+    learning: string;
+    building: string;
+  };
+  visitorPlacement: 'top' | 'bottom' | 'hidden';
+}
+
+export const DEFAULT_HEADER: HeaderConfig = {
+  enabled: false,
+  name: '',
+  pronouns: '',
+  location: '',
+  title: '',
+  intro: '',
+  alignment: 'center',
+  bannerType: 'none',
+  bannerTheme: 'gradient',
+  bannerText: '',
+  typingEnabled: false,
+  typingLines: [],
+  typingSpeed: 200,
+  typingDelay: 1000,
+  typingColor: '36BCF7',
+  typingCenter: true,
+  badges: {
+    openToWork: false,
+    freelance: false,
+    learning: '',
+    building: '',
+  },
+  visitorPlacement: 'hidden',
+};
+
+export type SectionId =
+  | 'header'
+  | 'about'
+  | 'socials'
+  | 'techStack'
+  | 'stats'
+  | 'achievements'
+  | 'projects'
+  | 'support'
+  | 'quotes'
+  | 'visitor'
+  | 'custom'
+  | 'animatedComponents';
+
+export interface SectionConfig {
+  id: SectionId;
+  name: string;
+  enabled: boolean;
+  collapsed: boolean;
+}
+
+export interface SectionOrderConfig {
+  sections: Record<SectionId, SectionConfig>;
+  order: SectionId[];
+}
+
+export interface SupportConfig {
+  enabled: boolean;
+  buyMeACoffeeUsername: string;
+  kofiUsername: string;
+  style: 'flat' | 'flat-square' | 'for-the-badge';
+}
+
+export interface QuotesConfig {
+  enabled: boolean;
+  theme: string;
+  quoteType: 'programming' | 'funny' | 'motivational';
+}
+
+export interface CustomMarkdownConfig {
+  enabled: boolean;
+  content: string;
+}
+
+export interface StandaloneVisitorConfig {
+  enabled: boolean;
+  username: string;
+  color: string;
+  style: string;
+}
+
+export interface AnimatedComponentItem {
+  id: string;
+  type: 'typing' | 'waveHeader' | 'divider' | 'snake' | 'decorative' | 'badge' | 'footer';
+  enabled: boolean;
+  title: string;
+  config: Record<string, any>;
+}
+
+export interface AnimatedComponentsConfig {
+  enabled: boolean;
+  components: AnimatedComponentItem[];
+}
+
+export const DEFAULT_ANIMATED_COMPONENTS: AnimatedComponentsConfig = {
+  enabled: false,
+  components: [
+    {
+      id: 'typing-svg',
+      type: 'typing',
+      enabled: true,
+      title: 'Typing SVG Display',
+      config: {
+        lines: ["Hi, I'm a Software Engineer!", "Specializing in React & TypeScript.", "Passionate about open-source & clean code."],
+        speed: 10,
+        delay: 1000,
+        color: '36BCF7',
+        cursor: 'pipe',
+      },
+    },
+    {
+      id: 'wave-header',
+      type: 'waveHeader',
+      enabled: false,
+      title: 'Capsule Wave Header',
+      config: {
+        theme: 'auto',
+        height: 120,
+        text: 'Welcome to my Profile!',
+        animation: 'wave',
+      },
+    },
+    {
+      id: 'neon-divider',
+      type: 'divider',
+      enabled: false,
+      title: 'Neon Gradient Divider',
+      config: {
+        style: 'gradient-line',
+        color1: '#0078d7',
+        color2: '#36BCF7',
+        height: 4,
+      },
+    },
+    {
+      id: 'snake-grid',
+      type: 'snake',
+      enabled: false,
+      title: 'Contribution Grid Snake',
+      config: {
+        theme: 'github-dark',
+        colorPoint: '#39ff14',
+      },
+    },
+    {
+      id: 'stars-deco',
+      type: 'decorative',
+      enabled: false,
+      title: 'Decorative Star Clusters',
+      config: {
+        type: 'stars',
+        color: '#eab308',
+      },
+    },
+    {
+      id: 'pulsing-badge',
+      type: 'badge',
+      enabled: false,
+      title: 'Pulsing Hiring Indicator',
+      config: {
+        label: 'Open To Work',
+        color: '#10b981',
+        pulse: true,
+      },
+    },
+    {
+      id: 'footer-banner',
+      type: 'footer',
+      enabled: false,
+      title: 'Waving Footer Wave',
+      config: {
+        text: 'Thanks for stopping by! ❤️',
+        theme: 'auto',
+      },
+    },
+  ],
+};
+
+export const DEFAULT_SECTIONS: SectionOrderConfig = {
+  order: [
+    'header',
+    'about',
+    'socials',
+    'techStack',
+    'stats',
+    'achievements',
+    'projects',
+    'animatedComponents',
+    'support',
+    'quotes',
+    'visitor',
+    'custom',
+  ],
+  sections: {
+    header: { id: 'header', name: 'Profile Header', enabled: true, collapsed: false },
+    about: { id: 'about', name: 'About Me', enabled: true, collapsed: false },
+    socials: { id: 'socials', name: 'Social Links', enabled: true, collapsed: false },
+    techStack: { id: 'techStack', name: 'Tech Stack', enabled: true, collapsed: false },
+    stats: { id: 'stats', name: 'GitHub Stats', enabled: true, collapsed: false },
+    achievements: { id: 'achievements', name: 'Achievements', enabled: true, collapsed: false },
+    projects: { id: 'projects', name: 'Featured Projects', enabled: true, collapsed: false },
+    animatedComponents: { id: 'animatedComponents', name: 'Animated Components', enabled: false, collapsed: false },
+    support: { id: 'support', name: 'Support Me', enabled: false, collapsed: false },
+    quotes: { id: 'quotes', name: 'Quotes', enabled: false, collapsed: false },
+    visitor: { id: 'visitor', name: 'Visitor Counter', enabled: false, collapsed: false },
+    custom: { id: 'custom', name: 'Custom Markdown', enabled: false, collapsed: false },
+  },
+};
+
+export const DEFAULT_SUPPORT: SupportConfig = {
+  enabled: false,
+  buyMeACoffeeUsername: '',
+  kofiUsername: '',
+  style: 'for-the-badge',
+};
+
+export const DEFAULT_QUOTES: QuotesConfig = {
+  enabled: false,
+  theme: 'radical',
+  quoteType: 'programming',
+};
+
+export const DEFAULT_CUSTOM_MARKDOWN: CustomMarkdownConfig = {
+  enabled: false,
+  content: '',
+};
+
+export const DEFAULT_STANDALONE_VISITOR: StandaloneVisitorConfig = {
+  enabled: false,
+  username: '',
+  color: 'green',
+  style: 'flat',
+};
+
+export const PRESETS: Record<string, SectionId[]> = {
+  minimal: ['header', 'about', 'socials'],
+  modern: ['header', 'about', 'techStack', 'stats', 'achievements', 'socials'],
+  developer: ['header', 'about', 'techStack', 'projects', 'stats', 'visitor'],
+  'open-source': ['header', 'about', 'projects', 'techStack', 'achievements'],
+  'gprm-style': ['header', 'about', 'socials', 'techStack', 'stats', 'achievements', 'visitor'],
+};
+
 export type READMEField =
   | 'name'
   | 'role'
@@ -128,7 +426,15 @@ export type READMEField =
   | 'templatesUsedCount'
   | 'githubStats'
   | 'techStack'
-  | 'socialLinks';
+  | 'socialLinks'
+  | 'achievements'
+  | 'header'
+  | 'sections'
+  | 'support'
+  | 'quotes'
+  | 'customMarkdown'
+  | 'standaloneVisitor'
+  | 'featuredProjects';
 
 interface READMEState {
   name: string;
@@ -151,6 +457,15 @@ interface READMEState {
   githubStats: GitHubStatsConfig;
   techStack: TechStackConfig;
   socialLinks: SocialLinksConfig;
+  achievements: AchievementsConfig;
+  header: HeaderConfig;
+  sections: SectionOrderConfig;
+  support: SupportConfig;
+  quotes: QuotesConfig;
+  customMarkdown: CustomMarkdownConfig;
+  standaloneVisitor: StandaloneVisitorConfig;
+  featuredProjects: FeaturedProjectsConfig;
+  animatedComponents: AnimatedComponentsConfig;
   setField: (field: READMEField, value: any) => void;
   setName: (value: string) => void;
   setRole: (value: string) => void;
@@ -163,6 +478,9 @@ interface READMEState {
   setFollowing: (value: number | undefined) => void;
   setPublicRepos: (value: number | undefined) => void;
   setTemplate: (value: READMEStyleTemplate) => void;
+  setAnimatedComponents: (config: Partial<AnimatedComponentsConfig>) => void;
+  updateAnimatedComponentItem: (id: string, updates: Partial<AnimatedComponentItem>) => void;
+  reorderAnimatedComponents: (items: AnimatedComponentItem[]) => void;
   incrementReadmeExports: () => void;
   incrementTemplatesUsed: () => void;
   incrementAiGenerations: () => void;
@@ -172,6 +490,17 @@ interface READMEState {
   setGithubStats: (stats: Partial<GitHubStatsConfig>) => void;
   setTechStack: (stack: Partial<TechStackConfig>) => void;
   setSocialLinks: (links: Partial<SocialLinksConfig>) => void;
+  setAchievements: (achievements: Partial<AchievementsConfig>) => void;
+  setHeader: (header: Partial<HeaderConfig>) => void;
+  setSections: (sections: Partial<SectionOrderConfig>) => void;
+  setSupport: (support: Partial<SupportConfig>) => void;
+  setQuotes: (quotes: Partial<QuotesConfig>) => void;
+  setCustomMarkdown: (custom: Partial<CustomMarkdownConfig>) => void;
+  setStandaloneVisitor: (visitor: Partial<StandaloneVisitorConfig>) => void;
+  setFeaturedProjects: (projects: Partial<FeaturedProjectsConfig>) => void;
+  applyPreset: (presetName: string) => void;
+  applyTemplate: (template: any) => void;
+  importReadmeData: (importedData: any, selectedSectionIds: SectionId[]) => void;
   reset: () => void;
 }
 
@@ -198,6 +527,15 @@ const useREADMEStore = create<READMEState>()(
       githubStats: { ...DEFAULT_GITHUB_STATS },
       techStack: { ...DEFAULT_TECH_STACK },
       socialLinks: { ...DEFAULT_SOCIAL_LINKS },
+      achievements: { ...DEFAULT_ACHIEVEMENTS },
+      header: { ...DEFAULT_HEADER },
+      sections: { ...DEFAULT_SECTIONS },
+      support: { ...DEFAULT_SUPPORT },
+      quotes: { ...DEFAULT_QUOTES },
+      customMarkdown: { ...DEFAULT_CUSTOM_MARKDOWN },
+      standaloneVisitor: { ...DEFAULT_STANDALONE_VISITOR },
+      featuredProjects: { ...DEFAULT_FEATURED_PROJECTS },
+      animatedComponents: { ...DEFAULT_ANIMATED_COMPONENTS },
       setField: (field, value) => set({ [field]: value } as Partial<READMEState>),
       setName: (value) => set({ name: value }),
       setRole: (value) => set({ role: value }),
@@ -253,6 +591,299 @@ const useREADMEStore = create<READMEState>()(
             ...links,
           },
         })),
+      setAchievements: (achievements) =>
+        set((state) => ({
+          achievements: {
+            ...state.achievements,
+            ...achievements,
+          },
+        })),
+      setHeader: (header) =>
+        set((state) => ({
+          header: {
+            ...state.header,
+            ...header,
+          },
+        })),
+      setSections: (sections) =>
+        set((state) => ({
+          sections: {
+            ...state.sections,
+            ...sections,
+          },
+        })),
+      setSupport: (support) =>
+        set((state) => ({
+          support: {
+            ...state.support,
+            ...support,
+          },
+        })),
+      setQuotes: (quotes) =>
+        set((state) => ({
+          quotes: {
+            ...state.quotes,
+            ...quotes,
+          },
+        })),
+      setCustomMarkdown: (custom) =>
+        set((state) => ({
+          customMarkdown: {
+            ...state.customMarkdown,
+            ...custom,
+          },
+        })),
+      setStandaloneVisitor: (visitor) =>
+        set((state) => ({
+          standaloneVisitor: {
+            ...state.standaloneVisitor,
+            ...visitor,
+          },
+        })),
+      setFeaturedProjects: (projects) =>
+        set((state) => ({
+          featuredProjects: {
+            ...state.featuredProjects,
+            ...projects,
+          },
+        })),
+      setAnimatedComponents: (config) =>
+        set((state) => ({
+          animatedComponents: {
+            ...state.animatedComponents,
+            ...config,
+          },
+        })),
+      updateAnimatedComponentItem: (id, updates) =>
+        set((state) => ({
+          animatedComponents: {
+            ...state.animatedComponents,
+            components: state.animatedComponents.components.map((item) =>
+              item.id === id
+                ? {
+                    ...item,
+                    ...updates,
+                    config: {
+                      ...item.config,
+                      ...(updates.config || {}),
+                    },
+                  }
+                : item
+            ),
+          },
+        })),
+      reorderAnimatedComponents: (items) =>
+        set((state) => ({
+          animatedComponents: {
+            ...state.animatedComponents,
+            components: items,
+          },
+        })),
+      applyPreset: (presetName) =>
+        set((state) => {
+          const activeIds = PRESETS[presetName] || PRESETS.minimal;
+          const updatedSections = { ...state.sections.sections };
+
+          Object.keys(updatedSections).forEach((key) => {
+            const sectionId = key as SectionId;
+            updatedSections[sectionId] = {
+              ...updatedSections[sectionId],
+              enabled: activeIds.includes(sectionId),
+            };
+          });
+
+          // Order active ids first, then inactive ones
+          const newOrder = [
+            ...activeIds,
+            ...state.sections.order.filter((id) => !activeIds.includes(id)),
+          ];
+
+          return {
+            sections: {
+              sections: updatedSections,
+              order: newOrder,
+            },
+          };
+        }),
+      applyTemplate: (template) =>
+        set((state) => {
+          const activeIds = template.sections || ['header', 'about', 'socials'];
+          const updatedSections = { ...state.sections.sections };
+
+          Object.keys(updatedSections).forEach((key) => {
+            const sectionId = key as SectionId;
+            updatedSections[sectionId] = {
+              ...updatedSections[sectionId],
+              enabled: activeIds.includes(sectionId),
+            };
+          });
+
+          const newOrder = [
+            ...activeIds,
+            ...state.sections.order.filter((id) => !activeIds.includes(id)),
+          ];
+
+          return {
+            sections: {
+              sections: updatedSections,
+              order: newOrder,
+            },
+            name: template.config.header.name || state.name,
+            role: template.config.header.title || state.role,
+            about: template.config.header.intro || state.about,
+            header: {
+              ...state.header,
+              ...template.config.header,
+              enabled: template.config.header.enabled,
+            },
+            githubStats: {
+              ...state.githubStats,
+              ...template.config.githubStats,
+              enabled: template.config.githubStats.enabled,
+            },
+            techStack: {
+              ...state.techStack,
+              ...template.config.techStack,
+              enabled: template.config.techStack.enabled,
+            },
+            socialLinks: {
+              ...state.socialLinks,
+              ...template.config.socialLinks,
+              enabled: template.config.socialLinks.enabled,
+            },
+            achievements: {
+              ...state.achievements,
+              ...template.config.achievements,
+              enabled: template.config.achievements.enabled,
+            },
+            quotes: {
+              ...state.quotes,
+              ...template.config.quotes,
+              enabled: template.config.quotes?.enabled || false,
+            },
+            customMarkdown: template.config.customMarkdown ? {
+              ...state.customMarkdown,
+              ...template.config.customMarkdown,
+            } : state.customMarkdown,
+            support: template.config.support ? {
+              ...state.support,
+              ...template.config.support,
+            } : state.support,
+            standaloneVisitor: template.config.standaloneVisitor ? {
+              ...state.standaloneVisitor,
+              ...template.config.standaloneVisitor,
+            } : state.standaloneVisitor,
+            featuredProjects: template.config.featuredProjects ? {
+              ...state.featuredProjects,
+              ...template.config.featuredProjects,
+            } : state.featuredProjects,
+            animatedComponents: template.config.animatedComponents ? {
+              ...state.animatedComponents,
+              ...template.config.animatedComponents,
+            } : state.animatedComponents,
+          };
+        }),
+      importReadmeData: (importedData, selectedSectionIds) =>
+        set((state) => {
+          const updatedSections = { ...state.sections.sections };
+          const activeIds = [...selectedSectionIds];
+
+          // Enable/disable sections based on selection
+          Object.keys(updatedSections).forEach((key) => {
+            const sectionId = key as SectionId;
+            updatedSections[sectionId] = {
+              ...updatedSections[sectionId],
+              enabled: activeIds.includes(sectionId),
+            };
+          });
+
+          // Order selected ones first
+          const newOrder = [
+            ...activeIds,
+            ...state.sections.order.filter((id) => !activeIds.includes(id)),
+          ];
+
+          const updates: any = {
+            sections: {
+              sections: updatedSections,
+              order: newOrder,
+            },
+          };
+
+          if (selectedSectionIds.includes('header')) {
+            updates.name = importedData.name || state.name;
+            updates.role = importedData.role || state.role;
+            updates.about = importedData.about || state.about;
+            updates.header = {
+              ...state.header,
+              ...importedData.header,
+              enabled: true,
+            };
+          }
+
+          if (selectedSectionIds.includes('about')) {
+            updates.about = importedData.about || state.about;
+          }
+
+          if (selectedSectionIds.includes('socials')) {
+            // Convert imported platforms format { enabled: true, value: '' } to matches
+            const mergedPlatforms = { ...state.socialLinks.platforms };
+            Object.keys(importedData.socialLinks.platforms).forEach((key) => {
+              mergedPlatforms[key] = {
+                enabled: true,
+                value: importedData.socialLinks.platforms[key].value,
+              };
+            });
+            updates.socialLinks = {
+              ...state.socialLinks,
+              ...importedData.socialLinks,
+              platforms: mergedPlatforms,
+              enabled: true,
+            };
+          }
+
+          if (selectedSectionIds.includes('techStack')) {
+            updates.techStack = {
+              ...state.techStack,
+              ...importedData.techStack,
+              enabled: true,
+            };
+          }
+
+          if (selectedSectionIds.includes('stats')) {
+            updates.githubStats = {
+              ...state.githubStats,
+              ...importedData.githubStats,
+              enabled: true,
+            };
+          }
+
+          if (selectedSectionIds.includes('achievements')) {
+            updates.achievements = {
+              ...state.achievements,
+              ...importedData.achievements,
+              enabled: true,
+            };
+          }
+
+          if (selectedSectionIds.includes('quotes')) {
+            updates.quotes = {
+              ...state.quotes,
+              ...importedData.quotes,
+              enabled: true,
+            };
+          }
+
+          if (selectedSectionIds.includes('custom')) {
+            updates.customMarkdown = {
+              ...state.customMarkdown,
+              ...importedData.customMarkdown,
+              enabled: true,
+            };
+          }
+
+          return updates;
+        }),
       reset: () =>
         set({
           name: '',
@@ -275,6 +906,15 @@ const useREADMEStore = create<READMEState>()(
           githubStats: { ...DEFAULT_GITHUB_STATS },
           techStack: { ...DEFAULT_TECH_STACK },
           socialLinks: { ...DEFAULT_SOCIAL_LINKS },
+          achievements: { ...DEFAULT_ACHIEVEMENTS },
+          header: { ...DEFAULT_HEADER },
+          sections: { ...DEFAULT_SECTIONS },
+          support: { ...DEFAULT_SUPPORT },
+          quotes: { ...DEFAULT_QUOTES },
+          customMarkdown: { ...DEFAULT_CUSTOM_MARKDOWN },
+          standaloneVisitor: { ...DEFAULT_STANDALONE_VISITOR },
+          featuredProjects: { ...DEFAULT_FEATURED_PROJECTS },
+          animatedComponents: { ...DEFAULT_ANIMATED_COMPONENTS },
         }),
     }),
     { name: 'readme-store' }

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import useReadmeStore, { GitHubStatsConfig, TechStackConfig, SocialLinksConfig } from './readme-store';
+import useReadmeStore, { GitHubStatsConfig, TechStackConfig, SocialLinksConfig, AchievementsConfig, HeaderConfig, SectionOrderConfig, SupportConfig, QuotesConfig, CustomMarkdownConfig, StandaloneVisitorConfig, AnimatedComponentsConfig } from './readme-store';
 import useRoadmapStore from './roadmap-store';
 import useThemeStore from './theme-store';
 
@@ -27,6 +27,14 @@ export interface Workspace {
     githubStats: GitHubStatsConfig;
     techStack: TechStackConfig;
     socialLinks: SocialLinksConfig;
+    achievements: AchievementsConfig;
+    header: HeaderConfig;
+    sections: SectionOrderConfig;
+    support: SupportConfig;
+    quotes: QuotesConfig;
+    customMarkdown: CustomMarkdownConfig;
+    standaloneVisitor: StandaloneVisitorConfig;
+    animatedComponents: AnimatedComponentsConfig;
   };
   roadmapData: {
     title: string;
@@ -112,6 +120,64 @@ export const useWorkspaceStore = create<WorkspaceState>()(
                 'email', 'gmail', 'buymeacoffee', 'kofi'
               ],
             },
+            achievements: {
+              enabled: false,
+              username: '',
+              widgets: {
+                trophy: { enabled: true, theme: 'flat', noFrame: false, noBg: false, rows: 1, columns: 6 },
+                visitor: { enabled: true, color: '0078d7', style: 'flat' },
+                snake: { enabled: true },
+                graph: { enabled: true, theme: 'github', hideBorder: false },
+              },
+              order: ['trophy', 'visitor', 'graph', 'snake'],
+            },
+            header: {
+              enabled: false,
+              name: '',
+              pronouns: '',
+              location: '',
+              title: '',
+              intro: '',
+              alignment: 'center',
+              bannerType: 'none',
+              bannerTheme: 'gradient',
+              bannerText: '',
+              typingEnabled: false,
+              typingLines: [],
+              typingSpeed: 200,
+              typingDelay: 1000,
+              typingColor: '36BCF7',
+              typingCenter: true,
+              badges: {
+                openToWork: false,
+                freelance: false,
+                learning: '',
+                building: '',
+              },
+              visitorPlacement: 'hidden',
+            },
+            sections: {
+              order: ['header', 'about', 'socials', 'techStack', 'stats', 'achievements', 'projects', 'animatedComponents', 'support', 'quotes', 'visitor', 'custom'],
+              sections: {
+                header: { id: 'header', name: 'Profile Header', enabled: true, collapsed: false },
+                about: { id: 'about', name: 'About Me', enabled: true, collapsed: false },
+                socials: { id: 'socials', name: 'Social Links', enabled: true, collapsed: false },
+                techStack: { id: 'techStack', name: 'Tech Stack', enabled: true, collapsed: false },
+                stats: { id: 'stats', name: 'GitHub Stats', enabled: true, collapsed: false },
+                achievements: { id: 'achievements', name: 'Achievements', enabled: true, collapsed: false },
+                projects: { id: 'projects', name: 'Featured Projects', enabled: true, collapsed: false },
+                animatedComponents: { id: 'animatedComponents', name: 'Animated Components', enabled: false, collapsed: false },
+                support: { id: 'support', name: 'Support Me', enabled: false, collapsed: false },
+                quotes: { id: 'quotes', name: 'Quotes', enabled: false, collapsed: false },
+                visitor: { id: 'visitor', name: 'Visitor Counter', enabled: false, collapsed: false },
+                custom: { id: 'custom', name: 'Custom Markdown', enabled: false, collapsed: false },
+              },
+            },
+            support: { enabled: false, buyMeACoffeeUsername: '', kofiUsername: '', style: 'for-the-badge' },
+            quotes: { enabled: false, theme: 'radical', quoteType: 'programming' },
+            customMarkdown: { enabled: false, content: '' },
+            standaloneVisitor: { enabled: false, username: '', color: 'green', style: 'flat' },
+            animatedComponents: { enabled: false, components: [] },
           },
           roadmapData: {
             title: '',
@@ -207,6 +273,14 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               githubStats: readme.githubStats,
               techStack: readme.techStack,
               socialLinks: readme.socialLinks,
+              achievements: readme.achievements,
+              header: readme.header,
+              sections: readme.sections,
+              support: readme.support,
+              quotes: readme.quotes,
+              customMarkdown: readme.customMarkdown,
+              standaloneVisitor: readme.standaloneVisitor,
+              animatedComponents: readme.animatedComponents,
             },
             roadmapData: {
               title: roadmap.title,
@@ -277,6 +351,64 @@ export const useWorkspaceStore = create<WorkspaceState>()(
               'email', 'gmail', 'buymeacoffee', 'kofi'
             ],
           },
+          achievements: workspace.readmeData.achievements || {
+            enabled: false,
+            username: '',
+            widgets: {
+              trophy: { enabled: true, theme: 'flat', noFrame: false, noBg: false, rows: 1, columns: 6 },
+              visitor: { enabled: true, color: '0078d7', style: 'flat' },
+              snake: { enabled: true },
+              graph: { enabled: true, theme: 'github', hideBorder: false },
+            },
+            order: ['trophy', 'visitor', 'graph', 'snake'],
+          },
+          header: workspace.readmeData.header || {
+            enabled: false,
+            name: '',
+            pronouns: '',
+            location: '',
+            title: '',
+            intro: '',
+            alignment: 'center',
+            bannerType: 'none',
+            bannerTheme: 'gradient',
+            bannerText: '',
+            typingEnabled: false,
+            typingLines: [],
+            typingSpeed: 200,
+            typingDelay: 1000,
+            typingColor: '36BCF7',
+            typingCenter: true,
+            badges: {
+              openToWork: false,
+              freelance: false,
+              learning: '',
+              building: '',
+            },
+            visitorPlacement: 'hidden',
+          },
+          sections: workspace.readmeData.sections || {
+            order: ['header', 'about', 'socials', 'techStack', 'stats', 'achievements', 'projects', 'animatedComponents', 'support', 'quotes', 'visitor', 'custom'],
+            sections: {
+              header: { id: 'header', name: 'Profile Header', enabled: true, collapsed: false },
+              about: { id: 'about', name: 'About Me', enabled: true, collapsed: false },
+              socials: { id: 'socials', name: 'Social Links', enabled: true, collapsed: false },
+              techStack: { id: 'techStack', name: 'Tech Stack', enabled: true, collapsed: false },
+              stats: { id: 'stats', name: 'GitHub Stats', enabled: true, collapsed: false },
+              achievements: { id: 'achievements', name: 'Achievements', enabled: true, collapsed: false },
+              projects: { id: 'projects', name: 'Featured Projects', enabled: true, collapsed: false },
+              animatedComponents: { id: 'animatedComponents', name: 'Animated Components', enabled: false, collapsed: false },
+              support: { id: 'support', name: 'Support Me', enabled: false, collapsed: false },
+              quotes: { id: 'quotes', name: 'Quotes', enabled: false, collapsed: false },
+              visitor: { id: 'visitor', name: 'Visitor Counter', enabled: false, collapsed: false },
+              custom: { id: 'custom', name: 'Custom Markdown', enabled: false, collapsed: false },
+            },
+          },
+          support: workspace.readmeData.support || { enabled: false, buyMeACoffeeUsername: '', kofiUsername: '', style: 'for-the-badge' },
+          quotes: workspace.readmeData.quotes || { enabled: false, theme: 'radical', quoteType: 'programming' },
+          customMarkdown: workspace.readmeData.customMarkdown || { enabled: false, content: '' },
+          standaloneVisitor: workspace.readmeData.standaloneVisitor || { enabled: false, username: '', color: 'green', style: 'flat' },
+          animatedComponents: workspace.readmeData.animatedComponents || { enabled: false, components: [] },
         });
 
         useRoadmapStore.setState({
@@ -325,6 +457,14 @@ export const useWorkspaceStore = create<WorkspaceState>()(
             githubStats: readme.githubStats,
             techStack: readme.techStack,
             socialLinks: readme.socialLinks,
+            achievements: readme.achievements,
+            header: readme.header,
+            sections: readme.sections,
+            support: readme.support,
+            quotes: readme.quotes,
+            customMarkdown: readme.customMarkdown,
+            standaloneVisitor: readme.standaloneVisitor,
+            animatedComponents: readme.animatedComponents,
           },
           roadmapData: {
             title: roadmap.title,

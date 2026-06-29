@@ -163,6 +163,40 @@ describe('useREADMEStore', () => {
     expect(updated.socialLinks.style).toBe('flat-square');
   });
 
+  it('should support updating achievements configuration', () => {
+    const store = useREADMEStore.getState();
+    expect(store.achievements.enabled).toBe(false);
+
+    store.setAchievements({
+      enabled: true,
+      username: 'alice',
+      order: ['visitor', 'graph'],
+    });
+
+    const updated = useREADMEStore.getState();
+    expect(updated.achievements.enabled).toBe(true);
+    expect(updated.achievements.username).toBe('alice');
+    expect(updated.achievements.order).toEqual(['visitor', 'graph']);
+  });
+
+  it('should support updating header configuration', () => {
+    const store = useREADMEStore.getState();
+    expect(store.header.enabled).toBe(false);
+
+    store.setHeader({
+      enabled: true,
+      name: 'Sunil Kumar',
+      title: 'Architect',
+      alignment: 'center',
+    });
+
+    const updated = useREADMEStore.getState();
+    expect(updated.header.enabled).toBe(true);
+    expect(updated.header.name).toBe('Sunil Kumar');
+    expect(updated.header.title).toBe('Architect');
+    expect(updated.header.alignment).toBe('center');
+  });
+
   it('should reset state to initial values', () => {
     const store = useREADMEStore.getState();
     store.setName('John');
@@ -170,6 +204,8 @@ describe('useREADMEStore', () => {
     store.incrementReadmeExports();
     store.setTechStack({ enabled: true, selectedIds: ['javascript'] });
     store.setSocialLinks({ enabled: true, platforms: { github: { enabled: true, value: 'john' } } });
+    store.setAchievements({ enabled: true, username: 'john' });
+    store.setHeader({ enabled: true, name: 'John' });
 
     store.reset();
 
@@ -181,5 +217,87 @@ describe('useREADMEStore', () => {
     expect(resetState.techStack.selectedIds).toEqual([]);
     expect(resetState.socialLinks.enabled).toBe(false);
     expect(resetState.socialLinks.platforms).toEqual({});
+    expect(resetState.achievements.enabled).toBe(false);
+    expect(resetState.achievements.username).toBe('');
+    expect(resetState.header.enabled).toBe(false);
+    expect(resetState.header.name).toBe('');
+  });
+
+  it('should apply templates correctly using applyTemplate', () => {
+    const store = useREADMEStore.getState();
+    const mockTemplate = {
+      id: 'tpl-test',
+      sections: ['header', 'about'],
+      config: {
+        header: {
+          enabled: true,
+          name: 'Test Dev',
+          title: 'Senior Engineer',
+          intro: 'Hello testing'
+        },
+        githubStats: { enabled: true, theme: 'tokyonight' },
+        techStack: { enabled: false, selectedIds: [] },
+        socialLinks: { enabled: true, platforms: { github: 'test' } },
+        achievements: { enabled: false, widgets: {} }
+      }
+    };
+
+    store.applyTemplate(mockTemplate);
+
+    const updated = useREADMEStore.getState();
+    expect(updated.name).toBe('Test Dev');
+    expect(updated.role).toBe('Senior Engineer');
+    expect(updated.about).toBe('Hello testing');
+    expect(updated.header.name).toBe('Test Dev');
+    expect(updated.header.title).toBe('Senior Engineer');
+    expect(updated.header.intro).toBe('Hello testing');
+    expect(updated.header.enabled).toBe(true);
+    expect(updated.githubStats.enabled).toBe(true);
+    expect(updated.githubStats.theme).toBe('tokyonight');
+    expect(updated.socialLinks.enabled).toBe(true);
+    expect(updated.sections.sections.header.enabled).toBe(true);
+    expect(updated.sections.sections.about.enabled).toBe(true);
+    expect(updated.sections.sections.socials.enabled).toBe(false);
+  });
+
+  it('should import README data correctly using importReadmeData', () => {
+    const store = useREADMEStore.getState();
+    const mockImportedData = {
+      name: 'Imported Dev',
+      role: 'Full Stack',
+      about: 'Pioneering open source',
+      header: {
+        name: 'Imported Dev',
+        title: 'Full Stack',
+        intro: 'Pioneering open source',
+        location: 'California',
+      },
+      socialLinks: {
+        platforms: {
+          linkedin: { enabled: true, value: 'imported-dev' },
+        },
+      },
+      techStack: {
+        selectedIds: ['javascript', 'typescript'],
+      },
+    };
+
+    store.importReadmeData(mockImportedData, ['header', 'socials', 'techStack']);
+
+    const updated = useREADMEStore.getState();
+    expect(updated.name).toBe('Imported Dev');
+    expect(updated.role).toBe('Full Stack');
+    expect(updated.about).toBe('Pioneering open source');
+    expect(updated.header.name).toBe('Imported Dev');
+    expect(updated.header.title).toBe('Full Stack');
+    expect(updated.header.intro).toBe('Pioneering open source');
+    expect(updated.header.location).toBe('California');
+    expect(updated.header.enabled).toBe(true);
+    expect(updated.socialLinks.platforms.linkedin.value).toBe('imported-dev');
+    expect(updated.techStack.selectedIds).toEqual(['javascript', 'typescript']);
+    expect(updated.sections.sections.header.enabled).toBe(true);
+    expect(updated.sections.sections.socials.enabled).toBe(true);
+    expect(updated.sections.sections.techStack.enabled).toBe(true);
+    expect(updated.sections.sections.about.enabled).toBe(false);
   });
 });
