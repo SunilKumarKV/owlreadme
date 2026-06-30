@@ -17,20 +17,35 @@ import {
   Sparkles,
   Save,
   ChevronRight,
-  Search
+  Search,
+  FileDown,
+  Share2,
+  Layout,
+  FolderPlus,
+  PanelLeft,
+  Minimize2,
+  Maximize2,
+  PanelLeftClose,
+  PanelRightClose,
+  Code,
+  Copy,
 } from 'lucide-react';
+import { Reorder } from 'framer-motion';
+import { useTemplateStore, CommunityTemplate, TemplateCategory } from '@/stores/template-store';
+import usePanelStore from '@/stores/panel-store';
+import useWorkspaceStore from '@/stores/workspace-store';
+import useThemeStore from '@/stores/theme-store';
+import { getAIService } from '@/utils/ai/ai-service';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Textarea from '@/components/Textarea';
-import useReadmeStore, { READMEStyleTemplate, GitHubStatsConfig, TechStackConfig, SocialLinksConfig } from '@/stores/readme-store';
+import useReadmeStore, { READMEStyleTemplate, GitHubStatsConfig, TechStackConfig, SocialLinksConfig, SectionId, FeaturedProject } from '@/stores/readme-store';
 import { useHistoryStore, Snapshot, computeConfigDiff } from '@/stores/history-store';
 import { generateReadmeMarkdown } from '@/utils/markdown';
 import { TECHNOLOGY_REGISTRY, CATEGORIES, Technology } from '@/utils/tech-registry';
 import { SOCIAL_PLATFORM_REGISTRY, SOCIAL_CATEGORIES, SocialPlatform } from '@/utils/social-registry';
 import { fetchGithubProfile, fetchGithubRepos } from '@/utils/github-api';
-import { generateReadmeMarkdown } from '@/utils/markdown';
-import { TEMPLATE_MARKETPLACE, TemplateCategory } from '@/utils/template-registry';
-import { getAIService } from '@/utils/ai/ai-service';
+import { TEMPLATE_MARKETPLACE } from '@/utils/template-registry';
 import { parseReadmeMarkdown } from '@/utils/readme-importer';
 import { analyzeReadmeMarkdown } from '@/utils/readme-analyzer';
 
@@ -45,12 +60,6 @@ const MDMarkdown = dynamic(
       </div>
     ),
   }
-);
-
-
-const MDMarkdown = dynamic(
-  () => import('@uiw/react-md-editor').then((mod) => mod.default.Markdown),
-  { ssr: false }
 ) as any;
 
 const READMEBuilderPage = () => {
@@ -109,6 +118,128 @@ const READMEBuilderPage = () => {
     importReadmeData,
     reset,
   } = useReadmeStore();
+  // Manual project entry draft states
+  const [showManualForm, setShowManualForm] = useState(false);
+  const [manualDraft, setManualDraft] = useState<any>({
+    source: 'manual',
+    title: '',
+    description: '',
+    repoUrl: '',
+    demoUrl: '',
+    language: '',
+    technologies: [],
+  });
+  const [manualTechInput, setManualTechInput] = useState('');
+
+  // Repositories fetcher states in case 'projects'
+  const [repoUsername, setRepoUsername] = useState('');
+  const [reposLoading, setReposLoading] = useState(false);
+  const [reposError, setReposError] = useState<string | null>(null);
+  const [fetchedRepos, setFetchedRepos] = useState<any[]>([]);
+  const [repoSearchQuery, setRepoSearchQuery] = useState('');
+
+  // Template store integration
+  const {
+    templates: communityTemplates,
+    favorites: templateFavorites,
+    recentlyUsed: templateRecentlyUsed,
+    publishTemplate,
+    deleteTemplate,
+    toggleLike,
+    incrementDownloads,
+    toggleFavorite: toggleCommunityFavorite,
+    addRecentlyUsed,
+    importTemplate,
+  } = useTemplateStore();
+
+  // AI Improver integration helper functions
+  const getCurrentImproverText = () => {
+    switch (improverSection) {
+      case 'aboutMe':
+        return about || '';
+      case 'headerName':
+        return name || '';
+      case 'headerTitle':
+        return role || '';
+      case 'headerSubtitle':
+        return header.intro || '';
+      case 'skills':
+        return skills || '';
+      case 'projects':
+        return projects || '';
+      default:
+        return '';
+    }
+  };
+
+  const handleRequestImprove = async () => {
+    const text = getCurrentImproverText();
+    if (!text.trim()) return;
+    setIsImproving(true);
+    try {
+      const service = getAIService();
+      const res = await service.improveText(text, improverTone, improverSection.startsWith('header') ? 'title' : 'body');
+      setImproverAlternatives(res.alternatives);
+    } catch (e: any) {
+      console.error(e);
+      alert('Failed to get improvements: ' + e.message);
+    } finally {
+      setIsImproving(false);
+    }
+  };
+
+  const handleApplyImprove = (improvedText: string) => {
+    const originalText = getCurrentImproverText();
+    setImproverHistory([...improverHistory, { section: improverSection, originalText, improvedText }]);
+    
+    switch (improverSection) {
+      case 'aboutMe':
+        setAbout(improvedText);
+        break;
+      case 'headerName':
+        setName(improvedText);
+        break;
+      case 'headerTitle':
+        setRole(improvedText);
+        break;
+      case 'headerSubtitle':
+        setHeader({ intro: improvedText });
+        break;
+      case 'skills':
+        setSkills(improvedText);
+        break;
+      case 'projects':
+        setProjects(improvedText);
+        break;
+    }
+  };
+
+  const handleUndoImprove = () => {
+    if (improverHistory.length === 0) return;
+    const last = improverHistory[improverHistory.length - 1];
+    setImproverHistory(improverHistory.slice(0, -1));
+    
+    switch (last.section) {
+      case 'aboutMe':
+        setAbout(last.originalText);
+        break;
+      case 'headerName':
+        setName(last.originalText);
+        break;
+      case 'headerTitle':
+        setRole(last.originalText);
+        break;
+      case 'headerSubtitle':
+        setHeader({ intro: last.originalText });
+        break;
+      case 'skills':
+        setSkills(last.originalText);
+        break;
+      case 'projects':
+        setProjects(last.originalText);
+        break;
+    }
+  };
 
   // ── Version History & Snapshot system ───────────────────────────────────
   const {
@@ -316,7 +447,7 @@ const READMEBuilderPage = () => {
     name: '',
     description: '',
     author: '',
-    category: 'minimal' as CommCategory,
+    category: 'minimal' as TemplateCategory,
     tagsInput: '',
   });
 
@@ -611,6 +742,45 @@ const READMEBuilderPage = () => {
   const handleExportAnalysisReport = () => {
     const reportText = `OWLROADMAP README QUALITY REPORT
 Generated: ${new Date().toLocaleDateString()}
+Overall Score: ${analysisResult.overallScore}/100
+
+=========================================
+CATEGORY SCORES:
+=========================================
+- Completeness: ${analysisResult.categories.completeness.score}/100
+- Readability: ${analysisResult.categories.readability.score}/100
+- Developer Branding: ${analysisResult.categories.branding.score}/100
+- GitHub Presence: ${analysisResult.categories.githubPresence.score}/100
+- Accessibility: ${analysisResult.categories.accessibility.score}/100
+
+=========================================
+AUDIT CHECKLIST:
+=========================================
+${Object.values(analysisResult.categories).flatMap((cat: any) => cat.items).map((item: any) => `- [${item.passed ? 'X' : ' '}] ${item.name} (${item.passed ? 'PASSED' : 'FAILED'} - ${item.suggestion || ''})`).join('\n')}
+
+=========================================
+RECOMMENDED ACTIONS:
+=========================================
+${analysisResult.suggestions.map((s) => `- ${s}`).join('\n') || 'None - Your README is perfect!'}
+
+=========================================
+RECOMMENDED TEMPLATE PRESETS:
+=========================================
+${analysisResult.recommendedTemplates.map((t) => `- ${t}`).join('\n')}
+`;
+
+    const blob = new Blob([reportText], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `owlroadmap-analysis-report-${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+
   // Synchronized scrolling logic
   const editorScrollRef = useRef<HTMLTextAreaElement>(null);
   const previewScrollRef = useRef<HTMLDivElement>(null);
@@ -885,7 +1055,7 @@ Generated: ${new Date().toLocaleDateString()}
         </select>
       </div>
 
-      <form className="space-y-4 w-full max-w-lg">
+      <div className="space-y-4 w-full max-w-lg">
         <div>
           <label htmlFor="readme-name" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Name</label>
           <Input
@@ -1225,7 +1395,7 @@ Generated: ${new Date().toLocaleDateString()}
                               </select>
                             </div>
                           </div>
-                        )}
+
                       </div>
                     );
 
@@ -5095,7 +5265,7 @@ jobs:
                   <label className="block text-2xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Category</label>
                   <select
                     value={publishForm.category}
-                    onChange={(e) => setPublishForm({ ...publishForm, category: e.target.value as CommCategory })}
+                    onChange={(e) => setPublishForm({ ...publishForm, category: e.target.value as TemplateCategory })}
                     className="w-full px-3 py-2 text-xs rounded border border-gray-350 dark:bg-gray-850 dark:text-white dark:border-gray-700 focus:outline-none cursor-pointer"
                   >
                     <option value="minimal">Minimal</option>
@@ -5137,7 +5307,7 @@ jobs:
             </div>
           </div>
         </div>
-      </form>
+      )}
       <div className="flex flex-wrap gap-4 mt-8 justify-center">
         <Button href="/theme" variant="secondary">Theme Studio</Button>
         <Button href="/roadmap-builder" variant="secondary">Create Roadmap</Button>

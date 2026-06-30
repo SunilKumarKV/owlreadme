@@ -89,7 +89,7 @@ export const TEMPLATE_MARKETPLACE: MarketplaceTemplate[] = [
     name: 'Minimalist Clean Profile',
     category: 'minimal',
     description: 'A clean, typography-focused layout with only essential sections.',
-    imageUrl: '/placeholder-minimal.png',
+    imageUrl: '/og-image.jpg',
     sections: ['header', 'about', 'socials'],
     theme: 'minimal',
     config: {
@@ -133,7 +133,7 @@ export const TEMPLATE_MARKETPLACE: MarketplaceTemplate[] = [
     name: 'Modern Executive Workspace',
     category: 'modern',
     description: 'High impact developer layout featuring rich statistics cards and project views.',
-    imageUrl: '/placeholder-modern.png',
+    imageUrl: '/og-image.jpg',
     sections: ['header', 'about', 'techStack', 'stats', 'projects', 'socials'],
     theme: 'dark',
     config: {
@@ -177,7 +177,7 @@ export const TEMPLATE_MARKETPLACE: MarketplaceTemplate[] = [
     name: 'Open Source Community Champion',
     category: 'open-source',
     description: 'Designed for maintainers and active contributors with graph metrics and trophies.',
-    imageUrl: '/placeholder-opensource.png',
+    imageUrl: '/og-image.jpg',
     sections: ['header', 'about', 'achievements', 'techStack', 'projects'],
     theme: 'gradient',
     config: {
@@ -221,7 +221,7 @@ export const TEMPLATE_MARKETPLACE: MarketplaceTemplate[] = [
     name: 'Full Stack Master Layout',
     category: 'full-stack',
     description: 'A comprehensive layout covering frontend, backend, databases, and deployment stacks.',
-    imageUrl: '/placeholder-fullstack.png',
+    imageUrl: '/og-image.jpg',
     sections: ['header', 'about', 'techStack', 'projects', 'support', 'visitor'],
     theme: 'dark',
     config: {
@@ -265,7 +265,7 @@ export const TEMPLATE_MARKETPLACE: MarketplaceTemplate[] = [
     name: 'Frontend Creative Showcase',
     category: 'frontend',
     description: 'Visually rich portfolio focused on styling, interactive tools, and layout aesthetics.',
-    imageUrl: '/placeholder-frontend.png',
+    imageUrl: '/og-image.jpg',
     sections: ['header', 'about', 'techStack', 'projects', 'socials'],
     theme: 'gradient',
     config: {
@@ -309,7 +309,7 @@ export const TEMPLATE_MARKETPLACE: MarketplaceTemplate[] = [
     name: 'AI & Machine Learning Architect',
     category: 'ai',
     description: 'Highlighted AI stacks, python models, and deep learning research frameworks.',
-    imageUrl: '/placeholder-ai.png',
+    imageUrl: '/og-image.jpg',
     sections: ['header', 'about', 'techStack', 'projects', 'quotes'],
     theme: 'dark',
     config: {
@@ -353,7 +353,7 @@ export const TEMPLATE_MARKETPLACE: MarketplaceTemplate[] = [
     name: 'Retro Terminal Console',
     category: 'terminal',
     description: 'Monospaced shell syntax style with customized plastic badges and neon themes.',
-    imageUrl: '/placeholder-terminal.png',
+    imageUrl: '/og-image.jpg',
     sections: ['header', 'about', 'techStack', 'stats', 'visitor'],
     theme: 'terminal',
     config: {
@@ -397,7 +397,7 @@ export const TEMPLATE_MARKETPLACE: MarketplaceTemplate[] = [
     name: 'GPRM Classic Template',
     category: 'gprm',
     description: 'Visual copy of the classic GPRM layout featuring rich shields badges and header options.',
-    imageUrl: '/placeholder-gprm.png',
+    imageUrl: '/og-image.jpg',
     sections: ['header', 'about', 'socials', 'techStack', 'stats', 'achievements', 'visitor'],
     theme: 'dark',
     config: {
@@ -441,7 +441,7 @@ export const TEMPLATE_MARKETPLACE: MarketplaceTemplate[] = [
     name: 'Colorful Anime Aesthetic',
     category: 'anime',
     description: 'Vibrant neon overlays, playful emojis, capsule layouts, and interactive panels.',
-    imageUrl: '/placeholder-anime.png',
+    imageUrl: '/og-image.jpg',
     sections: ['header', 'about', 'quotes', 'socials', 'techStack'],
     theme: 'gradient',
     config: {
