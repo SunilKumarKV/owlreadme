@@ -1,8 +1,22 @@
 import { describe, it, expect } from 'vitest';
-import { generateReadmeMarkdown, generateRoadmapMarkdown, combineMarkdown, READMEData, generateGithubStatsMarkdown, generateTechStackMarkdown, generateSocialLinksMarkdown, generateAchievementsMarkdown, generateHeaderMarkdown, generateSupportMarkdown, generateQuotesMarkdown, generateStandaloneVisitorMarkdown, generateFeaturedProjectsMarkdown } from '../markdown';
+import {
+  generateREADME,
+  generateRoadmapMarkdown,
+  combineMarkdown,
+  READMEData,
+  renderHeader,
+  renderTechStack,
+  renderGitHubStats,
+  renderSocialLinks,
+  renderAchievements,
+  renderProjects,
+  generateSupportMarkdown,
+  generateQuotesMarkdown,
+  generateStandaloneVisitorMarkdown
+} from '../markdown';
 
 describe('markdown utilities', () => {
-  describe('generateReadmeMarkdown', () => {
+  describe('generateREADME', () => {
     const baseData: READMEData = {
       name: 'Alice Developer',
       role: 'Frontend Engineer',
@@ -13,7 +27,7 @@ describe('markdown utilities', () => {
     };
 
     it('should generate minimal template markdown by default', () => {
-      const markdown = generateReadmeMarkdown({ ...baseData, template: 'minimal' });
+      const markdown = generateREADME({ ...baseData, template: 'minimal' });
       expect(markdown).toContain('# Alice Developer');
       expect(markdown).toContain('## Frontend Engineer');
       expect(markdown).toContain('I design user interfaces.');
@@ -23,7 +37,7 @@ describe('markdown utilities', () => {
     });
 
     it('should generate professional template markdown', () => {
-      const markdown = generateReadmeMarkdown({ ...baseData, template: 'professional' });
+      const markdown = generateREADME({ ...baseData, template: 'professional' });
       expect(markdown).toContain('# Alice Developer');
       expect(markdown).toContain('### *Frontend Engineer*');
       expect(markdown).toContain('### 🎯 About Me\nI design user interfaces.');
@@ -31,7 +45,7 @@ describe('markdown utilities', () => {
     });
 
     it('should generate developer template markdown', () => {
-      const markdown = generateReadmeMarkdown({ ...baseData, template: 'developer' });
+      const markdown = generateREADME({ ...baseData, template: 'developer' });
       expect(markdown).toContain('# 💻 Alice Developer');
       expect(markdown).toContain('> Frontend Engineer');
       expect(markdown).toContain('### 🚀 Tech Stack & Skills\nReact, TypeScript, CSS');
@@ -39,7 +53,7 @@ describe('markdown utilities', () => {
     });
 
     it('should generate open-source template markdown', () => {
-      const markdown = generateReadmeMarkdown({ ...baseData, template: 'open-source' });
+      const markdown = generateREADME({ ...baseData, template: 'open-source' });
       expect(markdown).toContain('# 🤝 Alice Developer | Open Source');
       expect(markdown).toContain('**Frontend Engineer**');
       expect(markdown).toContain('### 📦 Open Source Contributions & Repositories\n1. OwlREADME\n2. Portfolio');
@@ -47,7 +61,7 @@ describe('markdown utilities', () => {
     });
 
     it('should generate portfolio template markdown', () => {
-      const markdown = generateReadmeMarkdown({ ...baseData, template: 'portfolio' });
+      const markdown = generateREADME({ ...baseData, template: 'portfolio' });
       expect(markdown).toContain('# ✨ Alice Developer - Portfolio');
       expect(markdown).toContain('*Frontend Engineer*');
       expect(markdown).toContain('### 🎨 About & Skills\nI design user interfaces.\n\nReact, TypeScript, CSS');
@@ -62,7 +76,7 @@ describe('markdown utilities', () => {
         publicRepos: 8,
       };
 
-      const markdown = generateReadmeMarkdown(data);
+      const markdown = generateREADME(data);
       expect(markdown).toContain('<img src="https://example.com/bob.png"');
       expect(markdown).toContain('👥 <b>Followers:</b> 12 | 👥 <b>Following:</b> 15 | 📦 <b>Repos:</b> 8');
     });
@@ -79,7 +93,7 @@ describe('markdown utilities', () => {
           visitorPlacement: 'hidden',
         } as any,
       };
-      const markdown = generateReadmeMarkdown(data);
+      const markdown = generateREADME(data);
       expect(markdown).toContain('<h1 align="center">Hi 👋, I\'m Sunil Kumar</h1>');
       expect(markdown).toContain('<h3 align="center">Full Stack Developer</h3>');
       expect(markdown).toContain('### Skills\nReact, TypeScript, CSS');
@@ -134,11 +148,11 @@ describe('markdown utilities', () => {
     });
   });
 
-  describe('generateGithubStatsMarkdown', () => {
+  describe('renderGitHubStats', () => {
     it('should return empty string if stats are disabled or username is missing', () => {
-      expect(generateGithubStatsMarkdown(null as any)).toBe('');
-      expect(generateGithubStatsMarkdown({ enabled: false } as any)).toBe('');
-      expect(generateGithubStatsMarkdown({ enabled: true, username: '' } as any)).toBe('');
+      expect(renderGitHubStats(null as any)).toBe('');
+      expect(renderGitHubStats({ enabled: false } as any)).toBe('');
+      expect(renderGitHubStats({ enabled: true, username: '' } as any)).toBe('');
     });
 
     it('should generate stats card markdown with correct options', () => {
@@ -158,7 +172,7 @@ describe('markdown utilities', () => {
         },
       };
 
-      const result = generateGithubStatsMarkdown(stats);
+      const result = renderGitHubStats(stats);
       expect(result).toContain('### 📊 GitHub Stats');
       expect(result).toContain('<p align="center">');
       // Stats card image source check
@@ -169,7 +183,7 @@ describe('markdown utilities', () => {
       expect(result).not.toContain('github-readme-streak-stats.herokuapp.com');
     });
 
-    it('should append stats markdown inside generateReadmeMarkdown if enabled', () => {
+    it('should append stats markdown inside generateREADME if enabled', () => {
       const readmeData = {
         name: 'Jane',
         template: 'minimal' as any,
@@ -190,18 +204,18 @@ describe('markdown utilities', () => {
         },
       };
 
-      const markdown = generateReadmeMarkdown(readmeData);
+      const markdown = generateREADME(readmeData);
       expect(markdown).toContain('# Jane');
       expect(markdown).toContain('### 📊 GitHub Stats');
       expect(markdown).toContain('https://github-readme-stats.vercel.app/api?username=janedev&show_icons=true');
     });
   });
 
-  describe('generateTechStackMarkdown', () => {
+  describe('renderTechStack', () => {
     it('should return empty string if techStack is disabled or empty', () => {
-      expect(generateTechStackMarkdown(undefined)).toBe('');
-      expect(generateTechStackMarkdown({ enabled: false } as any)).toBe('');
-      expect(generateTechStackMarkdown({ enabled: true, selectedIds: [] } as any)).toBe('');
+      expect(renderTechStack(undefined)).toBe('');
+      expect(renderTechStack({ enabled: false } as any)).toBe('');
+      expect(renderTechStack({ enabled: true, selectedIds: [] } as any)).toBe('');
     });
 
     it('should generate badges in flat-list format when groupByCategory is false', () => {
@@ -213,7 +227,7 @@ describe('markdown utilities', () => {
         hideEmptyCategories: false,
         selectedIds: ['javascript', 'react'],
       };
-      const result = generateTechStackMarkdown(config);
+      const result = renderTechStack(config);
       expect(result).toContain('## 💻 Tech Stack');
       expect(result).toContain('![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)');
       expect(result).toContain('![React](https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)');
@@ -228,7 +242,7 @@ describe('markdown utilities', () => {
         hideEmptyCategories: true,
         selectedIds: ['javascript', 'react'],
       };
-      const result = generateTechStackMarkdown(config);
+      const result = renderTechStack(config);
       expect(result).toContain('## 💻 Tech Stack');
       expect(result).toContain('### Languages');
       expect(result).toContain('### Frontend');
@@ -238,11 +252,11 @@ describe('markdown utilities', () => {
     });
   });
 
-  describe('generateSocialLinksMarkdown', () => {
+  describe('renderSocialLinks', () => {
     it('should return empty string if socialLinks is disabled or empty', () => {
-      expect(generateSocialLinksMarkdown(undefined)).toBe('');
-      expect(generateSocialLinksMarkdown({ enabled: false } as any)).toBe('');
-      expect(generateSocialLinksMarkdown({ enabled: true, platforms: {} } as any)).toBe('');
+      expect(renderSocialLinks(undefined)).toBe('');
+      expect(renderSocialLinks({ enabled: false } as any)).toBe('');
+      expect(renderSocialLinks({ enabled: true, platforms: {} } as any)).toBe('');
     });
 
     it('should generate badges in correct ordering and support iconOnly mode', () => {
@@ -257,7 +271,7 @@ describe('markdown utilities', () => {
         },
         order: ['github', 'linkedin'],
       };
-      const result = generateSocialLinksMarkdown(config);
+      const result = renderSocialLinks(config);
       expect(result).toContain('## 🔗 Social Links & Contact');
       // order check: github first, linkedin second
       expect(result).toMatch(/\[!\[GitHub\].*\[!\[LinkedIn\].*/);
@@ -275,16 +289,16 @@ describe('markdown utilities', () => {
         },
         order: ['linkedin'],
       };
-      const result = generateSocialLinksMarkdown(config);
+      const result = renderSocialLinks(config);
       expect(result).toContain('[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/alice-dev)');
     });
   });
 
-  describe('generateAchievementsMarkdown', () => {
+  describe('renderAchievements', () => {
     it('should return empty string if achievements is disabled or empty', () => {
-      expect(generateAchievementsMarkdown(undefined)).toBe('');
-      expect(generateAchievementsMarkdown({ enabled: false } as any)).toBe('');
-      expect(generateAchievementsMarkdown({ enabled: true, username: '' } as any)).toBe('');
+      expect(renderAchievements(undefined)).toBe('');
+      expect(renderAchievements({ enabled: false } as any)).toBe('');
+      expect(renderAchievements({ enabled: true, username: '' } as any)).toBe('');
     });
 
     it('should generate trophy and activity graph with correct parameters and order', () => {
@@ -299,7 +313,7 @@ describe('markdown utilities', () => {
         },
         order: ['graph', 'trophy'] as any,
       };
-      const result = generateAchievementsMarkdown(config);
+      const result = renderAchievements(config);
       expect(result).toContain('## 🏆 GitHub Achievements');
       // order check: graph first, trophy second
       expect(result.indexOf('Activity Graph')).toBeLessThan(result.indexOf('GitHub Trophies'));
@@ -308,10 +322,10 @@ describe('markdown utilities', () => {
     });
   });
 
-  describe('generateHeaderMarkdown', () => {
+  describe('renderHeader', () => {
     it('should return empty string if header is disabled', () => {
-      expect(generateHeaderMarkdown(undefined)).toBe('');
-      expect(generateHeaderMarkdown({ enabled: false } as any)).toBe('');
+      expect(renderHeader(undefined)).toBe('');
+      expect(renderHeader({ enabled: false } as any)).toBe('');
     });
 
     it('should generate header html elements with correct alignment and values', () => {
@@ -341,7 +355,7 @@ describe('markdown utilities', () => {
         visitorPlacement: 'top' as any,
       };
 
-      const result = generateHeaderMarkdown(config, 'sunilkumar');
+      const result = renderHeader(config, 'sunilkumar');
       expect(result).toContain('<p align="center">');
       expect(result).toContain('https://capsule-render.vercel.app/api?type=waving&color=dracula&height=120&section=header&text=Welcome&fontSize=30');
       expect(result).toContain('<h1 align="center">Hi 👋, I\'m Sunil Kumar (he/him)</h1>');
@@ -399,7 +413,7 @@ describe('markdown utilities', () => {
     });
   });
 
-  describe('generateReadmeMarkdown with Section Manager Ordering', () => {
+  describe('generateREADME with Section Manager Ordering', () => {
     it('should compile sections in custom order and skip disabled ones', () => {
       const data: READMEData = {
         name: 'Alice',
@@ -425,7 +439,7 @@ describe('markdown utilities', () => {
         },
       };
 
-      const result = generateReadmeMarkdown(data);
+      const result = generateREADME(data);
       // 'custom' first, then 'about', then 'support', 'header' is disabled so omitted
       expect(result).toContain('### Special Note\nSome text.');
       expect(result).toContain('I build software.');
@@ -440,7 +454,7 @@ describe('markdown utilities', () => {
     });
   });
 
-  describe('generateFeaturedProjectsMarkdown', () => {
+  describe('renderProjects', () => {
     const sampleProjects = [
       {
         id: 'gh-alpha',
@@ -469,13 +483,13 @@ describe('markdown utilities', () => {
     ];
 
     it('should return empty string when disabled or empty', () => {
-      expect(generateFeaturedProjectsMarkdown(undefined)).toBe('');
-      expect(generateFeaturedProjectsMarkdown({ enabled: false } as any)).toBe('');
-      expect(generateFeaturedProjectsMarkdown({ enabled: true, projects: [] } as any)).toBe('');
+      expect(renderProjects(undefined)).toBe('');
+      expect(renderProjects({ enabled: false } as any)).toBe('');
+      expect(renderProjects({ enabled: true, projects: [] } as any)).toBe('');
     });
 
     it('should generate minimal card style (bullet list)', () => {
-      const result = generateFeaturedProjectsMarkdown({
+      const result = renderProjects({
         enabled: true,
         projects: sampleProjects,
         cardStyle: 'minimal',
@@ -498,7 +512,7 @@ describe('markdown utilities', () => {
     });
 
     it('should generate compact table card style', () => {
-      const result = generateFeaturedProjectsMarkdown({
+      const result = renderProjects({
         enabled: true,
         projects: sampleProjects,
         cardStyle: 'compact',
@@ -518,7 +532,7 @@ describe('markdown utilities', () => {
     });
 
     it('should sort by stars descending', () => {
-      const result = generateFeaturedProjectsMarkdown({
+      const result = renderProjects({
         enabled: true,
         projects: sampleProjects,
         cardStyle: 'minimal',
@@ -541,7 +555,7 @@ describe('markdown utilities', () => {
         { ...sampleProjects[1], updatedAt: '2025-12-01T00:00:00Z', id: 'beta-recent' }, // recent
         { ...sampleProjects[0], updatedAt: '2022-01-01T00:00:00Z', id: 'alpha-old' },  // old
       ];
-      const result = generateFeaturedProjectsMarkdown({
+      const result = renderProjects({
         enabled: true,
         projects: recentFirst,
         cardStyle: 'minimal',
@@ -560,7 +574,7 @@ describe('markdown utilities', () => {
     });
 
     it('should generate modern card style with badges and topics', () => {
-      const result = generateFeaturedProjectsMarkdown({
+      const result = renderProjects({
         enabled: true,
         projects: [sampleProjects[0]],
         cardStyle: 'modern',
@@ -580,7 +594,7 @@ describe('markdown utilities', () => {
     });
 
     it('should generate gprm card style with img tags for github repos', () => {
-      const result = generateFeaturedProjectsMarkdown({
+      const result = renderProjects({
         enabled: true,
         projects: [sampleProjects[0]],
         cardStyle: 'gprm',
@@ -607,7 +621,7 @@ describe('markdown utilities', () => {
         language: 'React',
         technologies: ['React', 'Tailwind'],
       };
-      const result = generateFeaturedProjectsMarkdown({
+      const result = renderProjects({
         enabled: true,
         projects: [manualProject],
         cardStyle: 'modern',

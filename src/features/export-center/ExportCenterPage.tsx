@@ -8,7 +8,7 @@ import Textarea from '@/components/Textarea';
 import useReadmeStore from '@/stores/readme-store';
 import useRoadmapStore from '@/stores/roadmap-store';
 import useThemeStore from '@/stores/theme-store';
-import { generateReadmeMarkdown, generateRoadmapMarkdown, combineMarkdown } from '@/utils/markdown';
+import { generateREADME, generateRoadmapMarkdown, combineMarkdown } from '@/utils/markdown';
 import { downloadTextFile, downloadZipPackage, downloadJsonBackup, exportToPdf } from '@/utils/export-utils';
 import { generateShareUrl } from '@/utils/share-utils';
 import { BRANDING } from '@/config/branding';
@@ -64,7 +64,7 @@ const ExportCenterPage = () => {
   const [toasts, setToasts] = useState<Toast[]>([]);
 
   // Markdown contents
-  const readmeMarkdown = generateReadmeMarkdown(readmeState);
+  const readmeMarkdown = generateREADME(readmeState);
   const roadmapMarkdown = generateRoadmapMarkdown(roadmapState);
   const combinedMarkdown = combineMarkdown(readmeMarkdown, roadmapMarkdown);
 

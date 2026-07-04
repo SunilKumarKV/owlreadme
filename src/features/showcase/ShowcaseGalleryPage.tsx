@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 import { useShowcaseStore, Showcase, ShowcaseCategory } from '@/stores/showcase-store';
 import useReadmeStore from '@/stores/readme-store';
-import { generateReadmeMarkdown } from '@/utils/markdown';
+import { generateREADME } from '@/utils/markdown';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import { BRANDING } from '@/config/branding';
@@ -87,7 +87,7 @@ const ShowcaseGalleryPage = () => {
       
       // Compile configuration into real README markdown code
       try {
-        const md = generateReadmeMarkdown(previewingShowcase.config);
+        const md = generateREADME(previewingShowcase.config);
         setCompiledMarkdown(md);
       } catch (err) {
         console.error('Failed to compile readme markdown', err);

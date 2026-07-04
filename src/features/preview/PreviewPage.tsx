@@ -7,7 +7,7 @@ import Textarea from '@/components/Textarea';
 import useReadmeStore from '@/stores/readme-store';
 import useRoadmapStore from '@/stores/roadmap-store';
 import useThemeStore from '@/stores/theme-store';
-import { generateReadmeMarkdown, generateRoadmapMarkdown, combineMarkdown } from '@/utils/markdown';
+import { generateREADME, generateRoadmapMarkdown, combineMarkdown } from '@/utils/markdown';
 import '@uiw/react-md-editor/markdown-editor.css';
 
 // Dynamically import the Markdown preview component to disable SSR
@@ -27,7 +27,7 @@ const PreviewPage = () => {
   const [copied, setCopied] = useState(false);
   const [viewMode, setViewMode] = useState<'split' | 'preview' | 'markdown'>('split');
 
-  const readmeMarkdown = useReadmeStore((state) => generateReadmeMarkdown(state));
+  const readmeMarkdown = useReadmeStore((state) => generateREADME(state));
   const roadmapMarkdown = useRoadmapStore((state) => generateRoadmapMarkdown(state));
   const initialMarkdown = combineMarkdown(readmeMarkdown, roadmapMarkdown);
 

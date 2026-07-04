@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { generateAnimatedComponentsMarkdown } from '../markdown';
+import { renderAnimations } from '../markdown';
 import { AnimatedComponentsConfig } from '@/stores/readme-store';
 
-describe('generateAnimatedComponentsMarkdown helper', () => {
+describe('renderAnimations helper', () => {
   it('should return empty string when configuration is disabled', () => {
     const config: AnimatedComponentsConfig = {
       enabled: false,
@@ -16,7 +16,7 @@ describe('generateAnimatedComponentsMarkdown helper', () => {
         }
       ]
     };
-    expect(generateAnimatedComponentsMarkdown(config, 'test-user')).toBe('');
+    expect(renderAnimations(config, 'test-user')).toBe('');
   });
 
   it('should generate typing SVG source parameters correctly', () => {
@@ -37,7 +37,7 @@ describe('generateAnimatedComponentsMarkdown helper', () => {
         }
       ]
     };
-    const markdown = generateAnimatedComponentsMarkdown(config, 'test-user');
+    const markdown = renderAnimations(config, 'test-user');
     expect(markdown).toContain('readme-typing-svg.demolab.com');
     expect(markdown).toContain('speed=12');
     expect(markdown).toContain('color=ffffff');
@@ -61,7 +61,7 @@ describe('generateAnimatedComponentsMarkdown helper', () => {
         }
       ]
     };
-    const markdown = generateAnimatedComponentsMarkdown(config, 'test-user');
+    const markdown = renderAnimations(config, 'test-user');
     expect(markdown).toContain('<svg width="100%" height="20"');
     expect(markdown).toContain('stop-color="#000"');
     expect(markdown).toContain('stop-color="#fff"');

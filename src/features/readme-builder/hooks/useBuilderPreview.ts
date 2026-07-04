@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
 import useReadmeStore from '@/stores/readme-store';
-import { generateReadmeMarkdown } from '@/utils/markdown';
+import { generateREADME } from '@/utils/markdown';
 import { analyzeReadmeMarkdown } from '@/utils/readme-analyzer';
 
 export const useBuilderPreview = () => {
@@ -9,7 +9,7 @@ export const useBuilderPreview = () => {
   const prevMarkdownTextRef = useRef('');
 
   useEffect(() => {
-    const generated = generateReadmeMarkdown(readmeState);
+    const generated = generateREADME(readmeState);
     if (generated !== prevMarkdownTextRef.current) {
       setLocalMarkdown(generated);
       prevMarkdownTextRef.current = generated;

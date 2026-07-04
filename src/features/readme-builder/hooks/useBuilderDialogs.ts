@@ -3,7 +3,7 @@ import useWorkspaceStore from '@/stores/workspace-store';
 import useReadmeStore, { SectionId } from '@/stores/readme-store';
 import { useHistoryStore, Snapshot } from '@/stores/history-store';
 import { parseReadmeMarkdown } from '@/utils/readme-importer';
-import { generateReadmeMarkdown } from '@/utils/markdown';
+import { generateREADME } from '@/utils/markdown';
 import {
   fetchGithubReadmeByRepo,
   fetchGithubReadmeFromRawUrl,
@@ -234,8 +234,8 @@ export const useBuilderDialogs = () => {
   useEffect(() => {
     if (comparingSnapshot) {
       try {
-        setCompareSnapshotMarkdown(generateReadmeMarkdown(comparingSnapshot.config));
-        setCompareCurrentMarkdown(generateReadmeMarkdown(getCurrentConfig()));
+        setCompareSnapshotMarkdown(generateREADME(comparingSnapshot.config));
+        setCompareCurrentMarkdown(generateREADME(getCurrentConfig()));
       } catch (err) {
         console.error('Failed to compile compare markdown', err);
       }

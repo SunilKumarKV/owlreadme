@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Button from '@/components/Button';
 import Textarea from '@/components/Textarea';
-import { generateReadmeMarkdown } from '@/utils/markdown';
+import { generateREADME } from '@/utils/markdown';
 import { decodeShareData } from '@/utils/share-utils';
 import '@uiw/react-md-editor/markdown-editor.css';
 import { Sparkles, Copy, CheckCircle, ArrowRight, ExternalLink } from 'lucide-react';
@@ -68,7 +68,7 @@ function ShareReadmeContent() {
     };
   }, [themeParam]);
 
-  const markdown = decodedData ? generateReadmeMarkdown(decodedData) : '';
+  const markdown = decodedData ? generateREADME(decodedData) : '';
 
   const handleCopy = async () => {
     if (!markdown) return;

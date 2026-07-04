@@ -42,7 +42,7 @@ import Input from '@/components/Input';
 import Textarea from '@/components/Textarea';
 import useReadmeStore, { READMEStyleTemplate, GitHubStatsConfig, TechStackConfig, SocialLinksConfig, SectionId, FeaturedProject } from '@/stores/readme-store';
 import { useHistoryStore, Snapshot, computeConfigDiff } from '@/stores/history-store';
-import { generateReadmeMarkdown } from '@/utils/markdown';
+import { generateREADME } from '@/utils/markdown';
 import { TEMPLATE_MARKETPLACE } from '@/utils/template-registry';
 
 import BuilderHeader from './components/BuilderHeader';
