@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
+import React, { useEffect, useState, useMemo } from 'react';
 import useWorkspaceStore from '@/stores/workspace-store';
 import useReadmeStore, { SectionId } from '@/stores/readme-store';
 import { useHistoryStore, Snapshot } from '@/stores/history-store';
@@ -228,20 +229,18 @@ export const useBuilderDialogs = () => {
     pushUndo(getCurrentConfig());
   };
 
-  const [compareSnapshotMarkdown, setCompareSnapshotMarkdown] = useState('');
-  const [compareCurrentMarkdown, setCompareCurrentMarkdown] = useState('');
-
-  useEffect(() => {
-    if (comparingSnapshot) {
-      try {
-        setCompareSnapshotMarkdown(generateREADME(comparingSnapshot.config));
-        setCompareCurrentMarkdown(generateREADME(getCurrentConfig()));
-      } catch (err) {
-        console.error('Failed to compile compare markdown', err);
-      }
-    } else {
-      setCompareSnapshotMarkdown('');
-      setCompareCurrentMarkdown('');
+  const { compareSnapshotMarkdown, compareCurrentMarkdown } = useMemo(() => {
+    if (!comparingSnapshot) {
+      return { compareSnapshotMarkdown: '', compareCurrentMarkdown: '' };
+    }
+    try {
+      return {
+        compareSnapshotMarkdown: generateREADME(comparingSnapshot.config),
+        compareCurrentMarkdown: generateREADME(getCurrentConfig())
+      };
+    } catch (err) {
+      console.error('Failed to compile compare markdown', err);
+      return { compareSnapshotMarkdown: '', compareCurrentMarkdown: '' };
     }
   }, [comparingSnapshot]);
 

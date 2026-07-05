@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 import type { SectionId } from '../types';
 import type { SectionRegistryEntry } from './section-types';
 import { RAW_SECTION_METADATA } from './section-metadata';

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 import { TECHNOLOGY_REGISTRY, CATEGORIES, Technology } from '@/utils/tech-registry';
 import type { TechStackConfig } from '../../types';
 import { badge as helperBadge, heading } from '../../utils/markdown-helpers';

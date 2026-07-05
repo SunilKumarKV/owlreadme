@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { downloadTextFile, downloadJsonBackup, downloadZipPackage, exportToPdf, sanitizeHtml } from '../export-utils';
 

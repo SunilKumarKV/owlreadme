@@ -63,7 +63,7 @@ function ShareRoadmapContent() {
         <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-gray-800 p-8 rounded-xl max-w-md w-full text-center shadow-md">
           <h2 className="text-xl font-bold text-red-500 mb-2">Invalid or Empty Share Data</h2>
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-            We couldn't decode the roadmap state from this link. Make sure the share link is complete.
+            We couldn&apos;t decode the roadmap state from this link. Make sure the share link is complete.
           </p>
           <Button href="/" variant="primary" className="w-full">
             Back to {BRANDING.name}

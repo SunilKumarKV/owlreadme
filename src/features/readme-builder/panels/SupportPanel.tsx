@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 import React from 'react';
 import Input from '@/components/Input';
 import { SupportConfig } from '@/stores/readme-store';

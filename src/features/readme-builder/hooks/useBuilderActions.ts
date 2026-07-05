@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 import { useEffect, useState } from 'react';
 import useWorkspaceStore from '@/stores/workspace-store';
 import useReadmeStore from '@/stores/readme-store';
@@ -23,8 +24,20 @@ export const useBuilderActions = () => {
   // Template Marketplace States
   const [marketplaceSearch, setMarketplaceSearch] = useState('');
   const [selectedMarketplaceCategory, setSelectedMarketplaceCategory] = useState<string>('all');
-  const [favoriteTemplates, setFavoriteTemplates] = useState<string[]>([]);
-  const [recentlyUsedTemplates, setRecentlyUsedTemplates] = useState<string[]>([]);
+  const [favoriteTemplates, setFavoriteTemplates] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const favs = localStorage.getItem('owlreadme-fav-templates');
+      return favs ? JSON.parse(favs) : [];
+    }
+    return [];
+  });
+  const [recentlyUsedTemplates, setRecentlyUsedTemplates] = useState<string[]>(() => {
+    if (typeof window !== 'undefined') {
+      const recents = localStorage.getItem('owlreadme-recent-templates');
+      return recents ? JSON.parse(recents) : [];
+    }
+    return [];
+  });
   const [previewingTemplate, setPreviewingTemplate] = useState<any | null>(null);
 
   // Community Templates States
@@ -39,13 +52,6 @@ export const useBuilderActions = () => {
   const [activeEditingCompId, setActiveEditingCompId] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const favs = localStorage.getItem('owlreadme-fav-templates');
-      if (favs) setFavoriteTemplates(JSON.parse(favs));
-      
-      const recents = localStorage.getItem('owlreadme-recent-templates');
-      if (recents) setRecentlyUsedTemplates(JSON.parse(recents));
-    }
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {

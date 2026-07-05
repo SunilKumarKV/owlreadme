@@ -32,12 +32,15 @@ const PreviewPage = () => {
   const roadmapMarkdown = useRoadmapStore((state) => generateRoadmapMarkdown(state));
   const initialMarkdown = combineMarkdown(readmeMarkdown, roadmapMarkdown);
 
-  const [markdown, setMarkdown] = useState('');
-  const theme = useThemeStore((state) => state.theme);
+  const [markdown, setMarkdown] = useState(initialMarkdown);
+  const [prevInitialMarkdown, setPrevInitialMarkdown] = useState(initialMarkdown);
 
-  useEffect(() => {
+  if (initialMarkdown !== prevInitialMarkdown) {
     setMarkdown(initialMarkdown);
-  }, [initialMarkdown]);
+    setPrevInitialMarkdown(initialMarkdown);
+  }
+
+  const theme = useThemeStore((state) => state.theme);
 
   // Adjust view mode responsively on mount and window resize
   useEffect(() => {

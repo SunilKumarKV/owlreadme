@@ -346,7 +346,7 @@ const LandingPage: React.FC = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <span className="text-blue-500 font-bold"># Hi, I'm Sunil Kumar</span>
+                    <span className="text-blue-500 font-bold"># Hi, I&apos;m Sunil Kumar</span>
                     <span className="text-gray-600 block">&lt;!-- Full-Stack Engineer --&gt;</span>
                   </div>
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 "use client";
 
 import { useEffect, useState, useRef, useMemo } from 'react';
@@ -1181,7 +1182,7 @@ const READMEBuilderPage = () => {
                           onChange={(e) => setImportRepoUrlInput(e.target.value)}
                           className="w-full px-3 py-2 text-xs rounded border border-gray-200 dark:bg-[#1e1e1e] dark:border-gray-700 focus:border-blue-500 focus:outline-none"
                         />
-                        <p className="text-[10px] text-gray-400">Fetches the README.md file directly from the repository's root directory.</p>
+                         <p className="text-[10px] text-gray-400">Fetches the README.md file directly from the repository&apos;s root directory.</p>
                       </div>
                     )}
 

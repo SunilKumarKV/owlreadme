@@ -29,7 +29,7 @@ export default function ErrorPage({
         <div className="space-y-2">
           <h1 className="text-2xl font-bold tracking-tight">Application Error</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            {BRANDING.name} encountered an unexpected error. Don't worry, your workspace is safely auto-saved locally.
+            {BRANDING.name} encountered an unexpected error. Don&apos;t worry, your workspace is safely auto-saved locally.
           </p>
           {error.message && (
             <div className="p-3 bg-gray-50 dark:bg-black/20 rounded-md text-left font-mono text-xs text-red-600 dark:text-red-400 border border-gray-100 dark:border-gray-800 break-all max-h-32 overflow-auto mt-2">

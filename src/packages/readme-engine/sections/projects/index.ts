@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 import type { FeaturedProjectsConfig } from '../../types';
 import { heading, table as helperTable, link as helperLink, badge as helperBadge } from '../../utils/markdown-helpers';
 

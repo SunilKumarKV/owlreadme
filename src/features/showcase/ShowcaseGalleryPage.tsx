@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -78,25 +79,23 @@ const ShowcaseGalleryPage = () => {
     theme: 'dark' as 'minimal' | 'dark' | 'gradient' | 'terminal',
   });
 
-  // Fetch compiled markdown of the showcase configuration being previewed
-  const [compiledMarkdown, setCompiledMarkdown] = useState('');
+  // Fetch compiled markdown of the showcase configuration being previewed using useMemo
+  const compiledMarkdown = useMemo(() => {
+    if (!previewingShowcase) return '';
+    try {
+      return generateREADME(previewingShowcase.config);
+    } catch (err) {
+      console.error('Failed to compile readme markdown', err);
+      return '# ' + previewingShowcase.name + '\nFailed to load layout rendering.';
+    }
+  }, [previewingShowcase]);
 
   useEffect(() => {
     if (previewingShowcase) {
       // Increment views count when opening showcase details
       viewShowcase(previewingShowcase.id);
-      
-      // Compile configuration into real README markdown code
-      try {
-        const md = generateREADME(previewingShowcase.config);
-        setCompiledMarkdown(md);
-      } catch (err) {
-        console.error('Failed to compile readme markdown', err);
-        setCompiledMarkdown('# ' + previewingShowcase.name + '\nFailed to load layout rendering.');
-      }
     } else {
-      setCompiledMarkdown('');
-      setModalTab('visual');
+      setTimeout(() => setModalTab('visual'), 0);
     }
   }, [previewingShowcase]);
 

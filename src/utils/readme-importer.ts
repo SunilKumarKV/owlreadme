@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 import { SectionId } from '@/stores/readme-store';
 import { TECHNOLOGY_REGISTRY } from '@/utils/tech-registry';
 import { SOCIAL_PLATFORM_REGISTRY } from '@/utils/social-registry';

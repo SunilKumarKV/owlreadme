@@ -38,12 +38,9 @@ export const DonutChart: React.FC<DonutChartProps> = ({
   const center = size / 2;
 
   // Pre-calculate stroke offsets to prevent rendering mutations
-  let accumulatedPercent = 0;
-  const strokeOffsets = data.map((item) => {
-    const percent = (item.value / total) * 100;
-    const strokeOffset = circumference - (accumulatedPercent / 100) * circumference;
-    accumulatedPercent += percent;
-    return strokeOffset;
+  const strokeOffsets = data.map((_, index) => {
+    const accumulatedPercentBefore = data.slice(0, index).reduce((sum, item) => sum + (item.value / total) * 100, 0);
+    return circumference - (accumulatedPercentBefore / 100) * circumference;
   });
 
   return (

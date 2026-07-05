@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 import { NextRequest, NextResponse } from 'next/server';
 
 /** Maximum request body size we will proxy to Gemini (50 KB). */

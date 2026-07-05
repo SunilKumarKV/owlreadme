@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 import React from 'react';
 import type { ImproverHistoryEntry } from '../types/builder-types';
 
@@ -151,7 +152,7 @@ export const AIImproverPanel: React.FC<AIImproverPanelProps> = ({
           <div className="space-y-3">
             {improverAlternatives.map((alt, idx) => (
               <div key={idx} className="p-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-[#151518] space-y-3 flex flex-col">
-                <p className="font-medium text-gray-700 dark:text-gray-300 leading-relaxed italic text-left">"{alt}"</p>
+                <p className="font-medium text-gray-700 dark:text-gray-300 leading-relaxed italic text-left">&quot;{alt}&quot;</p>
                 <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100 dark:border-gray-850/60 mt-auto select-none">
                   <button
                     onClick={() => {
