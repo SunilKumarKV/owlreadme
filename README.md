@@ -4,6 +4,8 @@ OwlREADME is a professional, visual developer workspace that allows you to insta
 
 Built with Next.js, React 19, and Tailwind CSS, OwlREADME runs entirely in the browser with offline-first local storage, allowing you to manage multiple project workspaces seamlessly with complete data privacy.
 
+Live demo: https://owlreadme.com
+
 ---
 
 ## 🚀 Features
@@ -128,7 +130,7 @@ pnpm start
 
 ## 🗺️ Roadmap & Plans
 
-See the full roadmap in [ROADMAP.md](docs/ROADMAP.md).
+See the full roadmap in [ROADMAP.md](ROADMAP.md).
 - [x] **v0.1.0**: Core markdown generators & template pre-fills.
 - [x] **v0.5.0**: Zustand workspaces, secure API route, SVG analytics, and SaaS landing.
 - [x] **v1.1.0**: Responsive Showcase Gallery, Client-side Version Snapshot Diff/Restores, Share payload schema validation, and PDF sanitization.
@@ -166,6 +168,10 @@ If you find a bug, have questions, or want to discuss enhancements:
 * For security vulnerabilities or private questions, email us at **support@owlreadme.com**.
 
 ---
+
+## 🙏 Acknowledgements
+
+OwlREADME is built with the support of the open-source ecosystem, including Next.js, React, Tailwind CSS, Zustand, and the broader developer tools community.
 
 ## ⚖️ License
 
