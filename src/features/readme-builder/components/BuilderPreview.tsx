@@ -1,6 +1,7 @@
 import React from 'react';
 import dynamic from 'next/dynamic';
 import { Eye, Minimize2, Maximize2, PanelLeftClose, PanelRightClose, Code, Copy, Download } from 'lucide-react';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import type { FullscreenPanel } from '../types/builder-types';
 
 const MDMarkdown = dynamic(
@@ -58,7 +59,9 @@ export const BuilderPreview: React.FC<BuilderPreviewProps> = ({
     return (
       <div className="flex-1 overflow-y-auto p-6 bg-white dark:bg-[#101012] custom-editor-scrollbar">
         <div data-color-mode={theme === 'minimal' ? 'light' : 'dark'} className="theme-preview-container">
-          <MDMarkdown source={localMarkdown} style={{ background: 'transparent', color: 'inherit' }} />
+          <ErrorBoundary name="Mobile Preview Renderer" fallback={<p className="text-red-500 text-xs p-2">Failed to render mobile preview.</p>}>
+            <MDMarkdown source={localMarkdown} style={{ background: 'transparent', color: 'inherit' }} />
+          </ErrorBoundary>
         </div>
       </div>
     );
@@ -163,7 +166,9 @@ export const BuilderPreview: React.FC<BuilderPreviewProps> = ({
           className="flex-1 overflow-y-auto p-8 bg-white dark:bg-[#101012] custom-editor-scrollbar"
         >
           <div data-color-mode={theme === 'minimal' ? 'light' : 'dark'} className="theme-preview-container">
-            <MDMarkdown source={localMarkdown} style={{ background: 'transparent', color: 'inherit' }} />
+            <ErrorBoundary name="Desktop Preview Renderer" fallback={<div className="p-4 text-xs text-red-500 font-semibold bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-lg">Failed to render preview. The markdown content may be malformed.</div>}>
+              <MDMarkdown source={localMarkdown} style={{ background: 'transparent', color: 'inherit' }} />
+            </ErrorBoundary>
           </div>
         </div>
       </div>

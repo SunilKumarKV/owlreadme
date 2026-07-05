@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import JSZip from 'jszip';
 
 /**
@@ -89,6 +90,93 @@ export function downloadJsonBackup(
  * Robustness: uses doc.open()/write()/close() (widely supported) with a null-check on
  * window.frameElement before removal.
  */
+/**
+ * Sanitizes HTML string by parsing it into a temporary document using DOMParser
+ * and walking the DOM tree to strip out unwanted tags and attributes.
+ */
+export function sanitizeHtml(html: string): string {
+  if (typeof window === 'undefined') return html;
+
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+
+  // Define safe tags list (including structural html/body container tags)
+  const safeTags = new Set([
+    'html', 'body', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'p', 'br', 'hr',
+    'ul', 'ol', 'li', 'span', 'code', 'pre', 'img', 'a',
+    'table', 'thead', 'tbody', 'tr', 'th', 'td', 'div',
+    'strong', 'em', 'del', 'ins', 'blockquote', 'details', 'summary',
+    'input' // for task lists
+  ]);
+
+  // Define safe attributes list
+  const safeAttributes = new Set([
+    'class', 'style', 'id', 'href', 'src', 'alt', 'title', 'target', 'rel',
+    'type', 'checked', 'disabled', 'colspan', 'rowspan', 'align'
+  ]);
+
+  // Traverse the tree and clean up elements
+  const walk = (node: Node) => {
+    if (node.nodeType === Node.ELEMENT_NODE) {
+      const element = node as HTMLElement;
+      const tagName = element.tagName.toLowerCase();
+
+      // If tag is not safe, handle replacement or removal
+      if (!safeTags.has(tagName)) {
+        if (['script', 'iframe', 'object', 'embed', 'form', 'button', 'noscript'].includes(tagName)) {
+          element.remove();
+          return;
+        }
+        // Replace node with a safe span but keep its children
+        const replacement = document.createElement('span');
+        while (element.firstChild) {
+          replacement.appendChild(element.firstChild);
+        }
+        element.parentNode?.replaceChild(replacement, element);
+        walk(replacement);
+        return;
+      }
+
+      // Clean attributes
+      const attributes = Array.from(element.attributes);
+      for (const attr of attributes) {
+        const name = attr.name.toLowerCase();
+        const isEvent = name.startsWith('on');
+        const isJavaScriptUri = attr.value.trim().toLowerCase().startsWith('javascript:');
+        const isSafeAttr = safeAttributes.has(name);
+
+        if (isEvent || isJavaScriptUri || !isSafeAttr) {
+          element.removeAttribute(attr.name);
+        }
+      }
+    }
+
+    // Recursively process children
+    let child = node.firstChild;
+    while (child) {
+      const next = child.nextSibling;
+      walk(child);
+      child = next;
+    }
+  };
+
+  // Walk children of doc.body to sanitize content in place
+  let child = doc.body.firstChild;
+  while (child) {
+    const next = child.nextSibling;
+    walk(child);
+    child = next;
+  }
+  return doc.body.innerHTML;
+}
+
+/**
+ * Creates a temporary iframe, copies global stylesheet references, inserts the HTML
+ * representing the styled markdown document, and opens the system print dialogue.
+ *
+ * Security: the title is HTML-escaped and the HTML content is sanitized to prevent XSS.
+ * Robustness: uses doc.open()/write()/close() with sandboxing enabled.
+ */
 export function exportToPdf(htmlContent: string, theme: string, title: string): void {
   const iframe = document.createElement('iframe');
   iframe.style.position = 'fixed';
@@ -97,6 +185,10 @@ export function exportToPdf(htmlContent: string, theme: string, title: string): 
   iframe.style.width = '0';
   iframe.style.height = '0';
   iframe.style.border = '0';
+  
+  // Sandbox the iframe securely
+  iframe.setAttribute('sandbox', 'allow-modals allow-same-origin allow-scripts');
+  
   document.body.appendChild(iframe);
 
   const doc = iframe.contentDocument || iframe.contentWindow?.document;
@@ -110,6 +202,9 @@ export function exportToPdf(htmlContent: string, theme: string, title: string): 
   const safeTitle = title.replace(/[<>&"']/g, (c) =>
     ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;', "'": '&#39;' }[c] ?? c)
   );
+
+  // Sanitise the content to prevent HTML injection XSS
+  const safeHtmlContent = sanitizeHtml(htmlContent);
 
   // Gather stylesheet tags from parent document
   let styles = '';
@@ -152,7 +247,7 @@ export function exportToPdf(htmlContent: string, theme: string, title: string): 
   </head>
   <body class="theme-${theme}">
     <div class="theme-preview-container">
-      ${htmlContent}
+      ${safeHtmlContent}
     </div>
     <script>
       window.onload = function() {

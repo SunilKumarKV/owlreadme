@@ -1,35 +1,22 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Button from '@/components/Button';
 import Textarea from '@/components/Textarea';
-import { generateREADME } from '@/utils/markdown';
-import { decodeShareData } from '@/utils/share-utils';
+import { generateREADME, READMEData } from '@/utils/markdown';
+import { decodeShareData, validateREADMEData } from '@/utils/share-utils';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import '@uiw/react-md-editor/markdown-editor.css';
-import { Sparkles, Copy, CheckCircle, ArrowRight, ExternalLink } from 'lucide-react';
+import { Sparkles, Copy, CheckCircle, ArrowRight } from 'lucide-react';
 import { BRANDING } from '@/config/branding';
 
 const MDMarkdown = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default.Markdown),
   { ssr: false }
 );
-
-interface READMEData {
-  name: string;
-  role: string;
-  about: string;
-  skills: string;
-  projects: string;
-  socials: string;
-  avatarUrl: string;
-  followers?: number;
-  following?: number;
-  publicRepos?: number;
-  template?: any;
-}
 
 function ShareReadmeContent() {
   const searchParams = useSearchParams();
@@ -38,13 +25,10 @@ function ShareReadmeContent() {
 
   const [copied, setCopied] = useState(false);
   const [viewMode, setViewMode] = useState<'preview' | 'source'>('preview');
-  const [decodedData, setDecodedData] = useState<READMEData | null>(null);
-
-  useEffect(() => {
-    if (dataParam) {
-      const decoded = decodeShareData<READMEData>(dataParam);
-      setDecodedData(decoded);
-    }
+  
+  const decodedData = useMemo(() => {
+    if (!dataParam) return null;
+    return decodeShareData<READMEData>(dataParam, validateREADMEData);
   }, [dataParam]);
 
   // Set the dynamic document title for SEO
@@ -171,7 +155,9 @@ function ShareReadmeContent() {
           <div className="overflow-auto max-h-[700px] min-h-[400px]">
             {viewMode === 'preview' ? (
               <div data-color-mode={colorMode} className="theme-preview-container">
-                <MDMarkdown source={markdown} style={{ background: 'transparent', color: 'inherit' }} />
+                <ErrorBoundary name="README Preview Renderer" fallback={<div className="p-4 text-sm text-red-500 font-semibold bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-lg">Failed to render preview. The markdown content may be malformed.</div>}>
+                  <MDMarkdown source={markdown} style={{ background: 'transparent', color: 'inherit' }} />
+                </ErrorBoundary>
               </div>
             ) : (
               <Textarea

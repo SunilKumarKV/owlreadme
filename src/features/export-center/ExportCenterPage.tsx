@@ -1,17 +1,17 @@
 "use client";
 
-import { useState, useRef, useEffect } from 'react';
+import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Button from '@/components/Button';
 import Textarea from '@/components/Textarea';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import useReadmeStore from '@/stores/readme-store';
 import useRoadmapStore from '@/stores/roadmap-store';
 import useThemeStore from '@/stores/theme-store';
 import { generateREADME, generateRoadmapMarkdown, combineMarkdown } from '@/utils/markdown';
 import { downloadTextFile, downloadZipPackage, downloadJsonBackup, exportToPdf } from '@/utils/export-utils';
 import { generateShareUrl } from '@/utils/share-utils';
-import { BRANDING } from '@/config/branding';
 import '@uiw/react-md-editor/markdown-editor.css';
 import {
   FileText,
@@ -25,7 +25,6 @@ import {
   Trash2,
   ArrowLeft,
   Download,
-  ExternalLink,
   Sparkles,
   Info,
   Share2
@@ -459,13 +458,15 @@ const ExportCenterPage = () => {
             <div className="flex-1 overflow-auto border border-gray-100 dark:border-gray-800 rounded-lg p-4 bg-gray-50 dark:bg-black/10">
               {viewMode === 'preview' ? (
                 <div data-color-mode={colorMode} className="theme-preview-container min-h-full">
-                  {activeContent.trim() ? (
-                    <MDMarkdown source={activeContent} style={{ background: 'transparent', color: 'inherit' }} />
-                  ) : (
-                    <p className="text-sm text-gray-400 text-center py-12">
-                      Empty preview. Modify data in builders first.
-                    </p>
-                  )}
+                  <ErrorBoundary name="Export Preview Renderer" fallback={<div className="p-4 text-xs text-red-500 font-semibold bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-lg">Failed to render markdown content. Syntax errors in template or markdown.</div>}>
+                    {activeContent.trim() ? (
+                      <MDMarkdown source={activeContent} style={{ background: 'transparent', color: 'inherit' }} />
+                    ) : (
+                      <p className="text-sm text-gray-400 text-center py-12">
+                        Empty preview. Modify data in builders first.
+                      </p>
+                    )}
+                  </ErrorBoundary>
                 </div>
               ) : (
                 <Textarea
@@ -560,11 +561,13 @@ const ExportCenterPage = () => {
       <div style={{ display: 'none' }}>
         <div id="pdf-print-anchor">
           <div data-color-mode={colorMode} className="theme-preview-container">
-            {activeContent.trim() ? (
-              <MDMarkdown source={activeContent} style={{ background: 'transparent', color: 'inherit' }} />
-            ) : (
-              <p>No content generated</p>
-            )}
+            <ErrorBoundary name="PDF Export Compiler" fallback={<p className="text-red-500 font-mono text-xs">Failed to compile preview for PDF export.</p>}>
+              {activeContent.trim() ? (
+                <MDMarkdown source={activeContent} style={{ background: 'transparent', color: 'inherit' }} />
+              ) : (
+                <p>No content generated</p>
+              )}
+            </ErrorBoundary>
           </div>
         </div>
       </div>

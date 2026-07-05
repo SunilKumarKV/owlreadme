@@ -9,7 +9,7 @@ import useThemeStore from '@/stores/theme-store';
 import { fetchGithubProfile, fetchGithubRepos } from '@/utils/github-api';
 import { analyzeRepositories } from '@/utils/repo-analyzer';
 import { getAIService } from '@/utils/ai/ai-service';
-import { Sparkles, CheckCircle, Share2, Edit2, Plus, Trash2, Copy } from 'lucide-react';
+import { Sparkles, CheckCircle, Edit2, Plus, Trash2, Copy } from 'lucide-react';
 import { generateShareUrl } from '@/utils/share-utils';
 import useWorkspaceStore from '@/stores/workspace-store';
 import { ProfileCardSkeleton, AISuggestionsSkeleton } from '@/components/Skeleton';
@@ -113,32 +113,14 @@ const DeveloperDashboardPage = () => {
     }
   };
 
-  // Sync AI tabs depending on active workspace type
-  useEffect(() => {
-    if (!isReadmeType && aiTab !== 'roadmap') {
-      setAiTab('roadmap');
-    } else if (!isRoadmapType && aiTab === 'roadmap') {
-      setAiTab('readme');
-    }
-  }, [isReadmeType, isRoadmapType, aiTab]);
+  // Sync AI tabs depending on active workspace type during render
+  if (!isReadmeType && aiTab !== 'roadmap') {
+    setAiTab('roadmap');
+  } else if (!isRoadmapType && aiTab === 'roadmap') {
+    setAiTab('readme');
+  }
 
-  const handleShare = async (type: 'readme' | 'roadmap') => {
-    try {
-      const state = type === 'readme' ? readmeState : roadmapState;
-      const url = generateShareUrl(type, state, theme);
-      await navigator.clipboard.writeText(url);
-      setNotification(`Public share link for ${type === 'readme' ? 'README' : 'roadmap'} copied to clipboard!`);
-      readmeState.addExportHistoryItem(
-        `Share Link (${type})`,
-        type === 'readme'
-          ? (readmeState.name ? `${readmeState.name}'s Profile` : 'Untitled README')
-          : (roadmapState.title || 'Untitled Roadmap')
-      );
-    } catch (err) {
-      console.error('Failed to generate share link:', err);
-      setError('Failed to copy share link. Please ensure clipboard access is allowed.');
-    }
-  };
+
 
 
   const applySuggestedSkills = () => {
@@ -647,7 +629,7 @@ const DeveloperDashboardPage = () => {
                   <AISuggestionsSkeleton />
                 ) : !aiSuggestions ? (
                   <div className="py-6 text-center text-gray-500 text-xs">
-                    <p className="mb-2">Click "Consult Owl AI" to generate smart recommendations for your profile, README, and learning roadmap.</p>
+                    <p className="mb-2">Click &quot;Consult Owl AI&quot; to generate smart recommendations for your profile, README, and learning roadmap.</p>
                   </div>
                 ) : (
                   <div className="space-y-6">
@@ -705,21 +687,21 @@ const DeveloperDashboardPage = () => {
                             <span className="font-bold text-gray-700 dark:text-gray-200">Suggested Bio Intro</span>
                             <button onClick={applyIntro} className="text-blue-500 hover:underline font-semibold cursor-pointer">Apply</button>
                           </div>
-                          <p className="text-gray-500 dark:text-gray-400 italic">"{aiSuggestions.readme.introduction}"</p>
+                          <p className="text-gray-500 dark:text-gray-400 italic">&quot;{aiSuggestions.readme.introduction}&quot;</p>
                         </div>
                         <div className="p-3 rounded-lg border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-black/20">
                           <div className="flex justify-between items-center mb-1">
                             <span className="font-bold text-gray-700 dark:text-gray-200">Suggested About Me Paragraph</span>
                             <button onClick={applyAboutMe} className="text-blue-500 hover:underline font-semibold cursor-pointer">Apply</button>
                           </div>
-                          <p className="text-gray-500 dark:text-gray-400 italic">"{aiSuggestions.readme.aboutMe}"</p>
+                          <p className="text-gray-500 dark:text-gray-400 italic">&quot;{aiSuggestions.readme.aboutMe}&quot;</p>
                         </div>
                         <div className="p-3 rounded-lg border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-black/20">
                           <div className="flex justify-between items-center mb-1">
                             <span className="font-bold text-gray-700 dark:text-gray-200">Suggested Core Skills</span>
                             <button onClick={applySkills} className="text-blue-500 hover:underline font-semibold cursor-pointer">Apply</button>
                           </div>
-                          <p className="text-gray-500 dark:text-gray-400 italic">"{aiSuggestions.readme.skills}"</p>
+                          <p className="text-gray-500 dark:text-gray-400 italic">&quot;{aiSuggestions.readme.skills}&quot;</p>
                         </div>
                         <div className="p-3 rounded-lg border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-black/20">
                           <div className="flex justify-between items-center mb-1">
@@ -776,7 +758,7 @@ const DeveloperDashboardPage = () => {
                             <span className="font-bold text-gray-700 dark:text-gray-200">Suggested Bio Improvement</span>
                             <button onClick={applyProfileBio} className="text-blue-500 hover:underline font-semibold cursor-pointer">Apply</button>
                           </div>
-                          <p className="text-gray-500 dark:text-gray-400 italic">"{aiSuggestions.profile.improvedBio}"</p>
+                          <p className="text-gray-500 dark:text-gray-400 italic">&quot;{aiSuggestions.profile.improvedBio}&quot;</p>
                         </div>
                         <div className="p-3 rounded-lg border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-black/20">
                           <div className="flex justify-between items-center mb-1">
@@ -793,7 +775,7 @@ const DeveloperDashboardPage = () => {
                               Apply
                             </button>
                           </div>
-                          <p className="text-gray-500 dark:text-gray-400 italic">"{aiSuggestions.profile.portfolioDescription}"</p>
+                          <p className="text-gray-500 dark:text-gray-400 italic">&quot;{aiSuggestions.profile.portfolioDescription}&quot;</p>
                         </div>
                         <div className="p-3 rounded-lg border border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-black/20">
                           <h4 className="font-bold text-gray-700 dark:text-gray-200 mb-1">GitHub Account Improvements</h4>

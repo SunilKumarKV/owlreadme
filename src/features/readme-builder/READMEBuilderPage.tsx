@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { BRANDING } from '@/config/branding';
 import dynamic from 'next/dynamic';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import {
   Clock,
   RotateCcw,
@@ -1873,7 +1874,9 @@ const READMEBuilderPage = () => {
                     <h4 className="text-[10px] font-extrabold uppercase px-4 py-2 border-b border-red-500/10 text-red-500 bg-red-500/5 select-none">Snapshot Version</h4>
                     <div className="p-4 overflow-y-auto flex-1 custom-editor-scrollbar bg-white dark:bg-[#101012]">
                       <div data-color-mode={comparingSnapshot.config.template === 'minimal' ? 'light' : 'dark'} className="theme-preview-container">
-                        <MDMarkdown source={compareSnapshotMarkdown} style={{ background: 'transparent', color: 'inherit' }} />
+                        <ErrorBoundary name="Snapshot Preview Renderer" fallback={<p className="text-red-500 p-2">Failed to render snapshot version.</p>}>
+                          <MDMarkdown source={compareSnapshotMarkdown} style={{ background: 'transparent', color: 'inherit' }} />
+                        </ErrorBoundary>
                       </div>
                     </div>
                   </div>
@@ -1882,7 +1885,9 @@ const READMEBuilderPage = () => {
                     <h4 className="text-[10px] font-extrabold uppercase px-4 py-2 border-b border-green-500/10 text-green-600 dark:text-green-400 bg-green-500/5 select-none">Current Editor State</h4>
                     <div className="p-4 overflow-y-auto flex-1 custom-editor-scrollbar bg-white dark:bg-[#101012]">
                       <div data-color-mode={template === 'minimal' ? 'light' : 'dark'} className="theme-preview-container">
-                        <MDMarkdown source={compareCurrentMarkdown} style={{ background: 'transparent', color: 'inherit' }} />
+                        <ErrorBoundary name="Current Editor Preview" fallback={<p className="text-red-500 p-2">Failed to render current state.</p>}>
+                          <MDMarkdown source={compareCurrentMarkdown} style={{ background: 'transparent', color: 'inherit' }} />
+                        </ErrorBoundary>
                       </div>
                     </div>
                   </div>

@@ -37,7 +37,14 @@ export const DonutChart: React.FC<DonutChartProps> = ({
   const circumference = 2 * Math.PI * radius;
   const center = size / 2;
 
+  // Pre-calculate stroke offsets to prevent rendering mutations
   let accumulatedPercent = 0;
+  const strokeOffsets = data.map((item) => {
+    const percent = (item.value / total) * 100;
+    const strokeOffset = circumference - (accumulatedPercent / 100) * circumference;
+    accumulatedPercent += percent;
+    return strokeOffset;
+  });
 
   return (
     <div className="flex flex-col md:flex-row items-center justify-center gap-6 w-full">
@@ -56,8 +63,7 @@ export const DonutChart: React.FC<DonutChartProps> = ({
           {data.map((item, index) => {
             const percent = (item.value / total) * 100;
             const strokeLength = (percent / 100) * circumference;
-            const strokeOffset = circumference - (accumulatedPercent / 100) * circumference;
-            accumulatedPercent += percent;
+            const strokeOffset = strokeOffsets[index];
 
             const color = item.color || DEFAULT_COLORS[index % DEFAULT_COLORS.length];
             const isHovered = activeIndex === index;

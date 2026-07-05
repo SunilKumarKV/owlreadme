@@ -1,20 +1,14 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from 'react';
+import React, { Suspense, useEffect, useState, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import Button from '@/components/Button';
 import Textarea from '@/components/Textarea';
-import { generateRoadmapMarkdown } from '@/utils/markdown';
-import { decodeShareData } from '@/utils/share-utils';
-import { Sparkles, Copy, CheckCircle, ArrowRight, ListChecks } from 'lucide-react';
+import { generateRoadmapMarkdown, RoadmapData } from '@/utils/markdown';
+import { decodeShareData, validateRoadmapData } from '@/utils/share-utils';
+import { Copy, CheckCircle, ArrowRight, ListChecks } from 'lucide-react';
 import { BRANDING } from '@/config/branding';
-
-interface RoadmapData {
-  title: string;
-  steps: string[];
-  template?: string;
-}
 
 function ShareRoadmapContent() {
   const searchParams = useSearchParams();
@@ -23,13 +17,10 @@ function ShareRoadmapContent() {
 
   const [copied, setCopied] = useState(false);
   const [viewMode, setViewMode] = useState<'visual' | 'source'>('visual');
-  const [decodedData, setDecodedData] = useState<RoadmapData | null>(null);
-
-  useEffect(() => {
-    if (dataParam) {
-      const decoded = decodeShareData<RoadmapData>(dataParam);
-      setDecodedData(decoded);
-    }
+  
+  const decodedData = useMemo(() => {
+    if (!dataParam) return null;
+    return decodeShareData<RoadmapData>(dataParam, validateRoadmapData);
   }, [dataParam]);
 
   // Set page title dynamically

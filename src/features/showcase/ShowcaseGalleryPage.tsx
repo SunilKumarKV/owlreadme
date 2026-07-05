@@ -27,6 +27,7 @@ import useReadmeStore from '@/stores/readme-store';
 import { generateREADME } from '@/utils/markdown';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { BRANDING } from '@/config/branding';
 
 const MDMarkdown = dynamic(
@@ -496,7 +497,9 @@ const ShowcaseGalleryPage = () => {
               
               {modalTab === 'visual' && (
                 <div data-color-mode={previewingShowcase.theme === 'minimal' ? 'light' : 'dark'} className="theme-preview-container p-4 bg-gray-50 dark:bg-black/40 rounded-xl border border-gray-200 dark:border-gray-800">
-                  <MDMarkdown source={compiledMarkdown} style={{ background: 'transparent', color: 'inherit' }} />
+                  <ErrorBoundary name="Showcase Preview Renderer" fallback={<p className="text-red-500 text-xs p-2">Failed to render showcase preview.</p>}>
+                    <MDMarkdown source={compiledMarkdown} style={{ background: 'transparent', color: 'inherit' }} />
+                  </ErrorBoundary>
                 </div>
               )}
 

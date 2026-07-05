@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { downloadTextFile, downloadJsonBackup, downloadZipPackage, exportToPdf } from '../export-utils';
+import { downloadTextFile, downloadJsonBackup, downloadZipPackage, exportToPdf, sanitizeHtml } from '../export-utils';
 
 describe('export-utils', () => {
   let appendSpy: any;
@@ -17,6 +17,7 @@ describe('export-utils', () => {
         href: '',
         download: '',
         style: {},
+        setAttribute: vi.fn(),
         appendChild: vi.fn(),
         removeChild: vi.fn(),
         click: clickMock,
@@ -87,5 +88,22 @@ describe('export-utils', () => {
     expect(createElementSpy).toHaveBeenCalledWith('iframe');
     expect(appendSpy).toHaveBeenCalled();
     expect(querySelectorSpy).toHaveBeenCalledWith('link[rel="stylesheet"], style');
+  });
+
+  describe('sanitizeHtml', () => {
+    it('should strip script tags and event handlers but keep formatting', () => {
+      const dirty = '<div><h1>Title</h1><script>alert("xss")</script><p onclick="steal()">Hello</p></div>';
+      const clean = sanitizeHtml(dirty);
+      expect(clean).toContain('<h1>Title</h1>');
+      expect(clean).toContain('<p>Hello</p>');
+      expect(clean).not.toContain('<script>');
+      expect(clean).not.toContain('onclick');
+    });
+
+    it('should strip javascript protocol links', () => {
+      const dirty = '<a href="javascript:alert(1)">Click here</a>';
+      const clean = sanitizeHtml(dirty);
+      expect(clean).not.toContain('href="javascript:');
+    });
   });
 });

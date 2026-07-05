@@ -11,16 +11,32 @@ export async function callGithubApi<T>(endpoint: string, options: RequestInit = 
     ...(options.headers as Record<string, string>),
   };
 
-  const response = await fetch(url, {
-    ...options,
-    headers,
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-  if (!response.ok) {
-    throw await handleApiError(response, `GitHub API call to ${endpoint} failed.`);
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers,
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw await handleApiError(response, `GitHub API call to ${endpoint} failed.`);
+    }
+
+    return response.json() as Promise<T>;
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error('GitHub API request timed out after 10 seconds. Please check your network connection and try again.');
+    }
+    if (error instanceof TypeError && error.message === 'Failed to fetch') {
+      throw new Error('Network error: Failed to connect to GitHub. Please check your internet connection.');
+    }
+    throw error;
   }
-
-  return response.json() as Promise<T>;
 }
 
 export async function callGithubGraphQL<T>(query: string, variables: any = {}): Promise<T> {
@@ -29,20 +45,36 @@ export async function callGithubGraphQL<T>(query: string, variables: any = {}): 
     'Content-Type': 'application/json',
   };
 
-  const response = await fetch(GITHUB_GRAPHQL_API_URL, {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({ query, variables }),
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-  if (!response.ok) {
-    throw await handleApiError(response, 'GitHub GraphQL API call failed.');
+  try {
+    const response = await fetch(GITHUB_GRAPHQL_API_URL, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ query, variables }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw await handleApiError(response, 'GitHub GraphQL API call failed.');
+    }
+
+    const result = await response.json();
+    if (result.errors) {
+      throw new Error(`GitHub GraphQL error: ${result.errors.map((e: any) => e.message).join(', ')}`);
+    }
+
+    return result.data as T;
+  } catch (error: any) {
+    clearTimeout(timeoutId);
+    if (error.name === 'AbortError') {
+      throw new Error('GitHub API request timed out after 10 seconds. Please check your network connection and try again.');
+    }
+    if (error instanceof TypeError && error.message === 'Failed to fetch') {
+      throw new Error('Network error: Failed to connect to GitHub. Please check your internet connection.');
+    }
+    throw error;
   }
-
-  const result = await response.json();
-  if (result.errors) {
-    throw new Error(`GitHub GraphQL error: ${result.errors.map((e: any) => e.message).join(', ')}`);
-  }
-
-  return result.data as T;
 }

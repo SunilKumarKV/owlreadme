@@ -18,16 +18,10 @@ import {
   ArrowRight,
   BookOpen,
   Layout,
-  Code,
-  FileCode,
   LineChart,
-  Grid,
-  Shield,
-  HelpCircle,
   Menu,
   X,
   CheckCircle,
-  Heart,
   Terminal,
   Cpu,
   MousePointerClick,
@@ -40,7 +34,10 @@ const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [scrolled, setScrolled] = useState(false);
-  const [reduceMotion, setReduceMotion] = useState(false);
+  const [reduceMotion, setReduceMotion] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  });
   const router = useRouter();
 
   const handleStartBuilding = (e: React.FormEvent) => {
@@ -56,7 +53,6 @@ const LandingPage: React.FC = () => {
     }
 
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setReduceMotion(mediaQuery.matches);
 
     const handleMotionChange = () => setReduceMotion(mediaQuery.matches);
     mediaQuery.addEventListener?.('change', handleMotionChange);

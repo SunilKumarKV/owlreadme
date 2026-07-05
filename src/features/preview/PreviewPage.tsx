@@ -8,6 +8,7 @@ import useReadmeStore from '@/stores/readme-store';
 import useRoadmapStore from '@/stores/roadmap-store';
 import useThemeStore from '@/stores/theme-store';
 import { generateREADME, generateRoadmapMarkdown, combineMarkdown } from '@/utils/markdown';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import '@uiw/react-md-editor/markdown-editor.css';
 
 // Dynamically import the Markdown preview component to disable SSR
@@ -141,7 +142,9 @@ const PreviewPage = () => {
             <h2 className="text-xl font-bold mb-2 hidden lg:block text-black dark:text-white">Live Preview</h2>
             <div className="flex-1 p-6 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-[#121212] overflow-auto shadow-sm transition-all duration-300">
               <div data-color-mode={colorMode} className="theme-preview-container">
-                <MDMarkdown source={markdown} style={{ background: 'transparent', color: 'inherit' }} />
+                <ErrorBoundary name="Live Preview Renderer" fallback={<div className="p-4 text-xs text-red-500 font-semibold bg-red-50 dark:bg-red-950/20 border border-red-200 dark:border-red-900 rounded-lg">Failed to render preview. The markdown content may be malformed.</div>}>
+                  <MDMarkdown source={markdown} style={{ background: 'transparent', color: 'inherit' }} />
+                </ErrorBoundary>
               </div>
             </div>
           </div>
