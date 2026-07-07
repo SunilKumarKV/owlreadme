@@ -1,11 +1,17 @@
 "use client";
 
+import { useShallow } from 'zustand/react/shallow';
 import Button from '@/components/Button';
 import RadioGroup from '@/components/RadioGroup';
 import useThemeStore from '@/stores/theme-store';
 
 const ThemeSelectorPage = () => {
-  const { theme, setTheme } = useThemeStore();
+  const { theme, setTheme } = useThemeStore(
+    useShallow((state) => ({
+      theme: state.theme,
+      setTheme: state.setTheme,
+    }))
+  );
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100 dark:bg-[#1e1e1e]">

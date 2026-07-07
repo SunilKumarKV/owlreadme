@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Button from '@/components/Button';
 import { ProfileCardSkeleton } from '@/components/Skeleton';
 
@@ -29,10 +30,11 @@ export const GithubProfilePanel = ({
       <h2 className="text-xl font-bold mb-4 text-left border-b pb-2 border-gray-100 dark:border-gray-800">GitHub Profile</h2>
       {avatarUrl ? (
         <div className="flex flex-col items-center">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
+          <Image
             src={avatarUrl}
             alt="GitHub Avatar"
+            width={96}
+            height={96}
             className="w-24 h-24 rounded-full border-2 border-blue-500 shadow-sm mb-4"
           />
           <h3 className="text-lg font-bold">{readmeName || 'Unnamed Developer'}</h3>

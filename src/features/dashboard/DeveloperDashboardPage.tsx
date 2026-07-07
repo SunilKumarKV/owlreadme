@@ -14,15 +14,42 @@ import { useGithubProfile } from './hooks/useGithubProfile';
 import { useRepositoryAnalysis } from './hooks/useRepositoryAnalysis';
 import { useOwlAI } from './hooks/useOwlAI';
 
+import dynamic from 'next/dynamic';
 import { GithubProfilePanel } from './components/GithubProfilePanel';
 import { QuickActionsPanel } from './components/QuickActionsPanel';
 import { ProjectWorkspacesPanel } from './components/ProjectWorkspacesPanel';
-import { RepositoryInsightsPanel } from './components/RepositoryInsightsPanel';
-import { OwlAIAssistantPanel } from './components/OwlAIAssistantPanel';
 import { WorkspaceConfigurationsPanel } from './components/WorkspaceConfigurationsPanel';
 import { WorkspaceStatisticsPanel } from './components/WorkspaceStatisticsPanel';
-import { WorkspaceDialogs } from './components/WorkspaceDialogs';
 import { NotificationOverlay } from './components/NotificationOverlay';
+
+const RepositoryInsightsPanel = dynamic(
+  () => import('./components/RepositoryInsightsPanel').then((mod) => mod.RepositoryInsightsPanel),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-48 animate-pulse bg-gray-150 dark:bg-gray-800/40 rounded-xl flex items-center justify-center text-xs text-gray-400">
+        Loading insights...
+      </div>
+    ),
+  }
+);
+
+const OwlAIAssistantPanel = dynamic(
+  () => import('./components/OwlAIAssistantPanel').then((mod) => mod.OwlAIAssistantPanel),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-64 animate-pulse bg-gray-150 dark:bg-gray-800/40 rounded-xl flex items-center justify-center text-xs text-gray-400">
+        Loading AI assistant...
+      </div>
+    ),
+  }
+);
+
+const WorkspaceDialogs = dynamic(
+  () => import('./components/WorkspaceDialogs').then((mod) => mod.WorkspaceDialogs),
+  { ssr: false }
+);
 
 const DeveloperDashboardPage = () => {
   // 1. Core local states via granular hooks

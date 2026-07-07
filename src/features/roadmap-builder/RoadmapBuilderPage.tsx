@@ -1,5 +1,6 @@
 "use client";
 
+import { useShallow } from 'zustand/react/shallow';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Textarea from '@/components/Textarea';
@@ -7,7 +8,15 @@ import useRoadmapStore from '@/stores/roadmap-store';
 import { ROADMAP_TEMPLATES } from '@/utils/roadmap-templates';
 
 const RoadmapBuilderPage = () => {
-  const { title, steps, template, setField, setTemplate } = useRoadmapStore();
+  const { title, steps, template, setField, setTemplate } = useRoadmapStore(
+    useShallow((state) => ({
+      title: state.title,
+      steps: state.steps,
+      template: state.template,
+      setField: state.setField,
+      setTemplate: state.setTemplate,
+    }))
+  );
 
   const handleAddStep = () => {
     setField('steps', [...steps, '']);

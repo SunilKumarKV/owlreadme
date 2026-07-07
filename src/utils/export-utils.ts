@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import JSZip from 'jszip';
 
 /**
  * Shared helper to create a temporary anchor element and trigger a file download.
@@ -34,6 +33,7 @@ export async function downloadZipPackage(
   zipName: string = 'owlreadme-package.zip'
 ): Promise<void> {
   if (!readmeContent && !roadmapContent) return;
+  const JSZip = (await import('jszip')).default;
   const zip = new JSZip();
   if (readmeContent) {
     zip.file('README.md', readmeContent);
