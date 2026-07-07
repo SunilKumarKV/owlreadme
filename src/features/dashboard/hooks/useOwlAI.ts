@@ -1,25 +1,22 @@
 import { useCallback } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { getAIService } from '@/utils/ai/ai-service';
 import useReadmeStore from '@/stores/readme-store';
 import useRoadmapStore from '@/stores/roadmap-store';
 
-type ReadmeStoreState = ReturnType<typeof useReadmeStore.getState>;
-type RoadmapStoreState = ReturnType<typeof useRoadmapStore.getState>;
-
 interface OwlAIOptions {
-  readmeState: ReadmeStoreState;
-  roadmapState: RoadmapStoreState;
   setAiLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   addNotification: (msg: string) => void;
 }
 
 export const useOwlAI = (options: OwlAIOptions) => {
-  const { readmeState, roadmapState, setAiLoading, setError, addNotification } = options;
+  const { setAiLoading, setError, addNotification } = options;
+
   const {
-    name: readmeName,
-    role: readmeRole,
-    about: readmeAbout,
+    readmeName,
+    readmeRole,
+    readmeAbout,
     followers,
     publicRepos,
     repoAnalysis,
@@ -28,13 +25,35 @@ export const useOwlAI = (options: OwlAIOptions) => {
     setSkills,
     setProjects,
     setAiSuggestions,
-  } = readmeState;
+    incrementAiGenerations,
+  } = useReadmeStore(
+    useShallow((state) => ({
+      readmeName: state.name,
+      readmeRole: state.role,
+      readmeAbout: state.about,
+      followers: state.followers,
+      publicRepos: state.publicRepos,
+      repoAnalysis: state.repoAnalysis,
+      aiSuggestions: state.aiSuggestions,
+      setAbout: state.setAbout,
+      setSkills: state.setSkills,
+      setProjects: state.setProjects,
+      setAiSuggestions: state.setAiSuggestions,
+      incrementAiGenerations: state.incrementAiGenerations,
+    }))
+  );
 
   const {
-    title: roadmapTitle,
-    steps,
-    setField: setRoadmapField,
-  } = roadmapState;
+    roadmapTitle,
+    roadmapSteps,
+    setRoadmapField,
+  } = useRoadmapStore(
+    useShallow((state) => ({
+      roadmapTitle: state.title,
+      roadmapSteps: state.steps,
+      setRoadmapField: state.setField,
+    }))
+  );
 
   const handleConsultOwlAI = useCallback(async () => {
     setAiLoading(true);
@@ -50,7 +69,7 @@ export const useOwlAI = (options: OwlAIOptions) => {
       };
 
       const readmeSugg = await service.generateReadmeSuggestions(profileData, repoAnalysis);
-      const roadmapSugg = await service.generateRoadmapSuggestions(roadmapTitle || 'Software Developer', steps);
+      const roadmapSugg = await service.generateRoadmapSuggestions(roadmapTitle || 'Software Developer', roadmapSteps);
       const profileSugg = await service.generateProfileSuggestions(profileData, repoAnalysis);
 
       setAiSuggestions({
@@ -59,7 +78,7 @@ export const useOwlAI = (options: OwlAIOptions) => {
         profile: profileSugg,
       });
 
-      readmeState.incrementAiGenerations();
+      incrementAiGenerations();
       addNotification('Owl AI suggestions generated successfully!');
     } catch (err) {
       console.error(err);
@@ -75,9 +94,9 @@ export const useOwlAI = (options: OwlAIOptions) => {
     publicRepos,
     repoAnalysis,
     roadmapTitle,
-    steps,
+    roadmapSteps,
     setAiSuggestions,
-    readmeState,
+    incrementAiGenerations,
     setAiLoading,
     setError,
     addNotification,

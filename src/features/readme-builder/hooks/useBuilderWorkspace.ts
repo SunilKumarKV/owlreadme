@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 import { useEffect, useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { useSearchParams } from 'next/navigation';
 import useWorkspaceStore from '@/stores/workspace-store';
 import useReadmeStore from '@/stores/readme-store';
@@ -18,7 +19,14 @@ export const useBuilderWorkspace = () => {
     activeWorkspaceId,
     createWorkspace,
     setActiveWorkspaceId,
-  } = useWorkspaceStore();
+  } = useWorkspaceStore(
+    useShallow((state) => ({
+      workspaces: state.workspaces,
+      activeWorkspaceId: state.activeWorkspaceId,
+      createWorkspace: state.createWorkspace,
+      setActiveWorkspaceId: state.setActiveWorkspaceId,
+    }))
+  );
 
   const {
     setName,
@@ -33,9 +41,9 @@ export const useBuilderWorkspace = () => {
     setSocials,
     setAchievements,
     setHeader,
-  } = useReadmeStore();
+  } = useReadmeStore.getState();
 
-  const { createSnapshot, pushUndo } = useHistoryStore();
+  const { createSnapshot, pushUndo } = useHistoryStore.getState();
 
   useEffect(() => {
     if (!username) return;

@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import useReadmeStore, { RepoAnalysisResult } from '@/stores/readme-store';
 import useWorkspaceStore from '@/stores/workspace-store';
 import { fetchGithubProfile, fetchGithubRepos } from '@/utils/github-api';
@@ -12,11 +13,11 @@ interface GithubProfileOptions {
 
 export const useGithubProfile = (options: GithubProfileOptions) => {
   const { username, setLoading, setError } = options;
-  const readmeState = useReadmeStore();
+
   const {
-    name: readmeName,
-    role: readmeRole,
-    about: readmeAbout,
+    readmeName,
+    readmeRole,
+    readmeAbout,
     avatarUrl,
     followers,
     following,
@@ -32,7 +33,28 @@ export const useGithubProfile = (options: GithubProfileOptions) => {
     setFollowing,
     setPublicRepos,
     setRepoAnalysis,
-  } = readmeState;
+  } = useReadmeStore(
+    useShallow((state) => ({
+      readmeName: state.name,
+      readmeRole: state.role,
+      readmeAbout: state.about,
+      avatarUrl: state.avatarUrl,
+      followers: state.followers,
+      following: state.following,
+      publicRepos: state.publicRepos,
+      repoAnalysis: state.repoAnalysis,
+      setName: state.setName,
+      setRole: state.setRole,
+      setAbout: state.setAbout,
+      setProjects: state.setProjects,
+      setSocials: state.setSocials,
+      setAvatarUrl: state.setAvatarUrl,
+      setFollowers: state.setFollowers,
+      setFollowing: state.setFollowing,
+      setPublicRepos: state.setPublicRepos,
+      setRepoAnalysis: state.setRepoAnalysis,
+    }))
+  );
 
   useEffect(() => {
     if (!username) return;
@@ -112,6 +134,5 @@ export const useGithubProfile = (options: GithubProfileOptions) => {
     following,
     publicRepos,
     repoAnalysis: repoAnalysis as RepoAnalysisResult | null,
-    readmeState,
   };
 };

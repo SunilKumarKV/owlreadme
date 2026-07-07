@@ -1,5 +1,7 @@
 "use client";
 
+import { useShallow } from 'zustand/react/shallow';
+import useReadmeStore from '@/stores/readme-store';
 import useRoadmapStore from '@/stores/roadmap-store';
 import useThemeStore from '@/stores/theme-store';
 
@@ -54,7 +56,6 @@ const DeveloperDashboardPage = () => {
     followers,
     publicRepos,
     repoAnalysis,
-    readmeState,
   } = useGithubProfile({
     username,
     setLoading: loadingState.setLoading,
@@ -68,9 +69,6 @@ const DeveloperDashboardPage = () => {
   });
 
   // 6. Owl AI operations
-  const roadmapState = useRoadmapStore();
-  const { theme, templatesUsedCount: themeTemplatesCount } = useThemeStore();
-
   const {
     aiSuggestions,
     handleConsultOwlAI,
@@ -82,17 +80,50 @@ const DeveloperDashboardPage = () => {
     applyProfileBio,
     applyPortfolioDescription,
   } = useOwlAI({
-    readmeState,
-    roadmapState,
     setAiLoading: loadingState.setAiLoading,
     setError: loadingState.setError,
     addNotification,
   });
 
+  // 7. Store selectors for display & configurations
+  const {
+    readmeTemplate,
+    readmeExportsCount,
+    readmeTemplatesCount,
+  } = useReadmeStore(
+    useShallow((state) => ({
+      readmeTemplate: state.template,
+      readmeExportsCount: state.readmeExportsCount,
+      readmeTemplatesCount: state.templatesUsedCount,
+    }))
+  );
+
+  const {
+    roadmapTemplate,
+    roadmapExportsCount,
+    roadmapTemplatesCount,
+  } = useRoadmapStore(
+    useShallow((state) => ({
+      roadmapTemplate: state.template,
+      roadmapExportsCount: state.roadmapExportsCount,
+      roadmapTemplatesCount: state.templatesUsedCount,
+    }))
+  );
+
+  const {
+    theme,
+    themeTemplatesCount,
+  } = useThemeStore(
+    useShallow((state) => ({
+      theme: state.theme,
+      themeTemplatesCount: state.templatesUsedCount,
+    }))
+  );
+
   // Compute total templates count
   const totalTemplatesCount =
-    (readmeState.templatesUsedCount || 0) +
-    (roadmapState.templatesUsedCount || 0) +
+    (readmeTemplatesCount || 0) +
+    (roadmapTemplatesCount || 0) +
     themeTemplatesCount;
 
   return (
@@ -172,16 +203,16 @@ const DeveloperDashboardPage = () => {
             <WorkspaceConfigurationsPanel
               isReadmeType={isReadmeType}
               isRoadmapType={isRoadmapType}
-              readmeTemplate={readmeState.template || 'minimal'}
-              roadmapTemplate={roadmapState.template}
+              readmeTemplate={readmeTemplate || 'minimal'}
+              roadmapTemplate={roadmapTemplate}
               theme={theme}
             />
 
             <WorkspaceStatisticsPanel
               isReadmeType={isReadmeType}
               isRoadmapType={isRoadmapType}
-              readmeExportsCount={readmeState.readmeExportsCount || 0}
-              roadmapExportsCount={roadmapState.roadmapExportsCount || 0}
+              readmeExportsCount={readmeExportsCount || 0}
+              roadmapExportsCount={roadmapExportsCount || 0}
               totalTemplatesCount={totalTemplatesCount}
             />
           </div>

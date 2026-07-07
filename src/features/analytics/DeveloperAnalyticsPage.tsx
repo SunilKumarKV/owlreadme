@@ -13,12 +13,10 @@ import DonutChart from '@/components/charts/DonutChart';
 import BarChart from '@/components/charts/BarChart';
 import AreaChart from '@/components/charts/AreaChart';
 
+import { useShallow } from 'zustand/react/shallow';
+
 const DeveloperAnalyticsPage: React.FC = () => {
   const workspaces = useWorkspaceStore((state) => state.workspaces);
-  const readmeState = useReadmeStore();
-  const roadmapState = useRoadmapStore();
-
-  const [activeChartTab, setActiveChartTab] = useState<'languages' | 'exports' | 'activity'>('languages');
 
   const {
     avatarUrl,
@@ -28,16 +26,37 @@ const DeveloperAnalyticsPage: React.FC = () => {
     repoAnalysis,
     aiGenerationsCount,
     readmeExportsCount,
-    templatesUsedCount: readmeTemplatesCount,
-  } = readmeState;
+    readmeTemplatesCount,
+    exportHistory,
+  } = useReadmeStore(
+    useShallow((state) => ({
+      avatarUrl: state.avatarUrl,
+      followers: state.followers,
+      following: state.following,
+      publicRepos: state.publicRepos,
+      repoAnalysis: state.repoAnalysis,
+      aiGenerationsCount: state.aiGenerationsCount,
+      readmeExportsCount: state.readmeExportsCount,
+      readmeTemplatesCount: state.templatesUsedCount,
+      exportHistory: state.exportHistory,
+    }))
+  );
 
   const {
     roadmapExportsCount,
-    templatesUsedCount: roadmapTemplatesCount,
+    roadmapTemplatesCount,
     steps,
-  } = roadmapState;
+  } = useRoadmapStore(
+    useShallow((state) => ({
+      roadmapExportsCount: state.roadmapExportsCount,
+      roadmapTemplatesCount: state.templatesUsedCount,
+      steps: state.steps,
+    }))
+  );
 
   const themeTemplatesCount = useThemeStore((state) => state.templatesUsedCount);
+
+  const [activeChartTab, setActiveChartTab] = useState<'languages' | 'exports' | 'activity'>('languages');
 
   const hasGitHubData = !!repoAnalysis;
 
@@ -49,7 +68,7 @@ const DeveloperAnalyticsPage: React.FC = () => {
   const estimatedContributions = hasGitHubData ? (publicRepos || 0) * 12 + totalStars * 4 + totalForks * 8 + 42 : 0;
 
   // 2. Technology Analytics
-  const languagesData = repoAnalysis?.languages.map((l) => ({
+  const languagesData = repoAnalysis?.languages.map((l: any) => ({
     name: l.name,
     value: l.count,
   })) || [];
@@ -63,7 +82,7 @@ const DeveloperAnalyticsPage: React.FC = () => {
   const totalSteps = steps.length;
 
   // 4. Charts - Export History aggregation
-  const exportHistory = readmeState.exportHistory || [];
+  const exportHistoryList = exportHistory || [];
   const exportCounts = {
     README: 0,
     Roadmap: 0,
@@ -73,7 +92,7 @@ const DeveloperAnalyticsPage: React.FC = () => {
     Share: 0,
   };
 
-  exportHistory.forEach((item) => {
+  exportHistoryList.forEach((item) => {
     const f = item.format.toLowerCase();
     if (f.includes('readme')) exportCounts.README++;
     else if (f.includes('roadmap')) exportCounts.Roadmap++;
@@ -98,7 +117,7 @@ const DeveloperAnalyticsPage: React.FC = () => {
   const weekdayActivity = [0, 0, 0, 0, 0, 0, 0];
 
   if (repoAnalysis?.topActive) {
-    repoAnalysis.topActive.forEach((repo) => {
+    repoAnalysis.topActive.forEach((repo: any) => {
       const date = new Date(repo.lastUpdated);
       const day = date.getDay();
       weekdayActivity[day]++;
@@ -217,7 +236,7 @@ const DeveloperAnalyticsPage: React.FC = () => {
                   <div>
                     <span className="text-xs text-gray-400 block mb-2 uppercase font-bold tracking-wider">Top 5 Skill Recommendations</span>
                     <div className="flex flex-wrap gap-1.5">
-                      {(repoAnalysis?.suggestedSkills || []).slice(0, 5).map((skill) => (
+                      {(repoAnalysis?.suggestedSkills || []).slice(0, 5).map((skill: any) => (
                         <span key={skill} className="px-2 py-0.5 text-[11px] font-semibold bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded text-gray-700 dark:text-gray-300">
                           {skill}
                         </span>

@@ -2,6 +2,7 @@
 "use client";
 
 import { useState } from 'react';
+import { useShallow } from 'zustand/react/shallow';
 import { BRANDING } from '@/config/branding';
 import dynamic from 'next/dynamic';
 import ErrorBoundary from '@/components/ErrorBoundary';
@@ -113,7 +114,52 @@ const READMEBuilderPage = () => {
     applyPreset,
     applyTemplate,
     reset,
-  } = useReadmeStore();
+  } = useReadmeStore(
+    useShallow((state) => ({
+      name: state.name,
+      role: state.role,
+      about: state.about,
+      skills: state.skills,
+      projects: state.projects,
+      socials: state.socials,
+      template: state.template,
+      githubStats: state.githubStats,
+      techStack: state.techStack,
+      socialLinks: state.socialLinks,
+      achievements: state.achievements,
+      header: state.header,
+      sections: state.sections,
+      support: state.support,
+      quotes: state.quotes,
+      customMarkdown: state.customMarkdown,
+      standaloneVisitor: state.standaloneVisitor,
+      setName: state.setName,
+      setRole: state.setRole,
+      setAbout: state.setAbout,
+      setSkills: state.setSkills,
+      setProjects: state.setProjects,
+      setSocials: state.setSocials,
+      setTemplate: state.setTemplate,
+      setGithubStats: state.setGithubStats,
+      setTechStack: state.setTechStack,
+      setSocialLinks: state.setSocialLinks,
+      setAchievements: state.setAchievements,
+      setHeader: state.setHeader,
+      setSections: state.setSections,
+      setSupport: state.setSupport,
+      setQuotes: state.setQuotes,
+      setCustomMarkdown: state.setCustomMarkdown,
+      setStandaloneVisitor: state.setStandaloneVisitor,
+      featuredProjects: state.featuredProjects,
+      setFeaturedProjects: state.setFeaturedProjects,
+      animatedComponents: state.animatedComponents,
+      setAnimatedComponents: state.setAnimatedComponents,
+      updateAnimatedComponentItem: state.updateAnimatedComponentItem,
+      applyPreset: state.applyPreset,
+      applyTemplate: state.applyTemplate,
+      reset: state.reset,
+    }))
+  );
 
   const {
     templates: communityTemplates,
@@ -126,7 +172,20 @@ const READMEBuilderPage = () => {
     toggleFavorite: toggleCommunityFavorite,
     addRecentlyUsed,
     importTemplate,
-  } = useTemplateStore();
+  } = useTemplateStore(
+    useShallow((state) => ({
+      templates: state.templates,
+      favorites: state.favorites,
+      recentlyUsed: state.recentlyUsed,
+      publishTemplate: state.publishTemplate,
+      deleteTemplate: state.deleteTemplate,
+      toggleLike: state.toggleLike,
+      incrementDownloads: state.incrementDownloads,
+      toggleFavorite: state.toggleFavorite,
+      addRecentlyUsed: state.addRecentlyUsed,
+      importTemplate: state.importTemplate,
+    }))
+  );
 
   const {
     builderCollapsed,
@@ -144,10 +203,43 @@ const READMEBuilderPage = () => {
     setFullscreenPanel,
     setMobileViewMode,
     resetLayout,
-  } = usePanelStore();
+  } = usePanelStore(
+    useShallow((state) => ({
+      builderCollapsed: state.builderCollapsed,
+      previewCollapsed: state.previewCollapsed,
+      markdownCollapsed: state.markdownCollapsed,
+      builderSize: state.builderSize,
+      previewSize: state.previewSize,
+      markdownSize: state.markdownSize,
+      fullscreenPanel: state.fullscreenPanel,
+      mobileViewMode: state.mobileViewMode,
+      setBuilderCollapsed: state.setBuilderCollapsed,
+      setPreviewCollapsed: state.setPreviewCollapsed,
+      setMarkdownCollapsed: state.setMarkdownCollapsed,
+      setSizes: state.setSizes,
+      setFullscreenPanel: state.setFullscreenPanel,
+      setMobileViewMode: state.setMobileViewMode,
+      resetLayout: state.resetLayout,
+    }))
+  );
 
-  const { theme, setTheme } = useThemeStore();
-  const { past, future, snapshots, deleteSnapshot, clearHistory, pushUndo } = useHistoryStore();
+  const { theme, setTheme } = useThemeStore(
+    useShallow((state) => ({
+      theme: state.theme,
+      setTheme: state.setTheme,
+    }))
+  );
+
+  const { past, future, snapshots, deleteSnapshot, clearHistory, pushUndo } = useHistoryStore(
+    useShallow((state) => ({
+      past: state.past,
+      future: state.future,
+      snapshots: state.snapshots,
+      deleteSnapshot: state.deleteSnapshot,
+      clearHistory: state.clearHistory,
+      pushUndo: state.pushUndo,
+    }))
+  );
 
   // ── Initialize Custom Hooks ───────────────────────────────────────────────
   const {
