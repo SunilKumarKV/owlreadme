@@ -16,6 +16,28 @@ import { getTheme, getDefaultTheme } from '../../theme-engine';
 
 export type { READMEData, RoadmapData } from '../types';
 
+// Memoization cache mapping cache keys to rendered markdown strings
+const renderCache = new Map<string, string>();
+
+/**
+ * Renders a section with memoized cache lookup to avoid expensive rebuilds.
+ */
+export const renderWithCache = (sectionId: string, config: any, context: any): string => {
+  const cacheKey = `${sectionId}-${JSON.stringify(config)}-${JSON.stringify(context)}`;
+  if (renderCache.has(cacheKey)) {
+    return renderCache.get(cacheKey)!;
+  }
+  const rendered = renderRegisteredSection(sectionId, config, context);
+  renderCache.set(cacheKey, rendered);
+
+  // Maintain a fixed cache pool size to prevent memory leaks
+  if (renderCache.size > 150) {
+    const firstKey = renderCache.keys().next().value;
+    if (firstKey) renderCache.delete(firstKey);
+  }
+  return rendered;
+};
+
 /**
  * Generates the complete README markdown content based on the provided configuration data.
  * Executes each active section's renderer in the order defined by the sections manager layout.
@@ -60,7 +82,7 @@ export const generateREADME = (data: READMEData): string => {
           statsMarkdown,
         ].filter(Boolean).join('\n\n');
       } else {
-        // Resolve standard section config mapping
+        // Resolve standard section config mapping dynamically
         let config: any = undefined;
         switch (sectionId) {
           case 'header':
@@ -99,9 +121,12 @@ export const generateREADME = (data: READMEData): string => {
           case 'animatedComponents':
             config = data.animatedComponents;
             break;
+          default:
+            config = (data as any)[sectionId];
         }
 
-        sectionMarkdown = renderRegisteredSection(sectionId, config, context);
+        // Call the cached renderer function
+        sectionMarkdown = renderWithCache(sectionId, config, context);
       }
 
       if (sectionMarkdown && sectionMarkdown.trim()) {
@@ -112,7 +137,7 @@ export const generateREADME = (data: READMEData): string => {
     return blocks.join('\n\n');
   }
 
-  // Template fallback logic
+  // Template fallback logic for backwards compatibility
   const headerMarkdown = renderHeader(data.header, data.githubStats?.username || '');
   let body = '';
 

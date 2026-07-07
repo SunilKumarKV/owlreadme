@@ -9,8 +9,7 @@ import ErrorBoundary from '@/components/ErrorBoundary';
 import useReadmeStore from '@/stores/readme-store';
 import useRoadmapStore from '@/stores/roadmap-store';
 import useThemeStore from '@/stores/theme-store';
-import { generateREADME, generateRoadmapMarkdown, combineMarkdown } from '@/utils/markdown';
-import { downloadTextFile, downloadZipPackage, downloadJsonBackup, exportToPdf } from '@/utils/export-utils';
+import { generateREADME, generateRoadmapMarkdown, combineMarkdown, exportFile } from '@/utils/markdown';
 import { generateShareUrl } from '@/utils/share-utils';
 import '@uiw/react-md-editor/markdown-editor.css';
 import {
@@ -132,7 +131,15 @@ const ExportCenterPage = () => {
       addToast('README content is empty. Add some details first!', 'error');
       return;
     }
-    downloadTextFile('README.md', readmeMarkdown);
+    exportFile('markdown', {
+      readmeContent: readmeMarkdown,
+      roadmapContent: roadmapMarkdown,
+      readmeData: readmeState,
+      roadmapData: roadmapState,
+      theme,
+      title: 'README.md',
+      filename: 'README.md'
+    });
     readmeState.incrementReadmeExports();
     readmeState.addExportHistoryItem('README.md', getProjectName('README'));
     addToast('README.md download started!', 'success');
@@ -143,7 +150,15 @@ const ExportCenterPage = () => {
       addToast('Roadmap content is empty. Create some steps first!', 'error');
       return;
     }
-    downloadTextFile('roadmap.md', roadmapMarkdown);
+    exportFile('markdown', {
+      readmeContent: roadmapMarkdown,
+      roadmapContent: roadmapMarkdown,
+      readmeData: readmeState,
+      roadmapData: roadmapState,
+      theme,
+      title: 'roadmap.md',
+      filename: 'roadmap.md'
+    });
     roadmapState.incrementRoadmapExports();
     readmeState.addExportHistoryItem('roadmap.md', getProjectName('roadmap'));
     addToast('roadmap.md download started!', 'success');
@@ -155,7 +170,15 @@ const ExportCenterPage = () => {
       return;
     }
     try {
-      await downloadZipPackage(readmeMarkdown, roadmapMarkdown, 'owlreadme-workspace.zip');
+      await exportFile('zip', {
+        readmeContent: readmeMarkdown,
+        roadmapContent: roadmapMarkdown,
+        readmeData: readmeState,
+        roadmapData: roadmapState,
+        theme,
+        title: 'Combined Workspace',
+        filename: 'owlreadme-workspace.zip'
+      });
       readmeState.incrementReadmeExports();
       roadmapState.incrementRoadmapExports();
       readmeState.addExportHistoryItem('ZIP Package', getProjectName('Combined'));
@@ -167,7 +190,15 @@ const ExportCenterPage = () => {
   };
 
   const handleDownloadJson = () => {
-    downloadJsonBackup(readmeState, roadmapState, 'owlreadme-backup.json');
+    exportFile('json', {
+      readmeContent: readmeMarkdown,
+      roadmapContent: roadmapMarkdown,
+      readmeData: readmeState,
+      roadmapData: roadmapState,
+      theme,
+      title: 'Backup',
+      filename: 'owlreadme-backup.json'
+    });
     readmeState.incrementReadmeExports();
     roadmapState.incrementRoadmapExports();
     readmeState.addExportHistoryItem('JSON Backup', getProjectName('Combined'));
@@ -182,7 +213,15 @@ const ExportCenterPage = () => {
       return;
     }
     
-    exportToPdf(printHtml, theme, activeTitle);
+    exportFile('pdf', {
+      readmeContent: readmeMarkdown,
+      roadmapContent: roadmapMarkdown,
+      readmeData: readmeState,
+      roadmapData: roadmapState,
+      theme,
+      title: activeTitle,
+      htmlContent: printHtml
+    });
     
     // Log stats and history
     if (activeTab === 'readme') {
