@@ -13,10 +13,14 @@ export default function ErrorPage({
   reset: () => void;
 }) {
   useEffect(() => {
+    // Log full error details server-side only — never expose stack traces to users
     console.error('Next.js App Router Root Error Caught:', error);
-    trackEvent('application_error_boundary', 'error', error.message || 'unknown');
+    trackEvent('application_error_boundary', 'error', error.digest ?? 'unknown');
   }, [error]);
 
+  // Only surface internal error messages in development to prevent
+  // information leakage of server internals to end users in production.
+  const isDev = process.env.NODE_ENV === 'development';
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100 dark:bg-[#1e1e1e] text-black dark:text-white p-4">
@@ -31,10 +35,13 @@ export default function ErrorPage({
           <p className="text-sm text-gray-500 dark:text-gray-400">
             {BRANDING.name} encountered an unexpected error. Don&apos;t worry, your workspace is safely auto-saved locally.
           </p>
-          {error.message && (
+          {isDev && error.message && (
             <div className="p-3 bg-gray-50 dark:bg-black/20 rounded-md text-left font-mono text-xs text-red-600 dark:text-red-400 border border-gray-100 dark:border-gray-800 break-all max-h-32 overflow-auto mt-2">
               {error.message}
             </div>
+          )}
+          {!isDev && error.digest && (
+            <p className="text-xs text-gray-400 dark:text-gray-600 mt-2">Error ID: {error.digest}</p>
           )}
         </div>
         <div className="flex gap-3">

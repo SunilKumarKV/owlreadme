@@ -81,9 +81,23 @@ describe('fetchGithubReadmeFromRawUrl', () => {
     );
   });
 
-  it('should throw when the raw URL is invalid', async () => {
+  it('should throw when the raw URL is not a valid URL', async () => {
     await expect(fetchGithubReadmeFromRawUrl('not-a-url')).rejects.toThrow(
-      'Please enter a valid raw URL starting with https:// or http://.'
+      'Please enter a valid raw URL starting with https://.'
+    );
+  });
+
+  it('should throw when the raw URL uses http:// (insecure)', async () => {
+    await expect(
+      fetchGithubReadmeFromRawUrl('http://raw.githubusercontent.com/octocat/hello-world/main/README.md')
+    ).rejects.toThrow('Only HTTPS URLs are supported for raw README import.');
+  });
+
+  it('should throw when the raw URL hostname is not on the allowlist', async () => {
+    await expect(
+      fetchGithubReadmeFromRawUrl('https://evil.example.com/malicious-payload')
+    ).rejects.toThrow(
+      'Only raw GitHub content URLs (raw.githubusercontent.com or gist.githubusercontent.com) are supported.'
     );
   });
 });

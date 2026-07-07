@@ -48,14 +48,39 @@ export async function fetchGithubReadmeByRepo(owner: string, repo: string): Prom
   return newFetchGithubReadme(owner, repo);
 }
 
+/**
+ * Allowlisted hostnames that may be used for raw README import.
+ * Restricts fetches to GitHub-owned raw content domains only,
+ * preventing Server-Side Request Forgery (SSRF) to internal or
+ * cloud-metadata endpoints (e.g. 169.254.169.254).
+ */
+const ALLOWED_RAW_HOSTNAMES = new Set([
+  'raw.githubusercontent.com',
+  'gist.githubusercontent.com',
+]);
+
 export async function fetchGithubReadmeFromRawUrl(rawUrl: string): Promise<string> {
   if (!rawUrl || typeof rawUrl !== 'string') {
     throw new Error('Please enter a valid raw URL.');
   }
 
   const trimmed = rawUrl.trim();
-  if (!/^https?:\/\//i.test(trimmed)) {
-    throw new Error('Please enter a valid raw URL starting with https:// or http://.');
+
+  let parsed: URL;
+  try {
+    parsed = new URL(trimmed);
+  } catch {
+    throw new Error('Please enter a valid raw URL starting with https://.');
+  }
+
+  if (parsed.protocol !== 'https:') {
+    throw new Error('Only HTTPS URLs are supported for raw README import.');
+  }
+
+  if (!ALLOWED_RAW_HOSTNAMES.has(parsed.hostname)) {
+    throw new Error(
+      'Only raw GitHub content URLs (raw.githubusercontent.com or gist.githubusercontent.com) are supported.'
+    );
   }
 
   const res = await apiClient.get<string>(trimmed);

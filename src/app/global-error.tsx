@@ -11,9 +11,14 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
+    // Log full error details only on server — never expose stack traces to end users
     console.error('Critical Layout Error:', error);
-    trackEvent('critical_global_error', 'error', error.message || 'unknown');
+    trackEvent('critical_global_error', 'error', error.digest ?? 'unknown');
   }, [error]);
+
+  // Only surface internal error messages in development to prevent
+  // information leakage of server internals to end users in production.
+  const isDev = process.env.NODE_ENV === 'development';
 
   return (
     <html lang="en">
@@ -30,10 +35,13 @@ export default function GlobalError({
             <p className="text-sm text-gray-500 dark:text-gray-400">
               A critical layout error has occurred. Please reset the layout or reload the page.
             </p>
-            {error.message && (
+            {isDev && error.message && (
               <div className="p-3 bg-gray-50 dark:bg-black/20 rounded-md text-left font-mono text-xs text-red-600 dark:text-red-400 border border-gray-100 dark:border-gray-800 break-all">
                 {error.message}
               </div>
+            )}
+            {!isDev && error.digest && (
+              <p className="text-xs text-gray-400 dark:text-gray-600 mt-2">Error ID: {error.digest}</p>
             )}
           </div>
           <button
