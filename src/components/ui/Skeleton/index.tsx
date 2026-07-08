@@ -16,7 +16,7 @@ export const Skeleton: FC<SkeletonProps> = ({ variant = 'rect', width, height, c
 
   return (
     <div
-      className={`animate-pulse bg-gray-205 dark:bg-gray-800 ${shape} ${className}`}
+      className={`animate-pulse bg-gray-200 dark:bg-gray-800 ${shape} ${className}`}
       style={{ width, height }}
     />
   );

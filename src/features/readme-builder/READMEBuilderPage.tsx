@@ -24,6 +24,7 @@ import { getAIService } from '@/utils/ai/ai-service';
 import Button from '@/components/Button';
 import Input from '@/components/Input';
 import Textarea from '@/components/Textarea';
+import FocusTrap from '@/components/FocusTrap';
 import useReadmeStore, { SectionId } from '@/stores/readme-store';
 import { useHistoryStore, computeConfigDiff } from '@/stores/history-store';
 import { TEMPLATE_MARKETPLACE } from '@/utils/template-registry';
@@ -1112,26 +1113,32 @@ const READMEBuilderPage = () => {
       />
       {/* ── Detailed Preview Modal Overlay (Escape Key Supported) ── */}
       {previewingTemplate && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
-          <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Template Details</span>
-              <button
-                onClick={() => setPreviewingTemplate(null)}
-                className="text-gray-400 hover:text-gray-600 transition font-bold cursor-pointer text-sm"
-                aria-label="Close template preview"
-              >
-                ✕
-              </button>
-            </div>
-            {/* Modal Content */}
-            <div className="p-6 space-y-5 flex-1 overflow-y-auto custom-editor-scrollbar text-xs">
-              <div className="space-y-1">
-                <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
-                  {previewingTemplate.category}
-                </span>
-                <h3 className="text-base font-bold text-black dark:text-white mt-1.5">{previewingTemplate.name}</h3>
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="template-preview-title"
+        >
+          <FocusTrap active={!!previewingTemplate}>
+            <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10">
+                <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Template Details</span>
+                <button
+                  onClick={() => setPreviewingTemplate(null)}
+                  className="text-gray-400 hover:text-gray-600 transition font-bold cursor-pointer text-sm"
+                  aria-label="Close template preview"
+                >
+                  ✕
+                </button>
+              </div>
+              {/* Modal Content */}
+              <div className="p-6 space-y-5 flex-1 overflow-y-auto custom-editor-scrollbar text-xs">
+                <div className="space-y-1">
+                  <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                    {previewingTemplate.category}
+                  </span>
+                  <h3 id="template-preview-title" className="text-base font-bold text-black dark:text-white mt-1.5">{previewingTemplate.name}</h3>
                 <p className="text-gray-400 dark:text-gray-550 leading-relaxed mt-0.5">{previewingTemplate.description}</p>
               </div>
 
@@ -1172,266 +1179,282 @@ const READMEBuilderPage = () => {
               </button>
             </div>
           </div>
+        </FocusTrap>
         </div>
       )}
       {/* ── README Import Wizard Modal ── */}
       {isImportModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
-          <div className="bg-white dark:bg-[#121212] border border-gray-205 dark:border-gray-800 rounded-xl shadow-2xl max-w-xl w-full overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
-            {/* Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10 flex-shrink-0">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">Import Existing README</span>
-              <button
-                onClick={() => {
-                  setIsImportModalOpen(false);
-                  setImportStatus('idle');
-                }}
-                className="text-gray-400 hover:text-gray-600 transition font-bold cursor-pointer text-sm"
-                aria-label="Close import wizard"
-              >
-                ✕
-              </button>
-            </div>
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="readme-import-title"
+        >
+          <FocusTrap active={isImportModalOpen}>
+            <div className="bg-white dark:bg-[#121212] border border-gray-205 dark:border-gray-800 rounded-xl shadow-2xl max-w-xl w-full overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
+              {/* Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10 flex-shrink-0 select-none">
+                <h2 id="readme-import-title" className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+                  Import Existing README
+                </h2>
+                <button
+                  onClick={() => {
+                    setIsImportModalOpen(false);
+                    setImportStatus('idle');
+                  }}
+                  className="text-gray-400 hover:text-gray-600 transition font-bold cursor-pointer text-sm"
+                  aria-label="Close import wizard"
+                >
+                  ✕
+                </button>
+              </div>
 
-            {/* Content */}
-            <div className="p-6 overflow-y-auto custom-editor-scrollbar flex-1 text-xs space-y-4">
-              {importStatus === 'idle' || importStatus === 'fetching' || importStatus === 'parsing' || importStatus === 'error' ? (
-                <div className="space-y-4">
-                  {/* Step 1: Input source selector tabs */}
-                  <div className="flex border-b border-gray-150 dark:border-gray-800 flex-shrink-0 select-none">
-                    {(['username', 'repoUrl', 'rawUrl', 'paste', 'upload'] as const).map((method) => (
-                      <button
-                        key={method}
-                        onClick={() => setImportMethod(method)}
-                        className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider border-b-2 cursor-pointer transition ${
-                          importMethod === method
-                            ? 'border-blue-500 text-blue-600 dark:text-blue-400'
-                            : 'border-transparent text-gray-400 hover:text-gray-600'
-                        }`}
-                      >
-                        {method === 'username' && '👤 Username'}
-                        {method === 'repoUrl' && '📦 Repo URL'}
-                        {method === 'rawUrl' && '🔗 Raw URL'}
-                        {method === 'paste' && '📝 Paste MD'}
-                        {method === 'upload' && '📤 Upload'}
-                      </button>
-                    ))}
-                  </div>
-
-                  {/* Input Form Fields */}
-                  <div className="space-y-3 pt-2">
-                    {importMethod === 'username' && (
-                      <div className="space-y-1.5">
-                        <label className="font-semibold text-gray-550 block">GitHub Username</label>
-                        <input
-                          type="text"
-                          placeholder="e.g. octocat"
-                          value={importUsernameInput}
-                          onChange={(e) => setImportUsernameInput(e.target.value)}
-                          className="w-full px-3 py-2 text-xs rounded border border-gray-200 dark:bg-[#1e1e1e] dark:border-gray-700 focus:border-blue-500 focus:outline-none"
-                        />
-                        <p className="text-[10px] text-gray-400">Fetches the README from your personal profile repository (e.g. username/username).</p>
-                      </div>
-                    )}
-
-                    {importMethod === 'repoUrl' && (
-                      <div className="space-y-1.5">
-                        <label className="font-semibold text-gray-550 block">GitHub Repository URL</label>
-                        <input
-                          type="text"
-                          placeholder="e.g. https://github.com/octocat/hello-world"
-                          value={importRepoUrlInput}
-                          onChange={(e) => setImportRepoUrlInput(e.target.value)}
-                          className="w-full px-3 py-2 text-xs rounded border border-gray-200 dark:bg-[#1e1e1e] dark:border-gray-700 focus:border-blue-500 focus:outline-none"
-                        />
-                         <p className="text-[10px] text-gray-400">Fetches the README.md file directly from the repository&apos;s root directory.</p>
-                      </div>
-                    )}
-
-                    {importMethod === 'rawUrl' && (
-                      <div className="space-y-1.5">
-                        <label className="font-semibold text-gray-550 block">Raw Markdown URL</label>
-                        <input
-                          type="text"
-                          placeholder="e.g. https://raw.githubusercontent.com/..."
-                          value={importRawUrlInput}
-                          onChange={(e) => setImportRawUrlInput(e.target.value)}
-                          className="w-full px-3 py-2 text-xs rounded border border-gray-200 dark:bg-[#1e1e1e] dark:border-gray-700 focus:border-blue-500 focus:outline-none"
-                        />
-                      </div>
-                    )}
-
-                    {importMethod === 'paste' && (
-                      <div className="space-y-1.5">
-                        <label className="font-semibold text-gray-550 block">Paste Markdown</label>
-                        <textarea
-                          placeholder="Paste raw markdown content here..."
-                          value={importPasteMarkdown}
-                          onChange={(e) => setImportPasteMarkdown(e.target.value)}
-                          className="w-full h-44 px-3 py-2 text-xs rounded border border-gray-200 dark:bg-[#1e1e1e] dark:border-gray-700 focus:border-blue-500 focus:outline-none font-mono resize-none custom-editor-scrollbar"
-                        />
-                      </div>
-                    )}
-
-                    {importMethod === 'upload' && (
-                      <div className="space-y-2 select-none">
-                        <label className="font-semibold text-gray-550 block">Upload README.md File</label>
-                        <label className="h-32 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-lg flex flex-col items-center justify-center gap-2 bg-gray-50/20 hover:bg-gray-55/35 cursor-pointer transition">
-                          <span className="text-xl">📂</span>
-                          <span className="text-2xs font-bold text-gray-400">Click or drop README.md file here</span>
-                          <input type="file" accept=".md" onChange={handleFileUploadImport} className="hidden" />
-                        </label>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Status Indicator */}
-                  {(importStatus === 'fetching' || importStatus === 'parsing') && (
-                    <div className="flex items-center gap-3 p-3 rounded bg-blue-500/5 text-blue-600 dark:text-blue-400 font-semibold select-none border border-blue-500/10">
-                      <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-blue-500" />
-                      <span>{importStatusMessage}</span>
-                    </div>
-                  )}
-
-                  {importStatus === 'error' && (
-                    <div className="p-3 rounded bg-red-500/5 text-red-600 dark:text-red-400 font-semibold border border-red-500/10">
-                      ⚠️ {importStatusMessage}
-                    </div>
-                  )}
-                </div>
-              ) : (
-                /* Step 2: Summary Checkboxes & Conflict Selection */
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="text-xs font-extrabold uppercase tracking-wider text-gray-400 dark:text-gray-500">Section Detection Summary</h3>
-                    <p className="text-[10px] text-gray-400 mt-0.5">We scanned the markdown layout and identified these sections. Select which ones you want to import:</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 select-none">
-                    {parsedImportResult?.detectedSections.map((sectionId: SectionId) => {
-                      const isSelected = selectedImportSections.includes(sectionId);
-                      return (
-                        <label
-                          key={sectionId}
-                          className={`flex items-center gap-3 p-3 rounded-lg border text-xs cursor-pointer transition ${
-                            isSelected
-                              ? 'border-blue-200 dark:border-blue-900 bg-blue-500/5 text-blue-600 dark:text-blue-450 font-bold'
-                              : 'border-gray-200 dark:border-gray-800 text-gray-550'
+              {/* Content */}
+              <div className="p-6 overflow-y-auto custom-editor-scrollbar flex-1 text-xs space-y-4">
+                {importStatus === 'idle' || importStatus === 'fetching' || importStatus === 'parsing' || importStatus === 'error' ? (
+                  <div className="space-y-4">
+                    {/* Step 1: Input source selector tabs */}
+                    <div className="flex border-b border-gray-150 dark:border-gray-800 flex-shrink-0 select-none">
+                      {(['username', 'repoUrl', 'rawUrl', 'paste', 'upload'] as const).map((method) => (
+                        <button
+                          key={method}
+                          onClick={() => setImportMethod(method)}
+                          className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider border-b-2 cursor-pointer transition ${
+                            importMethod === method
+                              ? 'border-blue-500 text-blue-600 dark:text-blue-400'
+                              : 'border-transparent text-gray-400 hover:text-gray-600'
                           }`}
                         >
+                          {method === 'username' && '👤 Username'}
+                          {method === 'repoUrl' && '📦 Repo URL'}
+                          {method === 'rawUrl' && '🔗 Raw URL'}
+                          {method === 'paste' && '📝 Paste MD'}
+                          {method === 'upload' && '📤 Upload'}
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Input Form Fields */}
+                    <div className="space-y-3 pt-2">
+                      {importMethod === 'username' && (
+                        <div className="space-y-1.5">
+                          <label className="font-semibold text-gray-550 block">GitHub Username</label>
                           <input
-                            type="checkbox"
-                            checked={isSelected}
-                            onChange={() => {
-                              const updated = isSelected
-                                ? selectedImportSections.filter((id) => id !== sectionId)
-                                : [...selectedImportSections, sectionId];
-                              setSelectedImportSections(updated);
-                            }}
-                            className="rounded text-blue-600 cursor-pointer focus:ring-0"
+                            type="text"
+                            placeholder="e.g. octocat"
+                            value={importUsernameInput}
+                            onChange={(e) => setImportUsernameInput(e.target.value)}
+                            className="w-full px-3 py-2 text-xs rounded border border-gray-200 dark:bg-[#1e1e1e] dark:border-gray-700 focus:border-blue-500 focus:outline-none"
                           />
-                          <span className="capitalize">{sectionId.replace(/([A-Z])/g, ' $1')}</span>
-                        </label>
-                      );
-                    })}
-                  </div>
+                          <p className="text-[10px] text-gray-400">Fetches the README from your personal profile repository (e.g. username/username).</p>
+                        </div>
+                      )}
 
-                  <div className="border-t border-gray-100 dark:border-gray-850 pt-4 space-y-3">
+                      {importMethod === 'repoUrl' && (
+                        <div className="space-y-1.5">
+                          <label className="font-semibold text-gray-550 block">GitHub Repository URL</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. https://github.com/octocat/hello-world"
+                            value={importRepoUrlInput}
+                            onChange={(e) => setImportRepoUrlInput(e.target.value)}
+                            className="w-full px-3 py-2 text-xs rounded border border-gray-200 dark:bg-[#1e1e1e] dark:border-gray-700 focus:border-blue-500 focus:outline-none"
+                          />
+                           <p className="text-[10px] text-gray-400">Fetches the README.md file directly from the repository&apos;s root directory.</p>
+                        </div>
+                      )}
+
+                      {importMethod === 'rawUrl' && (
+                        <div className="space-y-1.5">
+                          <label className="font-semibold text-gray-550 block">Raw Markdown URL</label>
+                          <input
+                            type="text"
+                            placeholder="e.g. https://raw.githubusercontent.com/..."
+                            value={importRawUrlInput}
+                            onChange={(e) => setImportRawUrlInput(e.target.value)}
+                            className="w-full px-3 py-2 text-xs rounded border border-gray-200 dark:bg-[#1e1e1e] dark:border-gray-700 focus:border-blue-500 focus:outline-none"
+                          />
+                        </div>
+                      )}
+
+                      {importMethod === 'paste' && (
+                        <div className="space-y-1.5">
+                          <label className="font-semibold text-gray-550 block">Paste Markdown</label>
+                          <textarea
+                            placeholder="Paste raw markdown content here..."
+                            value={importPasteMarkdown}
+                            onChange={(e) => setImportPasteMarkdown(e.target.value)}
+                            className="w-full h-44 px-3 py-2 text-xs rounded border border-gray-200 dark:bg-[#1e1e1e] dark:border-gray-700 focus:border-blue-500 focus:outline-none font-mono resize-none custom-editor-scrollbar"
+                          />
+                        </div>
+                      )}
+
+                      {importMethod === 'upload' && (
+                        <div className="space-y-2 select-none">
+                          <label className="font-semibold text-gray-550 block">Upload README.md File</label>
+                          <label className="h-32 border-2 border-dashed border-gray-200 dark:border-gray-800 rounded-lg flex flex-col items-center justify-center gap-2 bg-gray-50/20 hover:bg-gray-55/35 cursor-pointer transition">
+                            <span className="text-xl">📂</span>
+                            <span className="text-2xs font-bold text-gray-400">Click or drop README.md file here</span>
+                            <input type="file" accept=".md" onChange={handleFileUploadImport} className="hidden" />
+                          </label>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Status Indicator */}
+                    {(importStatus === 'fetching' || importStatus === 'parsing') && (
+                      <div className="flex items-center gap-3 p-3 rounded bg-blue-500/5 text-blue-600 dark:text-blue-400 font-semibold select-none border border-blue-500/10">
+                        <div className="animate-spin rounded-full h-3.5 w-3.5 border-b-2 border-blue-500" />
+                        <span>{importStatusMessage}</span>
+                      </div>
+                    )}
+
+                    {importStatus === 'error' && (
+                      <div className="p-3 rounded bg-red-500/5 text-red-600 dark:text-red-400 font-semibold border border-red-500/10">
+                        ⚠️ {importStatusMessage}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  /* Step 2: Summary Checkboxes & Conflict Selection */
+                  <div className="space-y-4">
                     <div>
-                      <h4 className="text-2xs font-extrabold uppercase tracking-wider text-gray-400">Conflict Resolution</h4>
-                      <p className="text-[10px] text-gray-400 mt-0.5">How should we apply these sections to your workspace layout?</p>
+                      <h3 className="text-xs font-extrabold uppercase tracking-wider text-gray-400 dark:text-gray-500">Section Detection Summary</h3>
+                      <p className="text-[10px] text-gray-400 mt-0.5">We scanned the markdown layout and identified these sections. Select which ones you want to import:</p>
                     </div>
 
-                    <div className="space-y-2 select-none">
-                      <label className="flex items-start gap-3 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer bg-gray-50/10 hover:bg-gray-50/30">
-                        <input
-                          type="radio"
-                          name="conflict"
-                          value="new"
-                          checked={conflictResolution === 'new'}
-                          onChange={() => setConflictResolution('new')}
-                          className="mt-0.5 text-blue-600 cursor-pointer"
-                        />
-                        <div>
-                          <span className="font-bold text-gray-700 dark:text-gray-300 block">✨ (Recommended) Create new workspace</span>
-                          <span className="text-[10px] text-gray-400">Imports into a clean workspace, keeping your active workspace completely safe.</span>
-                        </div>
-                      </label>
+                    <div className="grid grid-cols-2 gap-2 select-none">
+                      {parsedImportResult?.detectedSections.map((sectionId: SectionId) => {
+                        const isSelected = selectedImportSections.includes(sectionId);
+                        return (
+                          <label
+                            key={sectionId}
+                            className={`flex items-center gap-3 p-3 rounded-lg border text-xs cursor-pointer transition ${
+                              isSelected
+                                ? 'border-blue-200 dark:border-blue-900 bg-blue-500/5 text-blue-600 dark:text-blue-450 font-bold'
+                                : 'border-gray-200 dark:border-gray-800 text-gray-550'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={isSelected}
+                              onChange={() => {
+                                const updated = isSelected
+                                  ? selectedImportSections.filter((id) => id !== sectionId)
+                                  : [...selectedImportSections, sectionId];
+                                setSelectedImportSections(updated);
+                              }}
+                              className="rounded text-blue-600 cursor-pointer focus:ring-0"
+                            />
+                            <span className="capitalize">{sectionId.replace(/([A-Z])/g, ' $1')}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
 
-                      <label className="flex items-start gap-3 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer bg-gray-50/10 hover:bg-gray-55/30">
-                        <input
-                          type="radio"
-                          name="conflict"
-                          value="merge"
-                          checked={conflictResolution === 'merge'}
-                          onChange={() => setConflictResolution('merge')}
-                          className="mt-0.5 text-blue-600 cursor-pointer"
-                        />
-                        <div>
-                          <span className="font-bold text-gray-700 dark:text-gray-300 block">⚡ Merge into active workspace</span>
-                          <span className="text-[10px] text-gray-400">Updates settings for selected sections, leaving other sections untouched.</span>
-                        </div>
-                      </label>
+                    <div className="border-t border-gray-100 dark:border-gray-850 pt-4 space-y-3">
+                      <div>
+                        <h4 className="text-2xs font-extrabold uppercase tracking-wider text-gray-400">Conflict Resolution</h4>
+                        <p className="text-[10px] text-gray-400 mt-0.5">How should we apply these sections to your workspace layout?</p>
+                      </div>
 
-                      <label className="flex items-start gap-3 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer bg-gray-50/10 hover:bg-gray-55/30">
-                        <input
-                          type="radio"
-                          name="conflict"
-                          value="overwrite"
-                          checked={conflictResolution === 'overwrite'}
-                          onChange={() => setConflictResolution('overwrite')}
-                          className="mt-0.5 text-blue-600 cursor-pointer"
-                        />
-                        <div>
-                          <span className="font-bold text-gray-700 dark:text-gray-300 block">⚠️ Overwrite active workspace</span>
-                          <span className="text-[10px] text-gray-400">Replaces layout. Unselected sections will be disabled.</span>
-                        </div>
-                      </label>
+                      <div className="space-y-2 select-none">
+                        <label className="flex items-start gap-3 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer bg-gray-50/10 hover:bg-gray-50/30">
+                          <input
+                            type="radio"
+                            name="conflict"
+                            value="new"
+                            checked={conflictResolution === 'new'}
+                            onChange={() => setConflictResolution('new')}
+                            className="mt-0.5 text-blue-600 cursor-pointer"
+                          />
+                          <div>
+                            <span className="font-bold text-gray-700 dark:text-gray-300 block">✨ (Recommended) Create new workspace</span>
+                            <span className="text-[10px] text-gray-400">Imports into a clean workspace, keeping your active workspace completely safe.</span>
+                          </div>
+                        </label>
+
+                        <label className="flex items-start gap-3 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer bg-gray-50/10 hover:bg-gray-55/30">
+                          <input
+                            type="radio"
+                            name="conflict"
+                            value="merge"
+                            checked={conflictResolution === 'merge'}
+                            onChange={() => setConflictResolution('merge')}
+                            className="mt-0.5 text-blue-600 cursor-pointer"
+                          />
+                          <div>
+                            <span className="font-bold text-gray-700 dark:text-gray-300 block">⚡ Merge into active workspace</span>
+                            <span className="text-[10px] text-gray-400">Updates settings for selected sections, leaving other sections untouched.</span>
+                          </div>
+                        </label>
+
+                        <label className="flex items-start gap-3 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer bg-gray-50/10 hover:bg-gray-55/30">
+                          <input
+                            type="radio"
+                            name="conflict"
+                            value="overwrite"
+                            checked={conflictResolution === 'overwrite'}
+                            onChange={() => setConflictResolution('overwrite')}
+                            className="mt-0.5 text-blue-600 cursor-pointer"
+                          />
+                          <div>
+                            <span className="font-bold text-gray-700 dark:text-gray-300 block">⚠️ Overwrite active workspace</span>
+                            <span className="text-[10px] text-gray-400">Replaces layout. Unselected sections will be disabled.</span>
+                          </div>
+                        </label>
+                      </div>
                     </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
 
-            {/* Footer */}
-            <div className="px-6 py-4 bg-gray-50/50 dark:bg-gray-900/5 border-t border-gray-100 dark:border-gray-800 flex items-center justify-end gap-3 flex-shrink-0 select-none">
-              <button
-                onClick={() => {
-                  setIsImportModalOpen(false);
-                  setImportStatus('idle');
-                }}
-                className="px-4 py-2 rounded text-xs font-bold bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 cursor-pointer"
-              >
-                Cancel
-              </button>
+              {/* Footer */}
+              <div className="px-6 py-4 bg-gray-50/50 dark:bg-gray-900/5 border-t border-gray-100 dark:border-gray-800 flex items-center justify-end gap-3 flex-shrink-0 select-none">
+                <button
+                  onClick={() => {
+                    setIsImportModalOpen(false);
+                    setImportStatus('idle');
+                  }}
+                  className="px-4 py-2 rounded text-xs font-bold bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 cursor-pointer"
+                >
+                  Cancel
+                </button>
 
-              {importStatus !== 'summary' ? (
-                <button
-                  onClick={handleFetchReadme}
-                  disabled={importStatus === 'fetching' || importStatus === 'parsing'}
-                  className="px-4 py-2 rounded text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white cursor-pointer disabled:opacity-50"
-                >
-                  Continue
-                </button>
-              ) : (
-                <button
-                  onClick={handleResolveImport}
-                  disabled={selectedImportSections.length === 0}
-                  className="px-4 py-2 rounded text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white cursor-pointer disabled:opacity-50"
-                >
-                  Import Selected Sections
-                </button>
-              )}
+                {importStatus !== 'summary' ? (
+                  <button
+                    onClick={handleFetchReadme}
+                    disabled={importStatus === 'fetching' || importStatus === 'parsing'}
+                    className="px-4 py-2 rounded text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white cursor-pointer disabled:opacity-50"
+                  >
+                    Continue
+                  </button>
+                ) : (
+                  <button
+                    onClick={handleResolveImport}
+                    disabled={selectedImportSections.length === 0}
+                    className="px-4 py-2 rounded text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white cursor-pointer disabled:opacity-50"
+                  >
+                    Import Selected Sections
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
+          </FocusTrap>
         </div>
       )}
       {/* ── AI Side-by-Side Comparison Dialog ── */}
       {isComparing && selectedAlternative && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
-          <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10 flex-shrink-0">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">AI Suggested Comparison</span>
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="ai-comparison-title"
+        >
+          <FocusTrap active={isComparing}>
+            <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in-95 duration-150">
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10 flex-shrink-0">
+                <h2 id="ai-comparison-title" className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">AI Suggested Comparison</h2>
               <button
                 onClick={() => {
                   setIsComparing(false);
@@ -1487,104 +1510,118 @@ const READMEBuilderPage = () => {
               </button>
             </div>
           </div>
+        </FocusTrap>
         </div>
       )}
 
       {/* ── Community Template Preview Modal Overlay ── */}
       {previewingCommunityTemplate && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
-          <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150 text-left">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-550">Community Template Preview</span>
-              <button
-                onClick={() => setPreviewingCommunityTemplate(null)}
-                className="text-gray-400 hover:text-gray-600 transition font-bold cursor-pointer text-sm"
-              >
-                ✕
-              </button>
-            </div>
-            {/* Modal Content */}
-            <div className="p-6 space-y-5 flex-1 overflow-y-auto custom-editor-scrollbar text-xs">
-              <div className="space-y-1">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
-                    {previewingCommunityTemplate.category}
-                  </span>
-                  <span className="text-[10px] text-gray-405 font-mono">By @{previewingCommunityTemplate.author}</span>
-                </div>
-                <h3 className="text-base font-bold text-black dark:text-white mt-1.5">{previewingCommunityTemplate.name}</h3>
-                <p className="text-gray-400 dark:text-gray-550 leading-relaxed mt-0.5">{previewingCommunityTemplate.description}</p>
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="community-template-title"
+        >
+          <FocusTrap active={!!previewingCommunityTemplate}>
+            <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl max-w-lg w-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150 text-left">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10">
+                <h2 id="community-template-title" className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-555">Community Template Preview</h2>
+                <button
+                  onClick={() => setPreviewingCommunityTemplate(null)}
+                  className="text-gray-400 hover:text-gray-600 transition font-bold cursor-pointer text-sm"
+                >
+                  ✕
+                </button>
               </div>
+              {/* Modal Content */}
+              <div className="p-6 space-y-5 flex-1 overflow-y-auto custom-editor-scrollbar text-xs">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400">
+                      {previewingCommunityTemplate.category}
+                    </span>
+                    <span className="text-[10px] text-gray-405 font-mono">By @{previewingCommunityTemplate.author}</span>
+                  </div>
+                  <h3 className="text-base font-bold text-black dark:text-white mt-1.5">{previewingCommunityTemplate.name}</h3>
+                  <p className="text-gray-400 dark:text-gray-550 leading-relaxed mt-0.5">{previewingCommunityTemplate.description}</p>
+                </div>
 
-              {previewingCommunityTemplate.tags.length > 0 && (
+                {previewingCommunityTemplate.tags.length > 0 && (
+                  <div className="space-y-2 border-t border-gray-100 dark:border-gray-850 pt-4">
+                    <span className="font-semibold text-gray-500 dark:text-gray-450 block">Tags:</span>
+                    <div className="flex flex-wrap gap-1.5">
+                      {previewingCommunityTemplate.tags.map((tag: string) => (
+                        <span key={tag} className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-650 dark:text-gray-300 font-mono text-[10px]">
+                          #{tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <div className="space-y-2 border-t border-gray-100 dark:border-gray-850 pt-4">
-                  <span className="font-semibold text-gray-500 dark:text-gray-450 block">Tags:</span>
+                  <span className="font-semibold text-gray-500 dark:text-gray-450 block">Included Sections:</span>
                   <div className="flex flex-wrap gap-1.5">
-                    {previewingCommunityTemplate.tags.map((tag: string) => (
-                      <span key={tag} className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-650 dark:text-gray-300 font-mono text-[10px]">
-                        #{tag}
+                    {previewingCommunityTemplate.sections.map((id: SectionId) => (
+                      <span key={id} className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-650 dark:text-gray-300 font-medium">
+                        📂 {id}
                       </span>
                     ))}
                   </div>
                 </div>
-              )}
 
-              <div className="space-y-2 border-t border-gray-100 dark:border-gray-850 pt-4">
-                <span className="font-semibold text-gray-500 dark:text-gray-450 block">Included Sections:</span>
-                <div className="flex flex-wrap gap-1.5">
-                  {previewingCommunityTemplate.sections.map((id: SectionId) => (
-                    <span key={id} className="px-2 py-0.5 rounded bg-gray-100 dark:bg-gray-800 text-gray-650 dark:text-gray-300 font-medium">
-                      📂 {id}
-                    </span>
-                  ))}
+                <div className="space-y-2 border-t border-gray-100 dark:border-gray-850 pt-4">
+                  <span className="font-semibold text-gray-500 dark:text-gray-450 block">Theme:</span>
+                  <span className="inline-block capitalize px-2.5 py-0.5 rounded bg-blue-500/10 text-blue-500 font-bold border border-blue-500/20">
+                    🎨 {previewingCommunityTemplate.theme} Theme
+                  </span>
                 </div>
               </div>
-
-              <div className="space-y-2 border-t border-gray-100 dark:border-gray-850 pt-4">
-                <span className="font-semibold text-gray-500 dark:text-gray-450 block">Theme:</span>
-                <span className="inline-block capitalize px-2.5 py-0.5 rounded bg-blue-500/10 text-blue-500 font-bold border border-blue-500/20">
-                  🎨 {previewingCommunityTemplate.theme} Theme
-                </span>
+              {/* Footer Actions */}
+              <div className="px-6 py-4 bg-gray-50/50 dark:bg-gray-900/5 border-t border-gray-100 dark:border-gray-800 flex items-center justify-end gap-3 select-none">
+                <button
+                  onClick={() => setPreviewingCommunityTemplate(null)}
+                  className="px-4 py-2 rounded text-xs font-bold bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => {
+                    applyCommunityTemplate(previewingCommunityTemplate);
+                    setPreviewingCommunityTemplate(null);
+                  }}
+                  className="px-4 py-2 rounded text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
+                >
+                  Apply Template
+                </button>
               </div>
             </div>
-            {/* Footer Actions */}
-            <div className="px-6 py-4 bg-gray-50/50 dark:bg-gray-900/5 border-t border-gray-100 dark:border-gray-800 flex items-center justify-end gap-3 select-none">
-              <button
-                onClick={() => setPreviewingCommunityTemplate(null)}
-                className="px-4 py-2 rounded text-xs font-bold bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 cursor-pointer"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={() => {
-                  applyCommunityTemplate(previewingCommunityTemplate);
-                  setPreviewingCommunityTemplate(null);
-                }}
-                className="px-4 py-2 rounded text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
-              >
-                Apply Template
-              </button>
-            </div>
-          </div>
+          </FocusTrap>
         </div>
       )}
 
       {/* ── Publish Active Config Form Modal Overlay ── */}
       {isPublishModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
-          <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150 text-left">
-            {/* Modal Header */}
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10">
-              <span className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-550">Publish Active Profile</span>
-              <button
-                onClick={() => setIsPublishModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 transition font-bold cursor-pointer text-sm"
-              >
-                ✕
-              </button>
-            </div>
-            {/* Modal Content */}
+        <div
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="publish-modal-title"
+        >
+          <FocusTrap active={isPublishModalOpen}>
+            <div className="bg-white dark:bg-[#121212] border border-gray-200 dark:border-gray-800 rounded-xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-150 text-left">
+              {/* Modal Header */}
+              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10">
+                <h2 id="publish-modal-title" className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-555">Publish Active Profile</h2>
+                <button
+                  onClick={() => setIsPublishModalOpen(false)}
+                  className="text-gray-400 hover:text-gray-600 transition font-bold cursor-pointer text-sm"
+                >
+                  ✕
+                </button>
+              </div>
+              {/* Modal Content */}
             <div className="p-6 space-y-4 text-xs">
               <p className="text-gray-400 dark:text-gray-500 leading-relaxed mb-1">
                 Save and share your current README configurations in the local community gallery.
@@ -1667,6 +1704,7 @@ const READMEBuilderPage = () => {
               </button>
             </div>
           </div>
+        </FocusTrap>
         </div>
       )}
       <div className="flex flex-wrap gap-4 mt-8 justify-center">

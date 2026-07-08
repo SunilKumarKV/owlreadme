@@ -1,6 +1,6 @@
-import Button from '@/components/Button';
 import { Plus, Edit2, Copy, Trash2 } from 'lucide-react';
 import { Workspace } from '@/stores/workspace-store';
+import { Button, EmptyState } from '@/components/ui';
 
 interface ProjectWorkspacesPanelProps {
   workspaces: Workspace[];
@@ -43,10 +43,16 @@ export const ProjectWorkspacesPanel = ({
       </div>
 
       {workspaces.length === 0 ? (
-        <div className="text-center py-8 text-gray-500 text-sm">
-          <p className="mb-4">No project workspaces found.</p>
-          <Button onClick={() => setIsCreateModalOpen(true)} variant="primary" className="text-xs">Create your first project</Button>
-        </div>
+        <EmptyState
+          title="No Project Workspaces Found"
+          description="Create your first workspace to start building customized README profiles and learning roadmaps."
+          icon="📁"
+          action={
+            <Button onClick={() => setIsCreateModalOpen(true)} variant="primary" className="text-xs">
+              Create your first project
+            </Button>
+          }
+        />
       ) : (
         <div className="space-y-4">
           {workspaces.map((w) => {
@@ -100,6 +106,7 @@ export const ProjectWorkspacesPanel = ({
                           }}
                           className="text-xs text-gray-400 hover:text-blue-500 transition cursor-pointer"
                           title="Rename project"
+                          aria-label={`Rename project ${w.name}`}
                         >
                           <Edit2 className="h-3.5 w-3.5" />
                         </button>

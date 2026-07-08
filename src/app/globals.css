@@ -53,6 +53,19 @@
   --animate-ds-transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
   --animate-ds-transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
   --animate-ds-transition-slow: 350ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Custom grey codes mapping for layout alignment */
+  --color-gray-55: #f8fafc;
+  --color-gray-105: #f1f5f9;
+  --color-gray-150: #e2e8f0;
+  --color-gray-205: #cbd5e1;
+  --color-gray-250: #cbd5e1;
+  --color-gray-455: #94a3b8;
+  --color-gray-505: #64748b;
+  --color-gray-650: #475569;
+  --color-gray-655: #475569;
+  --color-gray-805: #1e293b;
+  --color-gray-850: #0f172a;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -153,6 +166,16 @@ body.theme-terminal textarea, body.theme-terminal input {
 }
 
 /* Focus rings */
+:focus-visible {
+  outline: 2px solid var(--color-brand-primary, #3b82f6) !important;
+  outline-offset: 2px !important;
+}
+
+body.theme-terminal :focus-visible {
+  outline: 2px solid #39ff14 !important;
+  outline-offset: 2px !important;
+}
+
 body.theme-terminal textarea:focus, body.theme-terminal input:focus {
   border-color: #39ff14 !important;
   box-shadow: 0 0 8px rgba(57, 255, 20, 0.5) !important;

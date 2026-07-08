@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Button from '@/components/Button';
 import { ProfileCardSkeleton } from '@/components/Skeleton';
+import { EmptyState } from '@/components/ui';
 
 interface GithubProfilePanelProps {
   loading: boolean;
@@ -52,10 +53,16 @@ export const GithubProfilePanel = ({
           </div>
         </div>
       ) : (
-        <div className="py-8 text-gray-500 text-sm">
-          <p className="mb-4">No GitHub profile loaded.</p>
-          <Button href="/" variant="secondary" className="w-full text-xs">Import from GitHub</Button>
-        </div>
+        <EmptyState
+          title="No GitHub Profile Loaded"
+          description="Import your GitHub profile to load repositories, stats, and get personalized recommendations."
+          icon="🐙"
+          action={
+            <Button href="/" variant="secondary" className="text-xs">
+              Import from GitHub
+            </Button>
+          }
+        />
       )}
     </div>
   );

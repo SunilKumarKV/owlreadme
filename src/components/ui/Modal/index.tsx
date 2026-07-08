@@ -43,6 +43,7 @@ export const Modal: FC<ModalProps> = ({
       className="fixed inset-0 bg-black/60 backdrop-blur-xs flex items-center justify-center z-50 p-4"
       role="dialog"
       aria-modal="true"
+      aria-labelledby="modal-title-id"
     >
       <FocusTrap active={isOpen}>
         <div
@@ -51,7 +52,7 @@ export const Modal: FC<ModalProps> = ({
         >
           {/* Header */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/10 flex-shrink-0">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-gray-800 dark:text-gray-200">
+            <h2 id="modal-title-id" className="text-sm font-bold uppercase tracking-wider text-gray-800 dark:text-gray-200">
               {title}
             </h2>
             <button

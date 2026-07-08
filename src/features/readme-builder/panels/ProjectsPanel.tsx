@@ -406,7 +406,7 @@ export const ProjectsPanel: React.FC<ProjectsPanelProps> = ({
           {/* ── Current Projects List ──────────────────── */}
           {featuredProjects.projects.length > 0 && (
             <div className="space-y-2 text-left">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-505 font-medium">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500 font-medium">
                 Selected Projects ({featuredProjects.projects.length})
               </h4>
               {featuredProjects.projects.map((project, idx) => (
