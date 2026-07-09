@@ -5,6 +5,8 @@ export const ROUTES = {
   ROADMAP_BUILDER: '/roadmap-builder',
   THEME_STUDIO: '/theme',
   ANALYTICS: '/analytics',
+  PREVIEW: '/preview',
+  EXPORT: '/export',
 } as const;
 
 export default ROUTES;

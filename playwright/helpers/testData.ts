@@ -7,3 +7,8 @@ export const MOCK_PROJECT = {
   NAME: 'Test E2E Project Workspace',
   TYPE: 'combined' as const,
 } as const;
+
+export const MOCK_SHARE_PAYLOADS = {
+  README_DATA: 'eyJuYW1lIjoiU3VuaWwiLCJyb2xlIjoiQ1RPIiwiYWJvdXQiOiJXb3JraW5nIG9uIGNvZGViYXNlcyJ9',
+  ROADMAP_DATA: 'eyJ0aXRsZSI6IkpTIFJvYWRtYXAiLCJzdGVwcyI6WyJMZWFybiBiYXNpYyBzeW50YXgiLCJMZWFybiBwcm9taXNlcyJdfQ==',
+} as const;
