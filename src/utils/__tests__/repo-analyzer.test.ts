@@ -6,9 +6,7 @@ import type { GitHubRepo } from '../github-api';
 
 function makeRepo(overrides: Partial<GitHubRepo> = {}): GitHubRepo {
   return {
-    id: Math.random(),
     name: 'my-repo',
-    full_name: 'user/my-repo',
     description: 'A test repo',
     html_url: 'https://github.com/user/my-repo',
     language: 'TypeScript',
