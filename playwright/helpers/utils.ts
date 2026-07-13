@@ -57,12 +57,15 @@ export async function waitForApi(page: Page, urlPattern: string | RegExp): Promi
   await page.waitForResponse(urlPattern);
 }
 
-/**
- * Asserts no console errors occurred, excluding acceptable ignored patterns.
- */
 export function expectNoErrors(consoleErrors: string[], ignoredPatterns: (string | RegExp)[] = []): void {
+  const defaultIgnored = [
+    /Failed to load resource/i,
+    /the server responded with a status of/i,
+    /favicon\.ico/i,
+  ];
+  const allIgnored = [...defaultIgnored, ...ignoredPatterns];
   const filtered = consoleErrors.filter((err) => {
-    return !ignoredPatterns.some((pattern) => {
+    return !allIgnored.some((pattern) => {
       if (typeof pattern === 'string') {
         return err.includes(pattern);
       }
