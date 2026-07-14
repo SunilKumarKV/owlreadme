@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { test, expect } from '@playwright/test';
 import { listenForConsoleErrors, expectNoErrors } from '../helpers/utils';
 import { seedA11yWorkspace, runAxeCheck } from '../helpers/a11y-helpers';
