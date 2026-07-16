@@ -32,6 +32,7 @@ export class LandingPage extends BasePage {
   }
 
   async enterUsername(username: string): Promise<void> {
+    await this.usernameInput.click();
     await this.usernameInput.fill(username);
   }
 
@@ -44,6 +45,7 @@ export class LandingPage extends BasePage {
   }
 
   async startBuilding(username: string): Promise<void> {
+    await this.isLoaded();
     await this.enterUsername(username);
     await expect(this.getStartedButton).toBeEnabled();
     await this.clickGetStarted();

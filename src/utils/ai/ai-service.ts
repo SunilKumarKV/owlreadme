@@ -169,14 +169,21 @@ export class SecureAPIAIService implements AIService {
   private localService = new DynamicLocalAIService();
 
   private async callSecureAPI(action: string, payload: any): Promise<any> {
+    console.log('DEBUG APP: callSecureAPI starting for', action);
     const res = await apiClient.post<any>('/api/ai', { action, payload });
+    console.log('DEBUG APP: callSecureAPI response for', action, 'res =', JSON.stringify(res));
 
     if (!res.success) {
       const errorData = res.error.data || {};
+      if (res.error.code === 'NETWORK_ERROR' || res.error.message?.includes('fetch') || res.error.message?.includes('Network')) {
+        const netErr = new Error(res.error.message || 'Network error: Internet disconnected');
+        (netErr as any).isNetworkError = true;
+        throw netErr;
+      }
       if (errorData.useLocalFallback || res.error.status === 500) {
         throw new Error('FALLBACK_TRIGGERED');
       }
-      throw new Error(errorData.error || 'Failed secure API call');
+      throw new Error(errorData.error || res.error.message || 'Failed secure API call');
     }
 
     const result = res.data;
@@ -195,6 +202,9 @@ export class SecureAPIAIService implements AIService {
     try {
       return await this.callSecureAPI('readme', { profileData, repoData });
     } catch (err: any) {
+      if (err.isNetworkError || (typeof window !== 'undefined' && !window.navigator.onLine)) {
+        throw err;
+      }
       console.warn('Secure AI README suggestion call failed. Falling back to local analyzer.', err);
       return this.localService.generateReadmeSuggestions(profileData, repoData);
     }
@@ -204,6 +214,9 @@ export class SecureAPIAIService implements AIService {
     try {
       return await this.callSecureAPI('roadmap', { roadmapTitle, currentSteps });
     } catch (err: any) {
+      if (err.isNetworkError || (typeof window !== 'undefined' && !window.navigator.onLine)) {
+        throw err;
+      }
       console.warn('Secure AI Roadmap suggestion call failed. Falling back to local analyzer.', err);
       return this.localService.generateRoadmapSuggestions(roadmapTitle, currentSteps);
     }
@@ -213,6 +226,9 @@ export class SecureAPIAIService implements AIService {
     try {
       return await this.callSecureAPI('profile', { profileData, repoData });
     } catch (err: any) {
+      if (err.isNetworkError || (typeof window !== 'undefined' && !window.navigator.onLine)) {
+        throw err;
+      }
       console.warn('Secure AI Profile suggestion call failed. Falling back to local analyzer.', err);
       return this.localService.generateProfileSuggestions(profileData, repoData);
     }

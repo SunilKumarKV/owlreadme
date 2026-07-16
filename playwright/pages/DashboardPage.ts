@@ -24,7 +24,7 @@ export class DashboardPage extends BasePage {
     this.heading = page.locator('h1', { hasText: 'Developer Workspace' }).first();
     this.createProjectButton = page.locator('button:visible', { hasText: /Create your first project|New Project/ }).first();
     this.githubProfileImportTrigger = page.locator('a:visible', { hasText: 'Import from GitHub' }).first();
-    this.alertBox = page.locator('div[role="alert"]:visible').first();
+    this.alertBox = page.locator('div[role="alert"]:not(#__next-route-announcer__):visible').first();
 
     // Create workspace dialog
     this.newProjectNameInput = page.locator('#new-project-name:visible').first();

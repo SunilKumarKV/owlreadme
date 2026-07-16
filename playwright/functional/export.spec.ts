@@ -1,6 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { test, expect } from '@playwright/test';
 import ExportPage from '../pages/ExportPage';
+import RoadmapBuilderPage from '../pages/RoadmapBuilderPage';
 import { listenForConsoleErrors, expectNoErrors } from '../helpers/utils';
 
 test.describe('Export Studio E2E Tests', () => {
@@ -45,21 +45,51 @@ test.describe('Export Studio E2E Tests', () => {
       });
     });
 
-    // Intercept document.write calls globally to stub window.print() inside the sandboxed PDF iframe
+    // Intercept document/iframe attachment and document opens to stub window.print() inside the sandboxed PDF iframe
     await page.addInitScript(() => {
-      (window as any).__pdfPrinted = false;
-      const originalWrite = Document.prototype.write;
-      Document.prototype.write = function(this: Document, ...args: any[]) {
-        if (typeof args[0] === 'string' && args[0].includes('window.print()')) {
-          args[0] = args[0].replace('window.print()', 'if (window.parent) { window.parent.__pdfPrinted = true; }');
+      (window as unknown as Record<string, boolean>).__pdfPrinted = false;
+      
+      const stubPrint = (win: Window) => {
+        try {
+          Object.defineProperty(win, 'print', {
+            value: () => {
+              (window.top as unknown as Record<string, boolean>).__pdfPrinted = true;
+            },
+            writable: true,
+            configurable: true
+          });
+        } catch (e) {}
+      };
+
+      const originalAppendChild = Node.prototype.appendChild;
+      Node.prototype.appendChild = function<T extends Node>(this: Node, child: T): T {
+        const result = originalAppendChild.call(this, child);
+        if (child instanceof HTMLIFrameElement) {
+          const win = child.contentWindow;
+          if (win) stubPrint(win);
         }
-        return originalWrite.apply(this, args);
+        return result;
+      };
+
+      const originalOpen = Document.prototype.open;
+      Document.prototype.open = function(this: Document, ...args: unknown[]) {
+        const result = originalOpen.apply(this, args as []);
+        const win = this.defaultView;
+        if (win && win !== window.top) stubPrint(win);
+        return result;
       };
     });
 
     // Navigate to dashboard with query param to trigger import and markdown compile
     await page.goto('/dashboard?username=octocat');
     await page.locator('h3', { hasText: 'The Octocat' }).waitFor({ state: 'visible' });
+    await page.waitForTimeout(1000);
+
+    // Populate roadmap content
+    const roadmapPage = new RoadmapBuilderPage(page);
+    await roadmapPage.navigate();
+    await roadmapPage.selectTemplate('backend');
+    await page.waitForTimeout(1000);
   });
 
   test.afterEach(async () => {
@@ -106,7 +136,7 @@ test.describe('Export Studio E2E Tests', () => {
 
     // Check if the stubbed print flag is set to true on the window object
     await expect(async () => {
-      const printed = await page.evaluate(() => (window as any).__pdfPrinted);
+      const printed = await page.evaluate(() => (window as unknown as Record<string, boolean>).__pdfPrinted);
       expect(printed).toBe(true);
     }).toPass({ timeout: 5000 });
   });
