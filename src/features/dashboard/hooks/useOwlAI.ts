@@ -59,6 +59,9 @@ export const useOwlAI = (options: OwlAIOptions) => {
     setAiLoading(true);
     setError(null);
     try {
+      if (typeof window !== 'undefined' && !window.navigator.onLine) {
+        throw new Error('Network error: Internet disconnected');
+      }
       const service = getAIService();
       const profileData = {
         name: readmeName,
@@ -80,9 +83,11 @@ export const useOwlAI = (options: OwlAIOptions) => {
 
       incrementAiGenerations();
       addNotification('Owl AI suggestions generated successfully!');
-    } catch (err) {
-      console.error(err);
-      setError('AI generation failed.');
+    } catch (err: any) {
+      if (err?.message !== 'Network error: Internet disconnected') {
+        console.error(err);
+      }
+      setError(err?.message || 'AI generation failed.');
     } finally {
       setAiLoading(false);
     }

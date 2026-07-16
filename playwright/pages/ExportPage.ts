@@ -17,12 +17,12 @@ export class ExportPage extends BasePage {
     this.heading = page.locator('h1', { hasText: 'Export Studio' });
     this.backToWorkspaceLink = page.getByRole('link', { name: 'Back to Workspace' });
     
-    // Formatting grid card buttons
-    this.downloadReadmeButton = page.locator('div').filter({ has: page.locator('h3', { hasText: 'README.md' }) }).locator('button', { hasText: 'Download' }).first();
-    this.downloadRoadmapButton = page.locator('div').filter({ has: page.locator('h3', { hasText: 'roadmap.md' }) }).locator('button', { hasText: 'Download' }).first();
-    this.downloadZipButton = page.locator('div').filter({ has: page.locator('h3', { hasText: 'ZIP Package' }) }).locator('button', { hasText: 'Download ZIP' }).first();
-    this.downloadJsonButton = page.locator('div').filter({ has: page.locator('h3', { hasText: 'JSON Backup' }) }).locator('button', { hasText: 'Backup Store' }).first();
-    this.printPdfButton = page.locator('div').filter({ has: page.locator('h3', { hasText: 'PDF Export' }) }).locator('button', { hasText: 'Print PDF' }).first();
+    // Formatting grid card buttons using child CSS selectors to avoid outer wrapper collisions
+    this.downloadReadmeButton = page.locator('div.grid > div').filter({ has: page.locator('h3', { hasText: 'README.md' }) }).locator('button', { hasText: 'Download' }).first();
+    this.downloadRoadmapButton = page.locator('div.grid > div').filter({ has: page.locator('h3', { hasText: 'roadmap.md' }) }).locator('button', { hasText: 'Download' }).first();
+    this.downloadZipButton = page.locator('div.grid > div').filter({ has: page.locator('h3', { hasText: 'ZIP Package' }) }).locator('button', { hasText: 'Download ZIP' }).first();
+    this.downloadJsonButton = page.locator('div.grid > div').filter({ has: page.locator('h3', { hasText: 'JSON Backup' }) }).locator('button', { hasText: 'Backup Store' }).first();
+    this.printPdfButton = page.locator('div.grid > div').filter({ has: page.locator('h3', { hasText: 'PDF Export' }) }).locator('button', { hasText: 'Print PDF' }).first();
   }
 
   async navigate(): Promise<void> {

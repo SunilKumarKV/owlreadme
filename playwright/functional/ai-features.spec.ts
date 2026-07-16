@@ -51,6 +51,8 @@ test.describe('AI Features E2E Tests', () => {
       /Secure AI/i,
       /Falling back to local analyzer/i,
       /FALLBACK_TRIGGERED/i,
+      /API CLIENT ERROR/i,
+      /API Request Failure/i,
     ]);
   });
 

@@ -30,17 +30,15 @@ test.describe('README Builder Comprehensive E2E Functional Suite', () => {
     await builderPage.fillAboutBio(bioText);
     await builderPage.fillAboutSkills(legacySkills);
 
-    // Assert updates in raw markdown
-    let md = await builderPage.getPreviewMarkdown();
-    expect(md).toContain(bioText);
-    expect(md).toContain(legacySkills);
+    // Wait for both values to appear in the raw markdown
+    await builderPage.waitForMarkdownToContain(bioText);
+    await builderPage.waitForMarkdownToContain(legacySkills);
 
     // Clear bio & skills
     await builderPage.fillAboutBio('');
     await builderPage.fillAboutSkills('');
-    md = await builderPage.getPreviewMarkdown();
-    expect(md).not.toContain(bioText);
-    expect(md).not.toContain(legacySkills);
+    await builderPage.waitForMarkdownToNotContain(bioText);
+    await builderPage.waitForMarkdownToNotContain(legacySkills);
   });
 
   test('3. Skills (Tech Stack Panel) & Badge Toggling', async ({ page }) => {
@@ -48,18 +46,17 @@ test.describe('README Builder Comprehensive E2E Functional Suite', () => {
     await builderPage.navigate();
     await builderPage.verifyPage();
 
-    // Enable Tech Stack builder section
+    // Enable Tech Stack builder section (toggleSection waits for the search input to attach)
     await builderPage.toggleSection('techStack', true);
 
     // Search and select 'React'
     await builderPage.addTechStackBadge('React');
-    let md = await builderPage.getPreviewMarkdown();
-    expect(md).toContain('logo=React');
+    // The tech registry has logo: 'react' (lowercase) — badge URL: ?logo=react
+    await builderPage.waitForMarkdownToContain('logo=react');
 
-    // Duplicate prevention (deselects if clicked again)
+    // Deselect React by clicking it again (it now shows ✓, clicking removes it)
     await builderPage.addTechStackBadge('React');
-    md = await builderPage.getPreviewMarkdown();
-    expect(md).not.toContain('logo=React');
+    await builderPage.waitForMarkdownToNotContain('logo=react');
   });
 
   test('4. Featured Projects Addition & Deletion', async ({ page }) => {
@@ -76,17 +73,18 @@ test.describe('README Builder Comprehensive E2E Functional Suite', () => {
       technologies: 'Playwright, Vitest',
     };
 
+    // Enable manual projects section
+    await builderPage.toggleSection('projects', true);
+
     // Add manual project
     await builderPage.addManualProject(projectData);
-    let md = await builderPage.getPreviewMarkdown();
-    expect(md).toContain(projectData.title);
-    expect(md).toContain(projectData.demoUrl);
-    expect(md).toContain(projectData.description);
+    await builderPage.waitForMarkdownToContain(projectData.title);
+    await builderPage.waitForMarkdownToContain(projectData.demoUrl);
+    await builderPage.waitForMarkdownToContain(projectData.description);
 
     // Delete project
     await builderPage.deleteProject(projectData.title);
-    md = await builderPage.getPreviewMarkdown();
-    expect(md).not.toContain(projectData.title);
+    await builderPage.waitForMarkdownToNotContain(projectData.title);
   });
 
   test('5. Social Links Contacts Badges Config', async ({ page }) => {
@@ -94,21 +92,20 @@ test.describe('README Builder Comprehensive E2E Functional Suite', () => {
     await builderPage.navigate();
     await builderPage.verifyPage();
 
-    // Enable socials
+    // Enable socials section
     await builderPage.toggleSection('socials', true);
 
-    // Add LinkedIn Link
+    // Toggle LinkedIn on
     await builderPage.toggleSocialPlatform('LinkedIn', true);
     await builderPage.fillSocialUsername('LinkedIn', 'linkedin-username');
 
-    let md = await builderPage.getPreviewMarkdown();
-    expect(md).toContain('logo=LinkedIn');
-    expect(md).toContain('linkedin.com/in/linkedin-username');
+    // Social registry has logo: 'linkedin' (lowercase) in badge URL
+    await builderPage.waitForMarkdownToContain('logo=linkedin');
+    await builderPage.waitForMarkdownToContain('linkedin.com/in/linkedin-username');
 
-    // Toggle off LinkedIn
+    // Toggle LinkedIn off
     await builderPage.toggleSocialPlatform('LinkedIn', false);
-    md = await builderPage.getPreviewMarkdown();
-    expect(md).not.toContain('linkedin.com/in/linkedin-username');
+    await builderPage.waitForMarkdownToNotContain('linkedin.com/in/linkedin-username');
   });
 
   test('6. Standalone Badges & Visitor Counter', async ({ page }) => {
@@ -121,14 +118,12 @@ test.describe('README Builder Comprehensive E2E Functional Suite', () => {
     await builderPage.fillVisitorUsername('test-github-user');
     await builderPage.fillVisitorColor('orange');
 
-    let md = await builderPage.getPreviewMarkdown();
-    expect(md).toContain('color=orange');
-    expect(md).toContain('test-github-user');
+    await builderPage.waitForMarkdownToContain('color=orange');
+    await builderPage.waitForMarkdownToContain('test-github-user');
 
     // Disable Visitor Counter
     await builderPage.toggleSection('visitor', false);
-    md = await builderPage.getPreviewMarkdown();
-    expect(md).not.toContain('color=orange');
+    await builderPage.waitForMarkdownToNotContain('color=orange');
   });
 
   test('7. GitHub Stats Panel Integration', async ({ page }) => {
@@ -136,15 +131,16 @@ test.describe('README Builder Comprehensive E2E Functional Suite', () => {
     await builderPage.navigate();
     await builderPage.verifyPage();
 
-    // Toggle GitHub Stats
+    // Enable GitHub Stats section (toggleSection waits for the username input to attach)
     await builderPage.toggleSection('githubStats', true);
-    let md = await builderPage.getPreviewMarkdown();
-    expect(md).toContain('github-readme-stats');
 
-    // Toggle GitHub Stats off
+    // GitHub stats only renders markdown when a username is present
+    await builderPage.fillStatsUsername('testuser');
+    await builderPage.waitForMarkdownToContain('github-readme-stats');
+
+    // Toggle GitHub Stats off — markdown should be removed
     await builderPage.toggleSection('githubStats', false);
-    md = await builderPage.getPreviewMarkdown();
-    expect(md).not.toContain('github-readme-stats');
+    await builderPage.waitForMarkdownToNotContain('github-readme-stats');
   });
 
   test('8. State Persistence across Page Reloads', async ({ page }) => {
@@ -175,8 +171,7 @@ test.describe('README Builder Comprehensive E2E Functional Suite', () => {
     const bioPayload = '🚀 Emojis Developer Profile 🔥 containing *markdown* chars like # headings and [links](http://test.com)';
     await builderPage.fillAboutBio(bioPayload);
 
-    const md = await builderPage.getPreviewMarkdown();
-    expect(md).toContain(bioPayload);
+    await builderPage.waitForMarkdownToContain(bioPayload);
   });
 
   test('10. Performance - No full page navigation on updates', async ({ page }) => {
@@ -188,7 +183,7 @@ test.describe('README Builder Comprehensive E2E Functional Suite', () => {
 
     // Update form elements
     await builderPage.fillAboutBio('Performance check');
-    
+
     // Assert that the URL stays exactly the same (no browser navigations or full page reloads occur)
     expect(page.url()).toBe(initialUrl);
   });

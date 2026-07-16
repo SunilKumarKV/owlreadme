@@ -160,7 +160,25 @@ export async function seedA11yWorkspace(page: Page): Promise<void> {
       },
       featuredProjects: {
         enabled: true,
-        projects: [{ name: 'octocat-react-project', description: 'React project description.', stars: 5, forks: 1, url: 'https://github.com/octocat/octocat-react-project' }]
+        cardStyle: 'modern',
+        layout: '2-col',
+        sortMode: 'manual',
+        badgeStyle: 'flat-square',
+        showStars: true,
+        showForks: true,
+        showLanguage: true,
+        showTopics: true,
+        projects: [{
+          id: 'gh-octocat-react-project',
+          source: 'github',
+          repoName: 'octocat-react-project',
+          description: 'React project description.',
+          stars: 5,
+          forks: 1,
+          repoUrl: 'https://github.com/octocat/octocat-react-project',
+          language: 'TypeScript',
+          topics: ['react'],
+        }]
       },
       animatedComponents: {
         enabled: false,

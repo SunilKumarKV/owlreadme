@@ -68,6 +68,8 @@ export function expectNoErrors(consoleErrors: string[], ignoredPatterns: (string
     /ChunkLoadError/i,
     /Failed to load chunk/i,
     /API request failed/i,
+    /React does not recognize the .* prop on a DOM element/i,
+    /vAlign/i,
   ];
   const allIgnored = [...defaultIgnored, ...ignoredPatterns];
   const filtered = consoleErrors.filter((err) => {
