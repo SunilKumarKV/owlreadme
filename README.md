@@ -173,6 +173,6 @@ If you find a bug, have questions, or want to discuss enhancements:
 
 OwlREADME is built with the support of the open-source ecosystem, including Next.js, React, Tailwind CSS, Zustand, and the broader developer tools community.
 
-## ⚖️ License
+## ⚖️ License-
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
