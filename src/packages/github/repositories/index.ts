@@ -2,8 +2,10 @@
 import { validateGithubUsername, validateGithubRepoName } from '../validators';
 import { getCachedValue, setCachedValue } from '../cache';
 import { callGithubApi, callGithubGraphQL } from '../api';
+import { getAuthHeaders } from '../auth';
 import type { GitHubRepo } from '../types';
 import { apiClient } from '../../api-client';
+
 
 export async function fetchGithubRepos(username: string): Promise<GitHubRepo[]> {
   validateGithubUsername(username);
@@ -122,37 +124,77 @@ export async function fetchGithubReadme(owner: string, repo: string): Promise<st
   const cached = getCachedValue<string>(cacheKey);
   if (cached) return cached;
 
-  const tryRawUrl = async (branch: 'main' | 'master') => {
-    const url = `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/README.md`;
-    const res = await apiClient.get<string>(url);
-    if (res.success) {
-      return res.data;
+  // Step 1 — Verify the repository exists and fetch its default_branch.
+  // This gives us a precise, actionable error message for each failure mode.
+  const repoMetaResult = await apiClient.request<{ default_branch: string }>(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`, {
+    headers: { ...getAuthHeaders(), Accept: 'application/vnd.github+json' },
+    timeout: 10000,
+  });
+
+  if (!repoMetaResult.success) {
+    const { status } = repoMetaResult.error;
+    if (status === 404) {
+      throw new Error(`Repository "${owner}/${repo}" not found. Check the owner and repository name and try again.`);
     }
-    return null;
-  };
-
-  const mainReadme = await tryRawUrl('main');
-  if (mainReadme !== null) {
-    setCachedValue(cacheKey, mainReadme);
-    return mainReadme;
+    if (status === 403) {
+      const rateLimitReset = repoMetaResult.error.data?.headers?.['x-ratelimit-reset'];
+      if (repoMetaResult.error.data?.message?.toLowerCase().includes('rate limit') || rateLimitReset) {
+        throw new Error('GitHub API rate limit reached. Please wait a few minutes and try again.');
+      }
+      throw new Error(`Access denied to "${owner}/${repo}". The repository may be private.`);
+    }
+    if (status === 429) {
+      throw new Error('Too many requests to GitHub. Please wait a moment and try again.');
+    }
+    if (repoMetaResult.error.code === 'NETWORK_ERROR') {
+      throw new Error('Network error: Failed to connect to GitHub. Please check your internet connection.');
+    }
+    if (repoMetaResult.error.code === 'TIMEOUT_ERROR') {
+      throw new Error('GitHub API request timed out. Please check your network connection and try again.');
+    }
+    throw new Error(`Failed to access repository "${owner}/${repo}": ${repoMetaResult.error.message}`);
   }
 
-  const masterReadme = await tryRawUrl('master');
-  if (masterReadme !== null) {
-    setCachedValue(cacheKey, masterReadme);
-    return masterReadme;
+  // Step 2 — Fetch the README using the canonical /readme endpoint.
+  // GitHub resolves the default branch and all README filename variants automatically.
+  // Accept: application/vnd.github.raw returns the raw file content directly.
+  const readmeResult = await apiClient.request<string>(`https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/readme`, {
+    headers: {
+      ...getAuthHeaders(),
+      Accept: 'application/vnd.github.raw',
+    },
+    timeout: 10000,
+  });
+
+  if (!readmeResult.success) {
+    const { status } = readmeResult.error;
+    if (status === 404) {
+      throw new Error(`No README file found in "${owner}/${repo}" (default branch: "${repoMetaResult.data.default_branch}").`);
+    }
+    if (status === 403) {
+      throw new Error(`Access denied when reading README from "${owner}/${repo}". The repository may be private.`);
+    }
+    if (status === 429) {
+      throw new Error('Too many requests to GitHub. Please wait a moment and try again.');
+    }
+    if (readmeResult.error.code === 'NETWORK_ERROR') {
+      throw new Error('Network error while downloading README. Please check your internet connection.');
+    }
+    if (readmeResult.error.code === 'TIMEOUT_ERROR') {
+      throw new Error('Timed out while downloading README. Please try again.');
+    }
+    throw new Error(`Failed to fetch README from "${owner}/${repo}": ${readmeResult.error.message}`);
   }
 
-  // Fallback to REST API contents fetch
-  const rawData = await callGithubApi<any>(
-    `/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/contents/README.md`,
-    { headers: { Accept: 'application/vnd.github.v3.raw' } }
-  );
+  const content = readmeResult.data;
+  if (typeof content !== 'string' || content.trim().length === 0) {
+    throw new Error(`README in "${owner}/${repo}" appears to be empty.`);
+  }
 
-  const text = typeof rawData === 'string' ? rawData : '';
-  setCachedValue(cacheKey, text);
-  return text;
+  setCachedValue(cacheKey, content);
+  return content;
 }
+
 
 export async function searchGithubRepos(
   query: string,
