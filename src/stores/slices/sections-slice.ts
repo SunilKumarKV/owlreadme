@@ -349,16 +349,19 @@ export const createSectionsSlice: StateCreator<
 
       if (selectedSectionIds.includes('about')) {
         updates.about = importedData.about || state.about;
+        updates.skills = importedData.skills || state.skills;
       }
 
       if (selectedSectionIds.includes('socials')) {
         const mergedPlatforms = { ...state.socialLinks.platforms };
-        Object.keys(importedData.socialLinks.platforms).forEach((key) => {
-          mergedPlatforms[key] = {
-            enabled: true,
-            value: importedData.socialLinks.platforms[key].value,
-          };
-        });
+        if (importedData.socialLinks?.platforms) {
+          Object.keys(importedData.socialLinks.platforms).forEach((key) => {
+            mergedPlatforms[key] = {
+              enabled: true,
+              value: importedData.socialLinks.platforms[key].value,
+            };
+          });
+        }
         updates.socialLinks = {
           ...state.socialLinks,
           ...importedData.socialLinks,
@@ -391,6 +394,30 @@ export const createSectionsSlice: StateCreator<
         };
       }
 
+      if (selectedSectionIds.includes('projects')) {
+        updates.featuredProjects = {
+          ...state.featuredProjects,
+          ...importedData.featuredProjects,
+          enabled: true,
+        };
+      }
+
+      if (selectedSectionIds.includes('visitor')) {
+        updates.standaloneVisitor = {
+          ...state.standaloneVisitor,
+          ...importedData.standaloneVisitor,
+          enabled: true,
+        };
+      }
+
+      if (selectedSectionIds.includes('support')) {
+        updates.support = {
+          ...state.support,
+          ...importedData.support,
+          enabled: true,
+        };
+      }
+
       if (selectedSectionIds.includes('quotes')) {
         updates.quotes = {
           ...state.quotes,
@@ -403,6 +430,14 @@ export const createSectionsSlice: StateCreator<
         updates.customMarkdown = {
           ...state.customMarkdown,
           ...importedData.customMarkdown,
+          enabled: true,
+        };
+      }
+
+      if (selectedSectionIds.includes('animatedComponents')) {
+        updates.animatedComponents = {
+          ...state.animatedComponents,
+          ...importedData.animatedComponents,
           enabled: true,
         };
       }
