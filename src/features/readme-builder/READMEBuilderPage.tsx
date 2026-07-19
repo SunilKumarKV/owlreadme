@@ -291,7 +291,6 @@ const READMEBuilderPage = () => {
     setConflictResolution,
     handleFetchReadme,
     handleFileUploadImport,
-    handleResolveImport,
     isHistorySidebarOpen,
     setIsHistorySidebarOpen,
     historySearchQuery,
@@ -1211,7 +1210,6 @@ const READMEBuilderPage = () => {
 
               {/* Content */}
               <div className="p-6 overflow-y-auto custom-editor-scrollbar flex-1 text-xs space-y-4">
-                {importStatus === 'idle' || importStatus === 'fetching' || importStatus === 'parsing' || importStatus === 'error' ? (
                   <div className="space-y-4">
                     {/* Step 1: Input source selector tabs */}
                     <div className="flex border-b border-gray-150 dark:border-gray-800 flex-shrink-0 select-none">
@@ -1301,6 +1299,60 @@ const READMEBuilderPage = () => {
                       )}
                     </div>
 
+                    {/* Conflict Resolution Options */}
+                    <div className="border-t border-gray-150 dark:border-gray-800 pt-3 space-y-2">
+                      <div>
+                        <label className="font-semibold text-gray-550 block">Conflict Resolution</label>
+                        <p className="text-[10px] text-gray-400 mt-0.5">Choose how to apply the imported README to your workspace:</p>
+                      </div>
+                      <div className="grid grid-cols-1 gap-2 select-none">
+                        <label className="flex items-start gap-3 p-2.5 rounded-lg border border-gray-200 dark:border-gray-850 cursor-pointer bg-gray-50/10 hover:bg-gray-55/30">
+                          <input
+                            type="radio"
+                            name="conflict"
+                            value="new"
+                            checked={conflictResolution === 'new'}
+                            onChange={() => setConflictResolution('new')}
+                            className="mt-0.5 text-blue-600 cursor-pointer"
+                          />
+                          <div>
+                            <span className="font-bold text-gray-700 dark:text-gray-300 block">✨ Create new workspace</span>
+                            <span className="text-[10px] text-gray-400">Imports into a clean, new workspace to keep your current active workspace safe.</span>
+                          </div>
+                        </label>
+
+                        <label className="flex items-start gap-3 p-2.5 rounded-lg border border-gray-200 dark:border-gray-850 cursor-pointer bg-gray-50/10 hover:bg-gray-55/30">
+                          <input
+                            type="radio"
+                            name="conflict"
+                            value="merge"
+                            checked={conflictResolution === 'merge'}
+                            onChange={() => setConflictResolution('merge')}
+                            className="mt-0.5 text-blue-600 cursor-pointer"
+                          />
+                          <div>
+                            <span className="font-bold text-gray-700 dark:text-gray-300 block">⚡ Merge into active workspace</span>
+                            <span className="text-[10px] text-gray-400">Updates settings for the imported sections, leaving other sections untouched.</span>
+                          </div>
+                        </label>
+
+                        <label className="flex items-start gap-3 p-2.5 rounded-lg border border-gray-200 dark:border-gray-850 cursor-pointer bg-gray-50/10 hover:bg-gray-55/30">
+                          <input
+                            type="radio"
+                            name="conflict"
+                            value="overwrite"
+                            checked={conflictResolution === 'overwrite'}
+                            onChange={() => setConflictResolution('overwrite')}
+                            className="mt-0.5 text-blue-600 cursor-pointer"
+                          />
+                          <div>
+                            <span className="font-bold text-gray-700 dark:text-gray-300 block">⚠️ Overwrite active workspace</span>
+                            <span className="text-[10px] text-gray-400">Replaces the active workspace's configuration with the imported README.</span>
+                          </div>
+                        </label>
+                      </div>
+                    </div>
+
                     {/* Status Indicator */}
                     {(importStatus === 'fetching' || importStatus === 'parsing') && (
                       <div className="flex items-center gap-3 p-3 rounded bg-blue-500/5 text-blue-600 dark:text-blue-400 font-semibold select-none border border-blue-500/10">
@@ -1315,98 +1367,6 @@ const READMEBuilderPage = () => {
                       </div>
                     )}
                   </div>
-                ) : (
-                  /* Step 2: Summary Checkboxes & Conflict Selection */
-                  <div className="space-y-4">
-                    <div>
-                      <h3 className="text-xs font-extrabold uppercase tracking-wider text-gray-400 dark:text-gray-500">Section Detection Summary</h3>
-                      <p className="text-[10px] text-gray-400 mt-0.5">We scanned the markdown layout and identified these sections. Select which ones you want to import:</p>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2 select-none">
-                      {parsedImportResult?.detectedSections.map((sectionId: SectionId) => {
-                        const isSelected = selectedImportSections.includes(sectionId);
-                        return (
-                          <label
-                            key={sectionId}
-                            className={`flex items-center gap-3 p-3 rounded-lg border text-xs cursor-pointer transition ${
-                              isSelected
-                                ? 'border-blue-200 dark:border-blue-900 bg-blue-500/5 text-blue-600 dark:text-blue-450 font-bold'
-                                : 'border-gray-200 dark:border-gray-800 text-gray-550'
-                            }`}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={isSelected}
-                              onChange={() => {
-                                const updated = isSelected
-                                  ? selectedImportSections.filter((id) => id !== sectionId)
-                                  : [...selectedImportSections, sectionId];
-                                setSelectedImportSections(updated);
-                              }}
-                              className="rounded text-blue-600 cursor-pointer focus:ring-0"
-                            />
-                            <span className="capitalize">{sectionId.replace(/([A-Z])/g, ' $1')}</span>
-                          </label>
-                        );
-                      })}
-                    </div>
-
-                    <div className="border-t border-gray-100 dark:border-gray-850 pt-4 space-y-3">
-                      <div>
-                        <h4 className="text-2xs font-extrabold uppercase tracking-wider text-gray-400">Conflict Resolution</h4>
-                        <p className="text-[10px] text-gray-400 mt-0.5">How should we apply these sections to your workspace layout?</p>
-                      </div>
-
-                      <div className="space-y-2 select-none">
-                        <label className="flex items-start gap-3 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer bg-gray-50/10 hover:bg-gray-50/30">
-                          <input
-                            type="radio"
-                            name="conflict"
-                            value="new"
-                            checked={conflictResolution === 'new'}
-                            onChange={() => setConflictResolution('new')}
-                            className="mt-0.5 text-blue-600 cursor-pointer"
-                          />
-                          <div>
-                            <span className="font-bold text-gray-700 dark:text-gray-300 block">✨ (Recommended) Create new workspace</span>
-                            <span className="text-[10px] text-gray-400">Imports into a clean workspace, keeping your active workspace completely safe.</span>
-                          </div>
-                        </label>
-
-                        <label className="flex items-start gap-3 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer bg-gray-50/10 hover:bg-gray-55/30">
-                          <input
-                            type="radio"
-                            name="conflict"
-                            value="merge"
-                            checked={conflictResolution === 'merge'}
-                            onChange={() => setConflictResolution('merge')}
-                            className="mt-0.5 text-blue-600 cursor-pointer"
-                          />
-                          <div>
-                            <span className="font-bold text-gray-700 dark:text-gray-300 block">⚡ Merge into active workspace</span>
-                            <span className="text-[10px] text-gray-400">Updates settings for selected sections, leaving other sections untouched.</span>
-                          </div>
-                        </label>
-
-                        <label className="flex items-start gap-3 p-2.5 rounded-lg border border-gray-200 dark:border-gray-800 cursor-pointer bg-gray-50/10 hover:bg-gray-55/30">
-                          <input
-                            type="radio"
-                            name="conflict"
-                            value="overwrite"
-                            checked={conflictResolution === 'overwrite'}
-                            onChange={() => setConflictResolution('overwrite')}
-                            className="mt-0.5 text-blue-600 cursor-pointer"
-                          />
-                          <div>
-                            <span className="font-bold text-gray-700 dark:text-gray-300 block">⚠️ Overwrite active workspace</span>
-                            <span className="text-[10px] text-gray-400">Replaces layout. Unselected sections will be disabled.</span>
-                          </div>
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
 
               {/* Footer */}
@@ -1421,23 +1381,13 @@ const READMEBuilderPage = () => {
                   Cancel
                 </button>
 
-                {importStatus !== 'summary' ? (
-                  <button
-                    onClick={handleFetchReadme}
-                    disabled={importStatus === 'fetching' || importStatus === 'parsing'}
-                    className="px-4 py-2 rounded text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white cursor-pointer disabled:opacity-50"
-                  >
-                    Continue
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleResolveImport}
-                    disabled={selectedImportSections.length === 0}
-                    className="px-4 py-2 rounded text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white cursor-pointer disabled:opacity-50"
-                  >
-                    Import Selected Sections
-                  </button>
-                )}
+                <button
+                  onClick={handleFetchReadme}
+                  disabled={importStatus === 'fetching' || importStatus === 'parsing'}
+                  className="px-4 py-2 rounded text-xs font-extrabold bg-blue-600 hover:bg-blue-700 text-white cursor-pointer disabled:opacity-50"
+                >
+                  {importStatus === 'fetching' || importStatus === 'parsing' ? 'Importing...' : 'Import README'}
+                </button>
               </div>
             </div>
           </FocusTrap>

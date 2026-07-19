@@ -106,4 +106,39 @@ Some description of weird stuff.
     expect(result.data.customMarkdown.enabled).toBe(true);
     expect(result.data.customMarkdown.content).toContain('Some custom markdown');
   });
+
+  it('should parse projects, visitor counters, support links, and quotes correctly', () => {
+    const rawMarkdown = `
+## 📂 Featured Projects
+- [My Project](https://github.com/octocat/my-project) — A beautiful open source project.
+- [Another Repo](https://github.com/octocat/another-repo)
+
+## ☕ Support
+If you like my work, buy me a coffee!
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-yellow?logo=buy-me-a-coffee)](https://buymeacoffee.com/octocat)
+
+## 💬 Quotes
+![Quote](https://github-readme-quotes.herokuapp.com/quote?theme=radical)
+
+## 👁️ Visitor
+![Visitor](https://komarev.com/ghpvc/?username=octocat&color=blue&style=flat)
+    `;
+
+    const result = parseReadmeMarkdown(rawMarkdown);
+    expect(result.detectedSections).toContain('projects');
+    expect(result.detectedSections).toContain('support');
+    expect(result.detectedSections).toContain('quotes');
+    expect(result.detectedSections).toContain('visitor');
+
+    expect(result.data.featuredProjects.projects.length).toBe(2);
+    expect(result.data.featuredProjects.projects[0].repoName).toBe('my-project');
+    expect(result.data.featuredProjects.projects[0].description).toBe('A beautiful open source project.');
+    expect(result.data.featuredProjects.projects[1].repoName).toBe('another-repo');
+
+    expect(result.data.support.buyMeACoffeeUsername).toBe('octocat');
+    expect(result.data.quotes.theme).toBe('radical');
+    expect(result.data.standaloneVisitor.username).toBe('octocat');
+    expect(result.data.standaloneVisitor.color).toBe('blue');
+    expect(result.data.standaloneVisitor.style).toBe('flat');
+  });
 });

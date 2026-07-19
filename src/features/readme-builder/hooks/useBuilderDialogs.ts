@@ -58,7 +58,33 @@ export const useBuilderDialogs = () => {
       setParsedImportResult(parsed);
       setSelectedImportSections(parsed.detectedSections);
       
-      setImportStatus('summary');
+      if (conflictResolution === 'new') {
+        const workspaceName = prompt('Enter a name for the imported workspace:', 'Imported GitHub Profile');
+        if (workspaceName && workspaceName.trim()) {
+          const wsId = createWorkspace(workspaceName.trim(), 'readme');
+          setActiveWorkspaceId(wsId);
+          readmeStore.importReadmeData(parsed.data, parsed.detectedSections);
+          setIsImportModalOpen(false);
+          setImportStatus('idle');
+          alert(`Successfully imported README into new workspace "${workspaceName.trim()}"!`);
+        } else {
+          setImportStatus('idle');
+        }
+      } else if (conflictResolution === 'overwrite') {
+        if (confirm('Are you sure you want to overwrite your active workspace? This will replace your current workspace content.')) {
+          readmeStore.importReadmeData(parsed.data, parsed.detectedSections);
+          setIsImportModalOpen(false);
+          setImportStatus('idle');
+          alert('Active workspace overwritten with imported README successfully!');
+        } else {
+          setImportStatus('idle');
+        }
+      } else if (conflictResolution === 'merge') {
+        readmeStore.importReadmeData(parsed.data, parsed.detectedSections);
+        setIsImportModalOpen(false);
+        setImportStatus('idle');
+        alert('README sections merged into active workspace successfully!');
+      }
     } catch (err: any) {
       setImportStatus('error');
       setImportStatusMessage(err.message || 'Failed to parse Markdown content.');
@@ -110,34 +136,6 @@ export const useBuilderDialogs = () => {
       }
     };
     reader.readAsText(file);
-  };
-
-  const handleResolveImport = () => {
-    if (!parsedImportResult) return;
-
-    if (conflictResolution === 'new') {
-      const workspaceName = prompt('Enter a name for the imported workspace:', 'Imported GitHub Profile');
-      if (workspaceName && workspaceName.trim()) {
-        const wsId = createWorkspace(workspaceName.trim(), 'readme');
-        setActiveWorkspaceId(wsId);
-        readmeStore.importReadmeData(parsedImportResult.data, selectedImportSections);
-        setIsImportModalOpen(false);
-        setImportStatus('idle');
-        alert(`Successfully imported README into new workspace "${workspaceName.trim()}"!`);
-      }
-    } else if (conflictResolution === 'overwrite') {
-      if (confirm('Are you sure you want to overwrite your active workspace? All unselected sections will be disabled.')) {
-        readmeStore.importReadmeData(parsedImportResult.data, selectedImportSections);
-        setIsImportModalOpen(false);
-        setImportStatus('idle');
-        alert('Active workspace overwritten with imported README sections successfully!');
-      }
-    } else if (conflictResolution === 'merge') {
-      readmeStore.importReadmeData(parsedImportResult.data, selectedImportSections);
-      setIsImportModalOpen(false);
-      setImportStatus('idle');
-      alert('Selected README sections merged into active workspace successfully!');
-    }
   };
 
   // 3. Snapshot, compare, and version history Sidebar system
@@ -283,7 +281,6 @@ export const useBuilderDialogs = () => {
     setConflictResolution,
     handleFetchReadme,
     handleFileUploadImport,
-    handleResolveImport,
     isHistorySidebarOpen,
     setIsHistorySidebarOpen,
     historySearchQuery,
