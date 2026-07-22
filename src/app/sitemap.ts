@@ -8,6 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/dashboard',
     '/readme-builder',
     '/roadmap-builder',
+    '/templates',
     '/preview',
     '/export',
     '/theme',

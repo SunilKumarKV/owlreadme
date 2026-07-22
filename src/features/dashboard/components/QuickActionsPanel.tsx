@@ -12,6 +12,7 @@ export const QuickActionsPanel = ({ isReadmeType, isRoadmapType }: QuickActionsP
       <div className="flex flex-col gap-3">
         {isReadmeType && <Button href="/readme-builder" variant="primary" className="w-full text-sm">Create / Edit README</Button>}
         {isRoadmapType && <Button href="/roadmap-builder" variant={isReadmeType ? "secondary" : "primary"} className="w-full text-sm">Create / Edit Roadmap</Button>}
+        <Button href="/templates" variant="secondary" className="w-full text-sm">🛍️ README Templates</Button>
         <Button href="/gallery" variant="secondary" className="w-full text-sm">README Showcase Gallery</Button>
         <Button href="/export" variant="secondary" className="w-full text-sm">Export Markdown</Button>
         <Button href="/theme" variant="secondary" className="w-full text-sm">Change Theme</Button>

@@ -118,6 +118,10 @@ export const BuilderHeader: React.FC<BuilderHeaderProps> = ({
           <span className="hidden md:inline font-semibold">Import README</span>
         </button>
 
+        <Button href="/templates" variant="secondary" className="!py-1 !px-2.5 !text-xs">
+          🛍️ Templates
+        </Button>
+
         <Button href="/dashboard" variant="secondary" className="!py-1 !px-2.5 !text-xs">
           Dashboard
         </Button>

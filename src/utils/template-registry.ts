@@ -1,6 +1,27 @@
 import { SectionId } from '@/stores/readme-store';
 
 export type TemplateCategory =
+  | 'Developer'
+  | 'Frontend'
+  | 'Backend'
+  | 'Full Stack'
+  | 'Mobile'
+  | 'Game Development'
+  | 'AI/ML'
+  | 'Data Science'
+  | 'DevOps'
+  | 'Cloud'
+  | 'Cyber Security'
+  | 'Student'
+  | 'Open Source'
+  | 'Designer'
+  | 'Freelancer'
+  | 'Startup'
+  | 'Company'
+  | 'Creator'
+  | 'Streamer'
+  | 'YouTuber'
+  | 'Educator'
   | 'minimal'
   | 'modern'
   | 'open-source'
@@ -16,468 +37,912 @@ export interface MarketplaceTemplate {
   name: string;
   category: TemplateCategory;
   description: string;
-  imageUrl: string; // Absolute path to generated images or placeholders
+  imageUrl: string;
+  difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
+  downloads: number;
+  likes: number;
+  tags: string[];
+  author: string;
+  lastUpdated: string;
+  featured?: boolean;
+  trending?: boolean;
+  newest?: boolean;
+  community?: boolean;
   sections: SectionId[];
   theme: 'minimal' | 'dark' | 'gradient' | 'terminal';
-  config: {
-    header: {
-      enabled: boolean;
-      name: string;
-      title: string;
-      intro: string;
-      pronouns: string;
-      location: string;
-      alignment: 'left' | 'center' | 'right';
-      bannerType: 'none' | 'capsule' | 'wave' | 'gradient';
-      bannerTheme: string;
-      bannerText: string;
-      typingEnabled: boolean;
-      typingLines: string[];
-      typingSpeed: number;
-      typingDelay: number;
-      typingColor: string;
-      typingCenter: boolean;
-      badges: {
-        openToWork: boolean;
-        freelance: boolean;
-        learning: string;
-        building: string;
-      };
-      visitorPlacement: 'top' | 'bottom' | 'hidden';
-    };
-    githubStats: {
-      enabled: boolean;
-      theme: string;
-      hideBorder: boolean;
-      showIcons: boolean;
-      compactMode: boolean;
-      layout: 'default' | 'compact' | 'languages';
-    };
-    techStack: {
-      enabled: boolean;
-      style: 'flat' | 'flat-square' | 'for-the-badge' | 'plastic';
-      iconOnly: boolean;
-      groupByCategory: boolean;
-      selectedIds: string[];
-    };
-    socialLinks: {
-      enabled: boolean;
-      style: 'flat' | 'flat-square' | 'for-the-badge' | 'plastic';
-      iconOnly: boolean;
-      platforms: Record<string, string>;
-    };
-    achievements: {
-      enabled: boolean;
-      widgets: {
-        trophy: { enabled: boolean; theme: string; noFrame: boolean; noBg: boolean };
-        visitor: { enabled: boolean; color: string; style: string };
-        snake: { enabled: boolean };
-        graph: { enabled: boolean; theme: string; hideBorder: boolean };
-      };
-    };
-    quotes: {
-      enabled: boolean;
-      theme: string;
-      quoteType: 'programming' | 'general' | 'anime';
-    };
-  };
+  config: any;
 }
+
+export const CATEGORIES_LIST: { id: string; name: string; icon: string }[] = [
+  { id: 'All', name: '✨ All Templates', icon: '🌟' },
+  { id: 'Developer', name: 'Developer', icon: '💻' },
+  { id: 'Frontend', name: 'Frontend', icon: '🎨' },
+  { id: 'Backend', name: 'Backend', icon: '⚙️' },
+  { id: 'Full Stack', name: 'Full Stack', icon: '🚀' },
+  { id: 'Mobile', name: 'Mobile', icon: '📱' },
+  { id: 'Game Development', name: 'Game Development', icon: '🎮' },
+  { id: 'AI/ML', name: 'AI / ML', icon: '🤖' },
+  { id: 'Data Science', name: 'Data Science', icon: '📊' },
+  { id: 'DevOps', name: 'DevOps', icon: '♾️' },
+  { id: 'Cloud', name: 'Cloud', icon: '☁️' },
+  { id: 'Cyber Security', name: 'Cyber Security', icon: '🛡️' },
+  { id: 'Student', name: 'Student', icon: '🎓' },
+  { id: 'Open Source', name: 'Open Source', icon: '🌐' },
+  { id: 'Designer', name: 'Designer', icon: '🖌️' },
+  { id: 'Freelancer', name: 'Freelancer', icon: '💼' },
+  { id: 'Startup', name: 'Startup', icon: '🔥' },
+  { id: 'Company', name: 'Company', icon: '🏢' },
+  { id: 'Creator', name: 'Creator', icon: '✨' },
+  { id: 'Streamer', name: 'Streamer', icon: '📡' },
+  { id: 'YouTuber', name: 'YouTuber', icon: '📹' },
+  { id: 'Educator', name: 'Educator', icon: '📚' },
+];
+
+const createStandardConfig = (override: Partial<any>) => ({
+  header: {
+    enabled: true,
+    name: 'Jane Developer',
+    title: 'Senior Software Engineer',
+    intro: 'Passionate about clean architecture, developer tooling, and modern web applications.',
+    pronouns: 'she/her',
+    location: 'San Francisco, CA',
+    alignment: 'center',
+    bannerType: 'capsule',
+    bannerTheme: 'tokyonight',
+    bannerText: 'WELCOME TO MY PROFILE',
+    typingEnabled: true,
+    typingLines: ['Building open source tools', 'Crafting pixel-perfect UIs', 'Architecting cloud backends'],
+    typingSpeed: 120,
+    typingDelay: 1000,
+    typingColor: '3b82f6',
+    typingCenter: true,
+    badges: { openToWork: true, freelance: false, learning: 'Rust', building: 'OwlREADME' },
+    visitorPlacement: 'bottom',
+    ...(override.header || {}),
+  },
+  githubStats: {
+    enabled: true,
+    theme: 'tokyonight',
+    hideBorder: false,
+    showIcons: true,
+    compactMode: false,
+    layout: 'default',
+    username: 'octocat',
+    ...(override.githubStats || {}),
+  },
+  techStack: {
+    enabled: true,
+    style: 'for-the-badge',
+    iconOnly: false,
+    groupByCategory: true,
+    selectedIds: ['typescript', 'react', 'nextjs', 'tailwind', 'nodejs', 'git'],
+    ...(override.techStack || {}),
+  },
+  socialLinks: {
+    enabled: true,
+    style: 'for-the-badge',
+    iconOnly: false,
+    platforms: {
+      github: { enabled: true, value: 'octocat' },
+      linkedin: { enabled: true, value: 'in/octocat' },
+      x: { enabled: true, value: 'octocat' },
+    },
+    ...(override.socialLinks || {}),
+  },
+  achievements: {
+    enabled: true,
+    username: 'octocat',
+    widgets: {
+      trophy: { enabled: true, theme: 'flat', noFrame: false, noBg: false },
+      visitor: { enabled: true, color: '3b82f6', style: 'flat' },
+      snake: { enabled: true },
+      graph: { enabled: true, theme: 'github', hideBorder: false },
+    },
+    ...(override.achievements || {}),
+  },
+  featuredProjects: {
+    enabled: true,
+    showStars: true,
+    projects: [
+      { repoName: 'awesome-tool', description: 'Blazing fast developer workspace builder.', language: 'TypeScript', stars: 1420 },
+      { repoName: 'ui-kit', description: 'Accessible TailwindCSS component library.', language: 'React', stars: 890 },
+    ],
+    ...(override.featuredProjects || {}),
+  },
+  standaloneVisitor: {
+    enabled: true,
+    username: 'octocat',
+    color: 'blue',
+    style: 'flat',
+    ...(override.standaloneVisitor || {}),
+  },
+  support: {
+    enabled: true,
+    buyMeACoffeeUsername: 'octocat',
+    ...(override.support || {}),
+  },
+  quotes: {
+    enabled: true,
+    theme: 'tokyonight',
+    quoteType: 'programming',
+    ...(override.quotes || {}),
+  },
+});
 
 export const TEMPLATE_MARKETPLACE: MarketplaceTemplate[] = [
   {
-    id: 'tpl-minimal',
-    name: 'Minimalist Clean Profile',
-    category: 'minimal',
-    description: 'A clean, typography-focused layout with only essential sections.',
+    id: 'tpl-minimal-dev',
+    name: 'Minimal Developer',
+    category: 'Developer',
+    description: 'Clean, typography-focused profile layout for minimalist developers.',
     imageUrl: '/og-image.jpg',
-    sections: ['header', 'about', 'socials'],
+    difficulty: 'Beginner',
+    downloads: 3420,
+    likes: 1280,
+    tags: ['Minimal', 'Clean', 'TypeScript', 'Developer'],
+    author: '@owlreadme',
+    lastUpdated: '2026-07-10',
+    featured: true,
+    trending: true,
+    sections: ['header', 'about', 'techStack', 'socials'],
     theme: 'minimal',
-    config: {
-      header: {
-        enabled: true,
-        name: 'John Doe',
-        title: 'Software Architect',
-        intro: 'Pragmatic programmer crafting clean code and robust microservices.',
-        pronouns: 'he/him',
-        location: 'San Francisco, CA',
-        alignment: 'left',
-        bannerType: 'none',
-        bannerTheme: 'default',
-        bannerText: '',
-        typingEnabled: false,
-        typingLines: [],
-        typingSpeed: 200,
-        typingDelay: 1000,
-        typingColor: '36BCF7',
-        typingCenter: false,
-        badges: { openToWork: true, freelance: false, learning: '', building: '' },
-        visitorPlacement: 'hidden',
-      },
-      githubStats: { enabled: false, theme: 'default', hideBorder: false, showIcons: true, compactMode: false, layout: 'default' },
-      techStack: { enabled: false, style: 'flat', iconOnly: false, groupByCategory: true, selectedIds: [] },
-      socialLinks: { enabled: true, style: 'flat', iconOnly: false, platforms: { linkedin: 'https://linkedin.com/in/johndoe', github: 'https://github.com/johndoe' } },
-      achievements: {
-        enabled: false,
-        widgets: {
-          trophy: { enabled: false, theme: 'flat', noFrame: true, noBg: true },
-          visitor: { enabled: false, color: 'green', style: 'flat' },
-          snake: { enabled: false },
-          graph: { enabled: false, theme: 'github', hideBorder: true }
-        }
-      },
-      quotes: { enabled: false, theme: 'default', quoteType: 'programming' }
-    }
+    config: createStandardConfig({
+      header: { name: 'Alex Rivera', title: 'Minimalist Developer', bannerType: 'none', typingEnabled: false },
+      techStack: { style: 'flat', selectedIds: ['typescript', 'react', 'nodejs', 'git'] },
+    }),
   },
   {
-    id: 'tpl-modern',
-    name: 'Modern Executive Workspace',
-    category: 'modern',
-    description: 'High impact developer layout featuring rich statistics cards and project views.',
+    id: 'tpl-modern-portfolio',
+    name: 'Modern Portfolio',
+    category: 'Full Stack',
+    description: 'High-impact developer profile featuring rich stats cards, badges, and projects.',
     imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 4890,
+    likes: 2150,
+    tags: ['Full Stack', 'Modern', 'React', 'Next.js', 'Stats'],
+    author: '@owlreadme',
+    lastUpdated: '2026-07-15',
+    featured: true,
+    trending: true,
     sections: ['header', 'about', 'techStack', 'stats', 'projects', 'socials'],
     theme: 'dark',
-    config: {
-      header: {
-        enabled: true,
-        name: 'Alex Rivera',
-        title: 'Full Stack Engineer',
-        intro: 'Translating complex requirements into beautiful, interactive web user experiences.',
-        pronouns: 'they/them',
-        location: 'New York, NY',
-        alignment: 'center',
-        bannerType: 'gradient',
-        bannerTheme: 'tokyonight',
-        bannerText: 'Welcome to my GitHub Workspace',
-        typingEnabled: true,
-        typingLines: ['React & Next.js Specialist', 'UI/UX Enthusiast', 'Open Source Contributor'],
-        typingSpeed: 150,
-        typingDelay: 800,
-        typingColor: 'a855f7',
-        typingCenter: true,
-        badges: { openToWork: false, freelance: true, learning: 'Three.js', building: 'OwlREADME' },
-        visitorPlacement: 'bottom',
-      },
-      githubStats: { enabled: true, theme: 'tokyonight', hideBorder: false, showIcons: true, compactMode: false, layout: 'default' },
-      techStack: { enabled: true, style: 'flat-square', iconOnly: false, groupByCategory: true, selectedIds: ['javascript', 'typescript', 'react', 'nextjs', 'tailwind', 'nodejs'] },
-      socialLinks: { enabled: true, style: 'flat-square', iconOnly: true, platforms: { linkedin: 'https://linkedin.com', github: 'https://github.com', x: 'https://x.com' } },
-      achievements: {
-        enabled: false,
-        widgets: {
-          trophy: { enabled: true, theme: 'tokyonight', noFrame: false, noBg: false },
-          visitor: { enabled: true, color: 'a855f7', style: 'flat' },
-          snake: { enabled: false },
-          graph: { enabled: true, theme: 'tokyonight', hideBorder: false }
-        }
-      },
-      quotes: { enabled: false, theme: 'default', quoteType: 'programming' }
-    }
+    config: createStandardConfig({
+      header: { name: 'Alex Rivera', title: 'Full Stack Engineer', bannerType: 'gradient', bannerTheme: 'tokyonight' },
+      techStack: { style: 'for-the-badge', selectedIds: ['javascript', 'typescript', 'react', 'nextjs', 'tailwind', 'nodejs', 'postgresql'] },
+    }),
   },
   {
-    id: 'tpl-open-source',
-    name: 'Open Source Community Champion',
-    category: 'open-source',
-    description: 'Designed for maintainers and active contributors with graph metrics and trophies.',
+    id: 'tpl-github-profile-pro',
+    name: 'GitHub Profile Pro',
+    category: 'Open Source',
+    description: 'Ultimate GitHub profile with trophies, snake animation, graphs, and stats.',
     imageUrl: '/og-image.jpg',
-    sections: ['header', 'about', 'achievements', 'techStack', 'projects'],
+    difficulty: 'Advanced',
+    downloads: 7850,
+    likes: 3940,
+    tags: ['GitHub Stats', 'Trophies', 'Snake', 'Pro', 'Open Source'],
+    author: '@owlreadme',
+    lastUpdated: '2026-07-18',
+    featured: true,
+    trending: true,
+    sections: ['header', 'about', 'achievements', 'techStack', 'stats', 'projects', 'socials', 'visitor'],
     theme: 'gradient',
-    config: {
-      header: {
-        enabled: true,
-        name: 'Sarah Chen',
-        title: 'Open Source Maintainer',
-        intro: 'Building the future of open web technologies, one pull request at a time.',
-        pronouns: 'she/her',
-        location: 'Vancouver, BC',
-        alignment: 'center',
-        bannerType: 'wave',
-        bannerTheme: 'ocean',
-        bannerText: 'SARAH CHEN // OPEN SOURCE',
-        typingEnabled: false,
-        typingLines: [],
-        typingSpeed: 200,
-        typingDelay: 1000,
-        typingColor: '3b82f6',
-        typingCenter: true,
-        badges: { openToWork: false, freelance: false, learning: 'Rust FFI', building: 'WebAssembly UI' },
-        visitorPlacement: 'top',
-      },
-      githubStats: { enabled: true, theme: 'radical', hideBorder: true, showIcons: true, compactMode: true, layout: 'compact' },
-      techStack: { enabled: true, style: 'for-the-badge', iconOnly: true, groupByCategory: false, selectedIds: ['typescript', 'rust', 'go', 'docker', 'git', 'github'] },
-      socialLinks: { enabled: true, style: 'for-the-badge', iconOnly: false, platforms: { github: 'https://github.com' } },
-      achievements: {
-        enabled: true,
-        widgets: {
-          trophy: { enabled: true, theme: 'radical', noFrame: false, noBg: false },
-          visitor: { enabled: true, color: '3b82f6', style: 'for-the-badge' },
-          snake: { enabled: true },
-          graph: { enabled: true, theme: 'github', hideBorder: false }
-        }
-      },
-      quotes: { enabled: false, theme: 'default', quoteType: 'programming' }
-    }
+    config: createStandardConfig({
+      header: { name: 'Sarah Chen', title: 'GitHub Profile Pro Maintainer', bannerType: 'capsule', bannerTheme: 'dracula' },
+      achievements: { widgets: { trophy: { enabled: true }, snake: { enabled: true }, graph: { enabled: true } } },
+    }),
   },
   {
-    id: 'tpl-fullstack',
-    name: 'Full Stack Master Layout',
-    category: 'full-stack',
-    description: 'A comprehensive layout covering frontend, backend, databases, and deployment stacks.',
+    id: 'tpl-animated-readme',
+    name: 'Animated README',
+    category: 'Frontend',
+    description: 'Interactive animated typing headers, glowing badges, and dynamic widgets.',
     imageUrl: '/og-image.jpg',
-    sections: ['header', 'about', 'techStack', 'projects', 'support', 'visitor'],
+    difficulty: 'Intermediate',
+    downloads: 5120,
+    likes: 2430,
+    tags: ['Animated', 'Typing', 'CSS', 'Interactive', 'Frontend'],
+    author: '@creative_coder',
+    lastUpdated: '2026-07-12',
+    featured: true,
+    newest: true,
+    sections: ['header', 'about', 'techStack', 'stats', 'quotes', 'socials'],
+    theme: 'gradient',
+    config: createStandardConfig({
+      header: { name: 'Elena Rostova', title: 'Interactive UX Architect', typingEnabled: true, typingLines: ['Animating web experiences ✨', 'Building responsive design systems 🎨', 'Crafting fluid motion UI 💫'] },
+    }),
+  },
+  {
+    id: 'tpl-open-source-maintainer',
+    name: 'Open Source Maintainer',
+    category: 'Open Source',
+    description: 'Designed specifically for maintainers of popular repositories and packages.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Advanced',
+    downloads: 4150,
+    likes: 1890,
+    tags: ['Maintainer', 'Community', 'Trophies', 'Sponsors', 'Open Source'],
+    author: '@oss_champion',
+    lastUpdated: '2026-07-14',
+    trending: true,
+    sections: ['header', 'about', 'achievements', 'projects', 'support', 'socials'],
     theme: 'dark',
-    config: {
-      header: {
-        enabled: true,
-        name: 'Marcus Vance',
-        title: 'Senior Full Stack Developer',
-        intro: 'Crafting production-ready cloud architectures and pixel-perfect applications.',
-        pronouns: 'he/him',
-        location: 'Austin, TX',
-        alignment: 'left',
-        bannerType: 'gradient',
-        bannerTheme: 'dracula',
-        bannerText: 'Marcus Vance // Full Stack',
-        typingEnabled: true,
-        typingLines: ['Node.js & Go Backend Microservices', 'React & Vue Frontend Engineering', 'Docker & Kubernetes DevOps'],
-        typingSpeed: 100,
-        typingDelay: 1200,
-        typingColor: '50fa7b',
-        typingCenter: false,
-        badges: { openToWork: true, freelance: true, learning: 'Kubernetes Operator', building: 'SaaS Architecture' },
-        visitorPlacement: 'bottom',
-      },
-      githubStats: { enabled: true, theme: 'dracula', hideBorder: false, showIcons: true, compactMode: false, layout: 'default' },
-      techStack: { enabled: true, style: 'flat-square', iconOnly: false, groupByCategory: true, selectedIds: ['typescript', 'python', 'go', 'react', 'nodejs', 'fastapi', 'postgresql', 'mongodb', 'docker', 'aws'] },
-      socialLinks: { enabled: true, style: 'flat-square', iconOnly: true, platforms: { linkedin: 'https://linkedin.com', github: 'https://github.com', stackoverflow: 'https://stackoverflow.com' } },
-      achievements: {
-        enabled: false,
-        widgets: {
-          trophy: { enabled: false, theme: 'flat', noFrame: false, noBg: false },
-          visitor: { enabled: true, color: '50fa7b', style: 'flat-square' },
-          snake: { enabled: false },
-          graph: { enabled: false, theme: 'github', hideBorder: false }
-        }
-      },
-      quotes: { enabled: false, theme: 'default', quoteType: 'programming' }
-    }
+    config: createStandardConfig({
+      header: { name: 'David Vance', title: 'Core Maintainer @WebTools', bannerType: 'wave', bannerTheme: 'ocean' },
+    }),
   },
   {
-    id: 'tpl-frontend',
-    name: 'Frontend Creative Showcase',
-    category: 'frontend',
-    description: 'Visually rich portfolio focused on styling, interactive tools, and layout aesthetics.',
+    id: 'tpl-react-dev',
+    name: 'React Developer',
+    category: 'Frontend',
+    description: 'Tailored for React 19, Redux, Next.js, and modern SPA frontend engineers.',
     imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 6240,
+    likes: 2890,
+    tags: ['React', 'JSX', 'Frontend', 'TypeScript', 'Vite'],
+    author: '@react_guru',
+    lastUpdated: '2026-07-16',
+    trending: true,
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Chloe Bennett', title: 'Senior React Engineer', typingLines: ['Building React Server Components', 'Optimizing Virtual DOM Performance', 'Writing Clean Hook Pipelines'] },
+      techStack: { selectedIds: ['javascript', 'typescript', 'react', 'nextjs', 'tailwind', 'redux'] },
+    }),
+  },
+  {
+    id: 'tpl-nextjs-dev',
+    name: 'Next.js Developer',
+    category: 'Frontend',
+    description: 'Optimized layout showcasing Next.js App Router, SSR, Server Actions & Vercel stack.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 5890,
+    likes: 2710,
+    tags: ['Next.js', 'Vercel', 'SSR', 'TypeScript', 'Tailwind'],
+    author: '@nextjs_wizard',
+    lastUpdated: '2026-07-19',
+    newest: true,
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Jordan Hayes', title: 'Next.js & Vercel Specialist', bannerTheme: 'tokyonight' },
+      techStack: { selectedIds: ['typescript', 'nextjs', 'react', 'tailwind', 'vercel', 'graphql'] },
+    }),
+  },
+  {
+    id: 'tpl-vue-dev',
+    name: 'Vue Developer',
+    category: 'Frontend',
+    description: 'Designed for Vue 3, Nuxt, Pinia, and Vite web developers.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 3820,
+    likes: 1640,
+    tags: ['Vue', 'Nuxt', 'Vite', 'Pinia', 'Frontend'],
+    author: '@vue_ninja',
+    lastUpdated: '2026-07-08',
+    sections: ['header', 'about', 'techStack', 'projects', 'socials'],
+    theme: 'minimal',
+    config: createStandardConfig({
+      header: { name: 'Lucas Dubois', title: 'Vue & Nuxt Specialist', bannerType: 'capsule' },
+      techStack: { selectedIds: ['javascript', 'typescript', 'vue', 'nuxt', 'vite', 'tailwind'] },
+    }),
+  },
+  {
+    id: 'tpl-angular-dev',
+    name: 'Angular Developer',
+    category: 'Frontend',
+    description: 'Enterprise frontend layout highlighting Angular Signals, RxJS, and TypeScript.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 2980,
+    likes: 1190,
+    tags: ['Angular', 'RxJS', 'TypeScript', 'Enterprise', 'Frontend'],
+    author: '@angular_arch',
+    lastUpdated: '2026-07-05',
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Mateo Rossi', title: 'Enterprise Angular Engineer' },
+      techStack: { selectedIds: ['typescript', 'angular', 'rxjs', 'html', 'css', 'jasmine'] },
+    }),
+  },
+  {
+    id: 'tpl-nodejs-backend',
+    name: 'Node.js Backend',
+    category: 'Backend',
+    description: 'Robust backend layout focusing on Express, NestJS, REST APIs, and databases.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 4720,
+    likes: 2010,
+    tags: ['Node.js', 'Express', 'NestJS', 'PostgreSQL', 'Backend'],
+    author: '@backend_master',
+    lastUpdated: '2026-07-11',
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'terminal',
+    config: createStandardConfig({
+      header: { name: 'Ethan Hunt', title: 'Node.js Backend Architect', bannerType: 'gradient' },
+      techStack: { selectedIds: ['javascript', 'typescript', 'nodejs', 'express', 'nestjs', 'postgresql', 'redis', 'docker'] },
+    }),
+  },
+  {
+    id: 'tpl-python-dev',
+    name: 'Python Developer',
+    category: 'Backend',
+    description: 'Clean Python profile covering FastAPI, Django, data automation, and scripting.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Beginner',
+    downloads: 6110,
+    likes: 2780,
+    tags: ['Python', 'FastAPI', 'Django', 'Backend', 'Automation'],
+    author: '@python_py',
+    lastUpdated: '2026-07-17',
+    trending: true,
+    sections: ['header', 'about', 'techStack', 'projects', 'quotes', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Hannah Abbott', title: 'Python Backend & Automation Dev' },
+      techStack: { selectedIds: ['python', 'fastapi', 'django', 'postgresql', 'docker', 'git'] },
+    }),
+  },
+  {
+    id: 'tpl-java-dev',
+    name: 'Java Developer',
+    category: 'Backend',
+    description: 'Enterprise Java architecture profile with Spring Boot, Microservices, and Maven.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 3890,
+    likes: 1540,
+    tags: ['Java', 'Spring Boot', 'Microservices', 'Enterprise', 'Backend'],
+    author: '@java_architect',
+    lastUpdated: '2026-07-09',
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Viktor Krum', title: 'Senior Java & Spring Engineer' },
+      techStack: { selectedIds: ['java', 'spring', 'postgresql', 'docker', 'kubernetes', 'maven'] },
+    }),
+  },
+  {
+    id: 'tpl-cpp-dev',
+    name: 'C++ Developer',
+    category: 'Developer',
+    description: 'Systems programming layout highlighting C++20, memory management, and high performance.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Advanced',
+    downloads: 2750,
+    likes: 1120,
+    tags: ['C++', 'Systems', 'Performance', 'GameDev', 'Algorithms'],
+    author: '@systems_cpp',
+    lastUpdated: '2026-07-04',
+    sections: ['header', 'about', 'techStack', 'projects', 'quotes', 'socials'],
+    theme: 'terminal',
+    config: createStandardConfig({
+      header: { name: 'Dmitri Volkov', title: 'C++ Systems Engineer' },
+      techStack: { selectedIds: ['cpp', 'c', 'python', 'cmake', 'git', 'linux'] },
+    }),
+  },
+  {
+    id: 'tpl-rust-dev',
+    name: 'Rust Developer',
+    category: 'Developer',
+    description: 'Safe, fast systems programming layout with Rust, Tokio, and WebAssembly.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Advanced',
+    downloads: 5310,
+    likes: 2650,
+    tags: ['Rust', 'Wasm', 'Systems', 'Memory Safe', 'Tokio'],
+    author: '@ferris_rust',
+    lastUpdated: '2026-07-17',
+    trending: true,
+    newest: true,
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'gradient',
+    config: createStandardConfig({
+      header: { name: 'Felix Rustacean', title: 'Rust & WebAssembly Systems Architect' },
+      techStack: { selectedIds: ['rust', 'webassembly', 'python', 'docker', 'git'] },
+    }),
+  },
+  {
+    id: 'tpl-go-dev',
+    name: 'Go Developer',
+    category: 'Backend',
+    description: 'High-performance cloud-native backend engineer profile featuring Go and gRPC.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 4420,
+    likes: 1980,
+    tags: ['Go', 'Golang', 'gRPC', 'Backend', 'Cloud Native'],
+    author: '@gopher_dev',
+    lastUpdated: '2026-07-13',
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Liam O\'Connor', title: 'Golang Microservices Dev' },
+      techStack: { selectedIds: ['go', 'grpc', 'postgresql', 'docker', 'kubernetes', 'aws'] },
+    }),
+  },
+  {
+    id: 'tpl-flutter-dev',
+    name: 'Flutter Developer',
+    category: 'Mobile',
+    description: 'Cross-platform mobile engineer profile highlighting Flutter, Dart, and Firebase.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 3950,
+    likes: 1720,
+    tags: ['Flutter', 'Dart', 'Mobile', 'iOS', 'Android'],
+    author: '@flutter_craft',
+    lastUpdated: '2026-07-07',
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'gradient',
+    config: createStandardConfig({
+      header: { name: 'Maya Lin', title: 'Cross-Platform Flutter Specialist' },
+      techStack: { selectedIds: ['flutter', 'dart', 'firebase', 'android', 'ios'] },
+    }),
+  },
+  {
+    id: 'tpl-react-native',
+    name: 'React Native',
+    category: 'Mobile',
+    description: 'Native mobile app development profile featuring React Native, Expo, and Mobile UI.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 3670,
+    likes: 1590,
+    tags: ['React Native', 'Expo', 'Mobile', 'iOS', 'Android'],
+    author: '@expo_dev',
+    lastUpdated: '2026-07-06',
+    sections: ['header', 'about', 'techStack', 'projects', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Carlos Mendez', title: 'React Native Architect' },
+      techStack: { selectedIds: ['javascript', 'typescript', 'react', 'reactnative', 'android', 'ios'] },
+    }),
+  },
+  {
+    id: 'tpl-android-dev',
+    name: 'Android Developer',
+    category: 'Mobile',
+    description: 'Native Android developer profile featuring Kotlin, Jetpack Compose, and Coroutines.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 3120,
+    likes: 1350,
+    tags: ['Android', 'Kotlin', 'Compose', 'Mobile', 'Google Play'],
+    author: '@kotlin_dev',
+    lastUpdated: '2026-07-03',
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Klaus Schmidt', title: 'Senior Android Engineer (Kotlin)' },
+      techStack: { selectedIds: ['kotlin', 'java', 'android', 'firebase', 'git'] },
+    }),
+  },
+  {
+    id: 'tpl-ios-dev',
+    name: 'iOS Developer',
+    category: 'Mobile',
+    description: 'Native Apple ecosystem engineer showcasing Swift, SwiftUI, and App Store apps.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 3340,
+    likes: 1480,
+    tags: ['iOS', 'Swift', 'SwiftUI', 'Apple', 'Mobile'],
+    author: '@swift_architect',
+    lastUpdated: '2026-07-08',
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'minimal',
+    config: createStandardConfig({
+      header: { name: 'Sophie Laurent', title: 'iOS & macOS Software Engineer' },
+      techStack: { selectedIds: ['swift', 'ios', 'xcode', 'firebase', 'git'] },
+    }),
+  },
+  {
+    id: 'tpl-ai-engineer',
+    name: 'AI Engineer',
+    category: 'AI/ML',
+    description: 'Modern AI profile highlighting LLMs, Agentic workflows, PyTorch, and RAG architectures.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Advanced',
+    downloads: 7120,
+    likes: 3410,
+    tags: ['AI', 'LLM', 'PyTorch', 'Agents', 'RAG'],
+    author: '@ai_pioneer',
+    lastUpdated: '2026-07-19',
+    featured: true,
+    trending: true,
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'quotes', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Dr. Aaron Patel', title: 'Senior AI & LLM Systems Architect', bannerType: 'gradient', bannerTheme: 'radical' },
+      techStack: { selectedIds: ['python', 'pytorch', 'tensorflow', 'fastapi', 'docker', 'huggingface'] },
+    }),
+  },
+  {
+    id: 'tpl-machine-learning',
+    name: 'Machine Learning',
+    category: 'AI/ML',
+    description: 'Deep Learning and Computer Vision specialist profile with research publications.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Advanced',
+    downloads: 4890,
+    likes: 2190,
+    tags: ['Machine Learning', 'Deep Learning', 'PyTorch', 'OpenCV', 'AI'],
+    author: '@ml_researcher',
+    lastUpdated: '2026-07-12',
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Zoe Wang', title: 'Computer Vision & ML Researcher' },
+      techStack: { selectedIds: ['python', 'pytorch', 'opencv', 'numpy', 'scikitlearn'] },
+    }),
+  },
+  {
+    id: 'tpl-data-scientist',
+    name: 'Data Scientist',
+    category: 'Data Science',
+    description: 'Data analytics, visualization, Pandas, R, and statistical modeling profile.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 4210,
+    likes: 1840,
+    tags: ['Data Science', 'Pandas', 'Python', 'Analytics', 'SQL'],
+    author: '@data_guru',
+    lastUpdated: '2026-07-10',
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'minimal',
+    config: createStandardConfig({
+      header: { name: 'Ben Montgomery', title: 'Lead Data Scientist & Analyst' },
+      techStack: { selectedIds: ['python', 'r', 'postgresql', 'tableau', 'git'] },
+    }),
+  },
+  {
+    id: 'tpl-cyber-security',
+    name: 'Cyber Security',
+    category: 'Cyber Security',
+    description: 'Ethical hacker, security researcher, penetration tester, and CTF player profile.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Advanced',
+    downloads: 3780,
+    likes: 1750,
+    tags: ['Security', 'Ethical Hacking', 'PenTesting', 'Cyber', 'Linux'],
+    author: '@cyber_ghost',
+    lastUpdated: '2026-07-14',
+    sections: ['header', 'about', 'techStack', 'stats', 'quotes', 'socials'],
+    theme: 'terminal',
+    config: createStandardConfig({
+      header: { name: 'sec_admin@root', title: 'Offensive Security & CTF Player', bannerType: 'none' },
+      techStack: { selectedIds: ['python', 'cpp', 'bash', 'linux', 'docker', 'wireshark'] },
+    }),
+  },
+  {
+    id: 'tpl-cloud-engineer',
+    name: 'Cloud Engineer',
+    category: 'Cloud',
+    description: 'Multi-cloud infrastructure engineer profile covering AWS, GCP, Azure, and Terraform.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Advanced',
+    downloads: 4650,
+    likes: 2040,
+    tags: ['Cloud', 'AWS', 'GCP', 'Terraform', 'Infrastructure'],
+    author: '@cloud_architect',
+    lastUpdated: '2026-07-15',
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Nikhil Sharma', title: 'Senior Multi-Cloud Architect (AWS / GCP)' },
+      techStack: { selectedIds: ['aws', 'gcp', 'azure', 'terraform', 'docker', 'python'] },
+    }),
+  },
+  {
+    id: 'tpl-devops-engineer',
+    name: 'DevOps Engineer',
+    category: 'DevOps',
+    description: 'CI/CD pipeline master, Kubernetes cluster operator, and infrastructure engineer.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Advanced',
+    downloads: 5980,
+    likes: 2740,
+    tags: ['DevOps', 'CI/CD', 'Kubernetes', 'Docker', 'Automation'],
+    author: '@devops_ninja',
+    lastUpdated: '2026-07-17',
+    trending: true,
+    sections: ['header', 'about', 'techStack', 'achievements', 'projects', 'stats', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Lars Lindqvist', title: 'Principal DevOps & Site Reliability Engineer' },
+      techStack: { selectedIds: ['docker', 'kubernetes', 'githubactions', 'terraform', 'go', 'bash'] },
+    }),
+  },
+  {
+    id: 'tpl-docker-expert',
+    name: 'Docker Expert',
+    category: 'DevOps',
+    description: 'Containerization specialist layout focusing on Docker, Compose, and Microservices.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 3890,
+    likes: 1620,
+    tags: ['Docker', 'Containers', 'Compose', 'DevOps', 'Microservices'],
+    author: '@container_pro',
+    lastUpdated: '2026-07-09',
+    sections: ['header', 'about', 'techStack', 'projects', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Captain Docker', title: 'Container Architecture Specialist' },
+      techStack: { selectedIds: ['docker', 'bash', 'linux', 'python', 'git'] },
+    }),
+  },
+  {
+    id: 'tpl-kubernetes-engineer',
+    name: 'Kubernetes Engineer',
+    category: 'Cloud',
+    description: 'K8s cluster operator, Helm chart author, and cloud native SRE layout.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Advanced',
+    downloads: 4120,
+    likes: 1830,
+    tags: ['Kubernetes', 'K8s', 'Helm', 'Cloud Native', 'SRE'],
+    author: '@k8s_operator',
+    lastUpdated: '2026-07-11',
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
+    theme: 'gradient',
+    config: createStandardConfig({
+      header: { name: 'Ananya Roy', title: 'Kubernetes & Cloud-Native SRE' },
+      techStack: { selectedIds: ['kubernetes', 'docker', 'go', 'prometheus', 'grafana', 'helm'] },
+    }),
+  },
+  {
+    id: 'tpl-game-dev',
+    name: 'Game Developer',
+    category: 'Game Development',
+    description: 'Indie game developer profile featuring game jams, graphics, and gameplay mechanics.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 3450,
+    likes: 1560,
+    tags: ['GameDev', 'Indie', 'Graphics', 'C++', 'C#'],
+    author: '@game_maker',
+    lastUpdated: '2026-07-06',
     sections: ['header', 'about', 'techStack', 'projects', 'socials'],
     theme: 'gradient',
-    config: {
-      header: {
-        enabled: true,
-        name: 'Elena Rostova',
-        title: 'Creative Frontend Developer',
-        intro: 'Obsessed with color palettes, animations, layout architecture, and user joy.',
-        pronouns: 'she/her',
-        location: 'Paris, France',
-        alignment: 'center',
-        bannerType: 'capsule',
-        bannerTheme: 'tokyonight',
-        bannerText: 'Elena // Design & Code',
-        typingEnabled: true,
-        typingLines: ['Obsessed with CSS animations', 'WebGL, Canvas & Three.js specialist', 'Figma to React workflow wizard'],
-        typingSpeed: 140,
-        typingDelay: 700,
-        typingColor: 'f43f5e',
-        typingCenter: true,
-        badges: { openToWork: false, freelance: true, learning: 'WebGPU', building: 'Creative Portfolio' },
-        visitorPlacement: 'bottom',
-      },
-      githubStats: { enabled: true, theme: 'tokyonight', hideBorder: false, showIcons: true, compactMode: false, layout: 'languages' },
-      techStack: { enabled: true, style: 'for-the-badge', iconOnly: false, groupByCategory: true, selectedIds: ['javascript', 'typescript', 'react', 'vue', 'tailwind', 'figma', 'postman'] },
-      socialLinks: { enabled: true, style: 'for-the-badge', iconOnly: true, platforms: { linkedin: 'https://linkedin.com', github: 'https://github.com', devto: 'https://dev.to' } },
-      achievements: {
-        enabled: false,
-        widgets: {
-          trophy: { enabled: false, theme: 'flat', noFrame: false, noBg: false },
-          visitor: { enabled: true, color: 'f43f5e', style: 'for-the-badge' },
-          snake: { enabled: false },
-          graph: { enabled: false, theme: 'github', hideBorder: false }
-        }
-      },
-      quotes: { enabled: false, theme: 'default', quoteType: 'programming' }
-    }
+    config: createStandardConfig({
+      header: { name: 'Oliver Pixel', title: 'Indie Game Creator & Graphics Dev' },
+      techStack: { selectedIds: ['csharp', 'cpp', 'blender', 'python', 'git'] },
+    }),
   },
   {
-    id: 'tpl-ai',
-    name: 'AI & Machine Learning Architect',
-    category: 'ai',
-    description: 'Highlighted AI stacks, python models, and deep learning research frameworks.',
+    id: 'tpl-unity-dev',
+    name: 'Unity Developer',
+    category: 'Game Development',
+    description: 'Unity C# gameplay programmer and 3D environment builder profile.',
     imageUrl: '/og-image.jpg',
-    sections: ['header', 'about', 'techStack', 'projects', 'quotes'],
+    difficulty: 'Intermediate',
+    downloads: 3210,
+    likes: 1410,
+    tags: ['Unity', 'C#', '3D', 'Mobile Games', 'VR'],
+    author: '@unity_master',
+    lastUpdated: '2026-07-04',
+    sections: ['header', 'about', 'techStack', 'projects', 'stats', 'socials'],
     theme: 'dark',
-    config: {
-      header: {
-        enabled: true,
-        name: 'Dr. Aaron Patel',
-        title: 'Machine Learning Scientist',
-        intro: 'Training LLMs, fine-tuning diffusion models, and writing optimized CUDA kernels.',
-        pronouns: 'he/him',
-        location: 'London, UK',
-        alignment: 'left',
-        bannerType: 'gradient',
-        bannerTheme: 'radical',
-        bannerText: 'DR. AARON PATEL // AI RESEARCH',
-        typingEnabled: true,
-        typingLines: ['Large Language Models (LLMs)', 'PyTorch & TensorFlow Pipelines', 'Deep Reinforcement Learning'],
-        typingSpeed: 110,
-        typingDelay: 900,
-        typingColor: '3b82f6',
-        typingCenter: false,
-        badges: { openToWork: false, freelance: false, learning: 'Triton DSL', building: 'Agentic Workflows' },
-        visitorPlacement: 'hidden',
-      },
-      githubStats: { enabled: true, theme: 'radical', hideBorder: false, showIcons: true, compactMode: false, layout: 'default' },
-      techStack: { enabled: true, style: 'flat-square', iconOnly: false, groupByCategory: true, selectedIds: ['python', 'cpp', 'postgresql', 'docker', 'aws', 'git'] },
-      socialLinks: { enabled: true, style: 'flat-square', iconOnly: true, platforms: { github: 'https://github.com', linkedin: 'https://linkedin.com' } },
-      achievements: {
-        enabled: false,
-        widgets: {
-          trophy: { enabled: false, theme: 'flat', noFrame: false, noBg: false },
-          visitor: { enabled: false, color: 'blue', style: 'flat' },
-          snake: { enabled: false },
-          graph: { enabled: false, theme: 'github', hideBorder: false }
-        }
-      },
-      quotes: { enabled: true, theme: 'radical', quoteType: 'programming' }
-    }
+    config: createStandardConfig({
+      header: { name: 'Sven Lindgren', title: 'Unity 3D & C# Gameplay Engineer' },
+      techStack: { selectedIds: ['unity', 'csharp', 'blender', 'git'] },
+    }),
   },
   {
-    id: 'tpl-terminal',
-    name: 'Retro Terminal Console',
-    category: 'terminal',
-    description: 'Monospaced shell syntax style with customized plastic badges and neon themes.',
+    id: 'tpl-unreal-dev',
+    name: 'Unreal Developer',
+    category: 'Game Development',
+    description: 'Unreal Engine C++ & Blueprints AAA game developer profile.',
     imageUrl: '/og-image.jpg',
-    sections: ['header', 'about', 'techStack', 'stats', 'visitor'],
-    theme: 'terminal',
-    config: {
-      header: {
-        enabled: true,
-        name: 'root@developer:~$',
-        title: './run_compiler.sh --all',
-        intro: 'systemctl start developer-session.service // System initialization successful.',
-        pronouns: 'it/its',
-        location: '127.0.0.1',
-        alignment: 'left',
-        bannerType: 'none',
-        bannerTheme: 'default',
-        bannerText: '',
-        typingEnabled: true,
-        typingLines: ['Initializing bash console...', 'Executing python suggested_ai.py', 'Ready.'],
-        typingSpeed: 100,
-        typingDelay: 1500,
-        typingColor: '39ff14',
-        typingCenter: false,
-        badges: { openToWork: false, freelance: false, learning: 'Assembly', building: 'OS Kernel' },
-        visitorPlacement: 'bottom',
-      },
-      githubStats: { enabled: true, theme: 'tokyonight', hideBorder: false, showIcons: true, compactMode: false, layout: 'default' },
-      techStack: { enabled: true, style: 'plastic', iconOnly: true, groupByCategory: false, selectedIds: ['python', 'go', 'git', 'github'] },
-      socialLinks: { enabled: true, style: 'plastic', iconOnly: false, platforms: { github: 'https://github.com' } },
-      achievements: {
-        enabled: false,
-        widgets: {
-          trophy: { enabled: false, theme: 'flat', noFrame: false, noBg: false },
-          visitor: { enabled: true, color: '39ff14', style: 'plastic' },
-          snake: { enabled: false },
-          graph: { enabled: false, theme: 'github', hideBorder: false }
-        }
-      },
-      quotes: { enabled: false, theme: 'default', quoteType: 'programming' }
-    }
-  },
-  {
-    id: 'tpl-gprm',
-    name: 'GPRM Classic Template',
-    category: 'gprm',
-    description: 'Visual copy of the classic GPRM layout featuring rich shields badges and header options.',
-    imageUrl: '/og-image.jpg',
-    sections: ['header', 'about', 'socials', 'techStack', 'stats', 'achievements', 'visitor'],
+    difficulty: 'Advanced',
+    downloads: 2890,
+    likes: 1290,
+    tags: ['Unreal', 'UE5', 'C++', 'Blueprints', 'Graphics'],
+    author: '@unreal_dev',
+    lastUpdated: '2026-07-02',
+    sections: ['header', 'about', 'techStack', 'projects', 'socials'],
     theme: 'dark',
-    config: {
-      header: {
-        enabled: true,
-        name: 'GPRM User',
-        title: 'Open Source Developer',
-        intro: 'A visual profile template styled similarly to the classic GitHub Profile README Generator.',
-        pronouns: '',
-        location: 'Internet',
-        alignment: 'center',
-        bannerType: 'capsule',
-        bannerTheme: 'gradient',
-        bannerText: 'GPRM PROFILE README',
-        typingEnabled: true,
-        typingLines: ['Visual README layouts', 'Shields.io badges', 'GitHub statistics cards'],
-        typingSpeed: 120,
-        typingDelay: 1000,
-        typingColor: '0078d7',
-        typingCenter: true,
-        badges: { openToWork: true, freelance: false, learning: '', building: '' },
-        visitorPlacement: 'bottom',
-      },
-      githubStats: { enabled: true, theme: 'default', hideBorder: false, showIcons: true, compactMode: false, layout: 'default' },
-      techStack: { enabled: true, style: 'for-the-badge', iconOnly: false, groupByCategory: true, selectedIds: ['javascript', 'typescript', 'react', 'nodejs', 'git', 'github'] },
-      socialLinks: { enabled: true, style: 'for-the-badge', iconOnly: false, platforms: { github: 'https://github.com', linkedin: 'https://linkedin.com' } },
-      achievements: {
-        enabled: true,
-        widgets: {
-          trophy: { enabled: true, theme: 'flat', noFrame: false, noBg: false },
-          visitor: { enabled: true, color: '0078d7', style: 'for-the-badge' },
-          snake: { enabled: false },
-          graph: { enabled: true, theme: 'github', hideBorder: false }
-        }
-      },
-      quotes: { enabled: false, theme: 'default', quoteType: 'programming' }
-    }
+    config: createStandardConfig({
+      header: { name: 'Viktor Reznov', title: 'Unreal Engine 5 C++ Lead' },
+      techStack: { selectedIds: ['unreal', 'cpp', 'blender', 'substance'] },
+    }),
   },
   {
-    id: 'tpl-anime',
-    name: 'Colorful Anime Aesthetic',
-    category: 'anime',
-    description: 'Vibrant neon overlays, playful emojis, capsule layouts, and interactive panels.',
+    id: 'tpl-ui-ux-designer',
+    name: 'UI UX Designer',
+    category: 'Designer',
+    description: 'Design system architect profile featuring Figma, design tokens, and user research.',
     imageUrl: '/og-image.jpg',
-    sections: ['header', 'about', 'quotes', 'socials', 'techStack'],
+    difficulty: 'Intermediate',
+    downloads: 4120,
+    likes: 1980,
+    tags: ['Design', 'Figma', 'UI/UX', 'Design System', 'Prototyping'],
+    author: '@design_spirit',
+    lastUpdated: '2026-07-13',
+    featured: true,
+    sections: ['header', 'about', 'techStack', 'projects', 'socials'],
     theme: 'gradient',
-    config: {
-      header: {
-        enabled: true,
-        name: 'Sakura Developer 🌸',
-        title: 'Kawaii Tech Creator',
-        intro: 'Building colorful frontend pipelines and exploring cyber aesthetics! 💫',
-        pronouns: 'she/they',
-        location: 'Neo-Tokyo',
-        alignment: 'center',
-        bannerType: 'capsule',
-        bannerTheme: 'tokyonight',
-        bannerText: '✨ CYBERPUNK SAKURA ✨',
-        typingEnabled: true,
-        typingLines: ['Coding under the cherry blossoms 🌸', 'Designing colorful kawaii user interfaces 🎨', 'Playing cozy indie games 🎮'],
-        typingSpeed: 180,
-        typingDelay: 900,
-        typingColor: 'ff007f',
-        typingCenter: true,
-        badges: { openToWork: false, freelance: true, learning: 'Three.js Shaders', building: 'Anime Registry UI' },
-        visitorPlacement: 'bottom',
-      },
-      githubStats: { enabled: false, theme: 'dracula', hideBorder: false, showIcons: true, compactMode: false, layout: 'default' },
-      techStack: { enabled: true, style: 'flat-square', iconOnly: false, groupByCategory: false, selectedIds: ['typescript', 'react', 'tailwind', 'figma'] },
-      socialLinks: { enabled: true, style: 'flat-square', iconOnly: true, platforms: { github: 'https://github.com', discord: 'https://discord.com' } },
-      achievements: {
-        enabled: false,
-        widgets: {
-          trophy: { enabled: false, theme: 'flat', noFrame: false, noBg: false },
-          visitor: { enabled: false, color: 'ff007f', style: 'flat' },
-          snake: { enabled: false },
-          graph: { enabled: false, theme: 'github', hideBorder: false }
-        }
-      },
-      quotes: { enabled: true, theme: 'tokyonight', quoteType: 'anime' }
-    }
-  }
+    config: createStandardConfig({
+      header: { name: 'Mia Thorne', title: 'Product & Design Systems Architect' },
+      techStack: { selectedIds: ['figma', 'framer', 'css', 'html', 'tailwind'] },
+    }),
+  },
+  {
+    id: 'tpl-student-portfolio',
+    name: 'Student Portfolio',
+    category: 'Student',
+    description: 'Clean CS student portfolio template for internship applications and class projects.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Beginner',
+    downloads: 5890,
+    likes: 2450,
+    tags: ['Student', 'Internship', 'CS', 'Beginner', 'Portfolio'],
+    author: '@cs_student',
+    lastUpdated: '2026-07-16',
+    trending: true,
+    sections: ['header', 'about', 'techStack', 'projects', 'socials'],
+    theme: 'minimal',
+    config: createStandardConfig({
+      header: { name: 'Emily Taylor', title: 'Computer Science Major @ MIT' },
+      techStack: { selectedIds: ['python', 'java', 'javascript', 'html', 'css', 'git'] },
+    }),
+  },
+  {
+    id: 'tpl-college-project',
+    name: 'College Project',
+    category: 'Student',
+    description: 'Academic project showcase template with team details, architecture diagrams, and links.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Beginner',
+    downloads: 3410,
+    likes: 1290,
+    tags: ['Academic', 'College', 'Project', 'Research', 'Team'],
+    author: '@academic_dev',
+    lastUpdated: '2026-07-05',
+    sections: ['header', 'about', 'techStack', 'projects', 'socials'],
+    theme: 'minimal',
+    config: createStandardConfig({
+      header: { name: 'Capstone Team 42', title: 'Senior College Project Showcase' },
+      techStack: { selectedIds: ['python', 'react', 'fastapi', 'postgresql'] },
+    }),
+  },
+  {
+    id: 'tpl-startup-founder',
+    name: 'Startup Founder',
+    category: 'Startup',
+    description: 'High-energy profile for tech founders, indie hackers, and SaaS builders.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 4230,
+    likes: 1970,
+    tags: ['Startup', 'Founder', 'SaaS', 'Indie Hacker', 'Product'],
+    author: '@indie_founder',
+    lastUpdated: '2026-07-15',
+    featured: true,
+    sections: ['header', 'about', 'techStack', 'projects', 'support', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Jason Sterling', title: 'Founder & Builder @OwlReadme' },
+      techStack: { selectedIds: ['typescript', 'react', 'nextjs', 'tailwind', 'postgresql', 'stripe'] },
+    }),
+  },
+  {
+    id: 'tpl-technical-writer',
+    name: 'Technical Writer',
+    category: 'Educator',
+    description: 'Documentation specialist profile showcasing blogs, tutorials, and API guides.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Beginner',
+    downloads: 2980,
+    likes: 1190,
+    tags: ['Writing', 'Docs', 'Tutorials', 'Blogs', 'Technical Writer'],
+    author: '@doc_writer',
+    lastUpdated: '2026-07-09',
+    sections: ['header', 'about', 'techStack', 'quotes', 'socials'],
+    theme: 'minimal',
+    config: createStandardConfig({
+      header: { name: 'Claire Underwood', title: 'Principal Technical Writer' },
+      techStack: { selectedIds: ['markdown', 'git', 'github', 'hugo', 'astro'] },
+    }),
+  },
+  {
+    id: 'tpl-community-maintainer',
+    name: 'Community Maintainer',
+    category: 'Company',
+    description: 'Developer advocate and community manager profile with Discord & event links.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 3120,
+    likes: 1380,
+    tags: ['Community', 'DevRel', 'Advocate', 'Events', 'Discord'],
+    author: '@devrel_hero',
+    lastUpdated: '2026-07-08',
+    sections: ['header', 'about', 'socials', 'quotes', 'projects'],
+    theme: 'gradient',
+    config: createStandardConfig({
+      header: { name: 'Tariq Al-Mansoor', title: 'Developer Advocate & Community Lead' },
+    }),
+  },
+  {
+    id: 'tpl-freelancer',
+    name: 'Freelancer',
+    category: 'Freelancer',
+    description: 'Client-focused profile detailing services, tech stack, rates, and past projects.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 4620,
+    likes: 2110,
+    tags: ['Freelance', 'Contractor', 'Client Work', 'Services', 'Portfolio'],
+    author: '@freelance_pro',
+    lastUpdated: '2026-07-14',
+    sections: ['header', 'about', 'techStack', 'projects', 'support', 'socials'],
+    theme: 'dark',
+    config: createStandardConfig({
+      header: { name: 'Leo Vance', title: 'Freelance Web & Mobile Engineer' },
+      techStack: { selectedIds: ['react', 'nextjs', 'flutter', 'nodejs', 'tailwind', 'figma'] },
+    }),
+  },
+  {
+    id: 'tpl-content-creator',
+    name: 'Content Creator',
+    category: 'Creator',
+    description: 'Engaging layout for tech YouTubers, streamers, podcasters, and educators.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Beginner',
+    downloads: 3890,
+    likes: 1820,
+    tags: ['Creator', 'YouTube', 'Twitch', 'Streaming', 'Podcasting'],
+    author: '@creator_studio',
+    lastUpdated: '2026-07-12',
+    sections: ['header', 'about', 'socials', 'quotes', 'projects', 'visitor'],
+    theme: 'gradient',
+    config: createStandardConfig({
+      header: { name: 'Coding with Chris 🎥', title: 'Tech YouTuber & Live Streamer' },
+    }),
+  },
+  {
+    id: 'tpl-hackathon-winner',
+    name: 'Hackathon Winner',
+    category: 'Developer',
+    description: 'High-energy project showcase profile celebrating hackathon trophies and awards.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Intermediate',
+    downloads: 3750,
+    likes: 1740,
+    tags: ['Hackathon', 'Winner', 'Awards', 'Projects', 'Fast Prototype'],
+    author: '@hackathon_champ',
+    lastUpdated: '2026-07-15',
+    sections: ['header', 'about', 'achievements', 'techStack', 'projects', 'socials'],
+    theme: 'gradient',
+    config: createStandardConfig({
+      header: { name: 'Team Apex', title: 'Global Hackathon Champions 🏆' },
+    }),
+  },
+  {
+    id: 'tpl-researcher',
+    name: 'Researcher',
+    category: 'Data Science',
+    description: 'Scientific and academic paper author profile detailing research, publications & citations.',
+    imageUrl: '/og-image.jpg',
+    difficulty: 'Advanced',
+    downloads: 2980,
+    likes: 1340,
+    tags: ['Academic', 'Research', 'Papers', 'Science', 'LaTeX'],
+    author: '@scholar_phd',
+    lastUpdated: '2026-07-10',
+    sections: ['header', 'about', 'techStack', 'projects', 'quotes', 'socials'],
+    theme: 'minimal',
+    config: createStandardConfig({
+      header: { name: 'Dr. Marcus Brody', title: 'Postdoctoral Research Fellow' },
+      techStack: { selectedIds: ['python', 'r', 'latex', 'git'] },
+    }),
+  },
 ];
