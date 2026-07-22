@@ -9,19 +9,14 @@ import {
   Heart,
   Download,
   Eye,
-  ArrowRight,
-  Filter,
   Check,
   Copy,
-  Layout,
-  Star,
   Clock,
   Code,
   X,
   Laptop,
   Tablet,
   Smartphone,
-  ChevronRight,
   RefreshCw,
 } from 'lucide-react';
 import useReadmeStore from '@/stores/readme-store';
@@ -34,12 +29,11 @@ import {
 import { useTemplateMarketplaceStore } from '@/stores/template-marketplace-store';
 import { generateREADME } from '@/utils/markdown';
 import Button from '@/components/Button';
-import { BRANDING } from '@/config/branding';
 
 const MDEditorMarkdown = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default.Markdown),
   { ssr: false }
-) as any;
+) as React.ComponentType<{ source: string }>;
 
 export const TemplateMarketplacePage: React.FC = () => {
   const router = useRouter();
@@ -146,10 +140,6 @@ export const TemplateMarketplacePage: React.FC = () => {
       return (b.featured ? 100 : 0) + bLikes - ((a.featured ? 100 : 0) + aLikes);
     });
   }, [searchQuery, selectedCategory, selectedDifficulty, selectedTheme, activeTab, favorites, sortBy, userDownloads, userLikes]);
-
-  const featuredTemplatesList = useMemo(() => {
-    return TEMPLATE_MARKETPLACE.filter((t) => t.featured).slice(0, 4);
-  }, []);
 
   const recentlyUsedTemplatesList = useMemo(() => {
     return recentlyUsed
@@ -277,7 +267,7 @@ export const TemplateMarketplacePage: React.FC = () => {
               <span className="text-2xs font-bold uppercase tracking-wider text-gray-400">Sort:</span>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
+                onChange={(e) => setSortBy(e.target.value as 'trending' | 'popular' | 'downloads' | 'newest')}
                 className="px-3 py-1.5 text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 cursor-pointer focus:outline-none"
               >
                 <option value="trending">🔥 Trending</option>

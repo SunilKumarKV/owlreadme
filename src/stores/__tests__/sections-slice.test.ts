@@ -203,7 +203,7 @@ describe('sections-slice actions', () => {
       socialLinks: { enabled: true, platforms: { linkedin: { enabled: true, value: 'johndoe' } } },
       githubStats: { enabled: true, username: 'johndoe' },
     };
-    const importedSectionIds: any[] = ['header', 'socials', 'stats', 'header', 'socials'];
+    const importedSectionIds = ['header', 'socials', 'stats', 'header', 'socials'];
 
     store.importReadmeData(mockData, importedSectionIds);
     let state = useReadmeStore.getState();
@@ -242,7 +242,7 @@ describe('sections-slice actions', () => {
       },
     };
 
-    store.importReadmeData(mockImport, ['header', 'stats', 'custom_123'] as any, 'replace');
+    store.importReadmeData(mockImport, ['header', 'stats', 'custom_123'], 'replace');
     const state = useReadmeStore.getState();
 
     expect(state.header.name).toBe('New User');
@@ -267,7 +267,7 @@ describe('sections-slice actions', () => {
       },
     };
 
-    store.importReadmeData(mockImport, ['header', 'techStack', 'stats', 'custom_merged_1'] as any, 'merge');
+    store.importReadmeData(mockImport, ['header', 'techStack', 'stats', 'custom_merged_1'], 'merge');
     const state = useReadmeStore.getState();
 
     expect(state.header.name).toBe('Existing User'); // Preserved

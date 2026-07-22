@@ -8,11 +8,7 @@ import {
   Heart,
   Download,
   Eye,
-  ArrowRight,
-  Filter,
-  Check,
   RefreshCw,
-  FolderPlus,
 } from 'lucide-react';
 import { useTemplateStore, CommunityTemplate } from '@/stores/template-store';
 import useReadmeStore from '@/stores/readme-store';
@@ -56,7 +52,7 @@ export const CommunityPage: React.FC = () => {
     const wsName = `${template.name} Workspace`;
     const newWsId = createWorkspace(wsName, 'readme');
     setActiveWorkspaceId(newWsId);
-    applyTemplate(template as any);
+    applyTemplate(template);
 
     showToast(`Applied "${template.name}" successfully!`);
     router.push('/readme-builder');
@@ -221,7 +217,7 @@ export const CommunityPage: React.FC = () => {
               <span className="font-bold text-[10px] uppercase tracking-wider text-gray-400">Sort By:</span>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
+                onChange={(e) => setSortBy(e.target.value as 'trending' | 'popular' | 'newest')}
                 className="px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 cursor-pointer focus:outline-none"
               >
                 <option value="trending">🔥 Trending</option>

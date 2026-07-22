@@ -4,7 +4,6 @@ import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import {
   Plus,
-  FolderOpen,
   Copy,
   Trash2,
   Download,
@@ -12,8 +11,6 @@ import {
   Edit2,
   Eye,
   Search,
-  Sparkles,
-  RefreshCw,
   FolderGit2,
 } from 'lucide-react';
 import { useTemplateStore, CommunityTemplate } from '@/stores/template-store';
@@ -86,8 +83,7 @@ export const MyTemplatesPage: React.FC = () => {
     setActiveWorkspaceId(newWsId);
     
     // We map category to the appropriate legacy/registry structure if necessary
-    // but applying config directly is supported by applyTemplate
-    applyTemplate(template as any);
+    applyTemplate(template);
     
     showToast(`Loaded "${template.name}" into builder successfully!`);
     router.push('/readme-builder');

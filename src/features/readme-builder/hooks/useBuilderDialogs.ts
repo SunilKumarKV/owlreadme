@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 import React, { useEffect, useState, useMemo, useCallback } from 'react';
-import useWorkspaceStore from '@/stores/workspace-store';
-import useReadmeStore, { SectionId } from '@/stores/readme-store';
+import useReadmeStore from '@/stores/readme-store';
 import { useHistoryStore, Snapshot } from '@/stores/history-store';
 import { parseReadmeMarkdown } from '@/utils/readme-importer';
 import { generateREADME } from '@/utils/markdown';
@@ -16,8 +15,6 @@ import { TemplateCategory } from '@/stores/template-store';
 import type { DiffVisualTab, ConflictResolution, ImportMethod } from '../types/builder-types';
 
 export const useBuilderDialogs = () => {
-  // Stores
-  const { createWorkspace, setActiveWorkspaceId } = useWorkspaceStore();
   const readmeStore = useReadmeStore();
   const {
     createSnapshot,

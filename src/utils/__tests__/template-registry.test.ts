@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { TEMPLATE_MARKETPLACE, TemplateCategory } from '../template-registry';
+import { TEMPLATE_MARKETPLACE } from '../template-registry';
 
 describe('TEMPLATE_MARKETPLACE registry tests', () => {
   it('should contain at least 40 built-in templates', () => {

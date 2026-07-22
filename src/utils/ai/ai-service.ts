@@ -202,7 +202,7 @@ export class SecureAPIAIService implements AIService {
     try {
       return await this.callSecureAPI('readme', { profileData, repoData });
     } catch (err: any) {
-      if (err.isNetworkError || (typeof window !== 'undefined' && !window.navigator.onLine)) {
+      if (typeof window !== 'undefined' && !window.navigator.onLine) {
         throw err;
       }
       console.warn('Secure AI README suggestion call failed. Falling back to local analyzer.', err);
@@ -214,7 +214,7 @@ export class SecureAPIAIService implements AIService {
     try {
       return await this.callSecureAPI('roadmap', { roadmapTitle, currentSteps });
     } catch (err: any) {
-      if (err.isNetworkError || (typeof window !== 'undefined' && !window.navigator.onLine)) {
+      if (typeof window !== 'undefined' && !window.navigator.onLine) {
         throw err;
       }
       console.warn('Secure AI Roadmap suggestion call failed. Falling back to local analyzer.', err);
@@ -226,7 +226,7 @@ export class SecureAPIAIService implements AIService {
     try {
       return await this.callSecureAPI('profile', { profileData, repoData });
     } catch (err: any) {
-      if (err.isNetworkError || (typeof window !== 'undefined' && !window.navigator.onLine)) {
+      if (typeof window !== 'undefined' && !window.navigator.onLine) {
         throw err;
       }
       console.warn('Secure AI Profile suggestion call failed. Falling back to local analyzer.', err);

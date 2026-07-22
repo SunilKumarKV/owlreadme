@@ -124,7 +124,7 @@ export const SaveAsTemplateModal: React.FC<SaveAsTemplateModalProps> = ({
               <label className="text-2xs font-bold uppercase tracking-wider text-gray-400 block">Visibility</label>
               <select
                 value={visibility}
-                onChange={(e) => setVisibility(e.target.value as any)}
+                onChange={(e) => setVisibility(e.target.value as 'public' | 'private' | 'draft')}
                 className="w-full px-3 py-2 text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:border-blue-500 focus:outline-none cursor-pointer text-gray-900 dark:text-gray-100"
               >
                 <option value="private">🔒 Private (Local only)</option>

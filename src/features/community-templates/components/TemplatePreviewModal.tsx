@@ -2,14 +2,14 @@
 
 import React, { useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
-import { X, Laptop, Smartphone, Code, Copy, Check, Download, Heart } from 'lucide-react';
+import { X, Laptop, Smartphone, Code, Copy, Check, Heart } from 'lucide-react';
 import { CommunityTemplate } from '@/stores/template-store';
 import { generateREADME } from '@/utils/markdown';
 
 const MDEditorMarkdown = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default.Markdown),
   { ssr: false }
-) as any;
+) as React.ComponentType<{ source: string }>;
 
 interface TemplatePreviewModalProps {
   isOpen: boolean;

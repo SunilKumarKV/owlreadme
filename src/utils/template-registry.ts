@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { SectionId } from '@/stores/readme-store';
 
 export type TemplateCategory =

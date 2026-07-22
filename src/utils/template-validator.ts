@@ -1,11 +1,10 @@
-import { SectionId } from '@/stores/readme-store';
-
 export interface ValidationResult {
   valid: boolean;
   errors: string[];
   warnings: string[];
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function validateTemplateSchema(parsedJson: any): ValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];

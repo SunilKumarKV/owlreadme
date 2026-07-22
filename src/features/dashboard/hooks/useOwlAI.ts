@@ -83,11 +83,16 @@ export const useOwlAI = (options: OwlAIOptions) => {
 
       incrementAiGenerations();
       addNotification('Owl AI suggestions generated successfully!');
-    } catch (err: any) {
-      if (err?.message !== 'Network error: Internet disconnected') {
-        console.error(err);
+    } catch (err) {
+      const error = err as Error;
+      if (error?.message !== 'Network error: Internet disconnected') {
+        console.error(error);
       }
-      setError(err?.message || 'AI generation failed.');
+      if (error?.message === 'Network error: Internet disconnected') {
+        setError('Network error: Internet disconnected');
+      } else {
+        setError('AI generation failed.');
+      }
     } finally {
       setAiLoading(false);
     }

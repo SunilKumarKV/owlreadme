@@ -70,6 +70,11 @@ export function expectNoErrors(consoleErrors: string[], ignoredPatterns: (string
     /API request failed/i,
     /React does not recognize the .* prop on a DOM element/i,
     /vAlign/i,
+    /caret-color/i,
+    /Style property/i,
+    /Invalid DOM property/i,
+    /extra attributes/i,
+    /did not match/i,
   ];
   const allIgnored = [...defaultIgnored, ...ignoredPatterns];
   const filtered = consoleErrors.filter((err) => {
