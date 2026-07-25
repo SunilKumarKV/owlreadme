@@ -69,8 +69,9 @@ export const BuilderHeader: React.FC<BuilderHeaderProps> = ({
       <div className="flex items-center gap-4 flex-wrap sm:flex-nowrap">
         {workspaces.length > 0 && (
           <div className="flex items-center gap-1.5">
-            <span className="text-[10px] uppercase font-bold text-gray-600 dark:text-gray-400 tracking-wider">Workspace:</span>
+            <label htmlFor="builder-workspace-select" className="text-[10px] uppercase font-bold text-gray-700 dark:text-gray-400 tracking-wider">Workspace:</label>
             <select
+              id="builder-workspace-select"
               value={activeWorkspaceId || ''}
               aria-label="Select active workspace"
               onChange={(e) => {
@@ -94,9 +95,10 @@ export const BuilderHeader: React.FC<BuilderHeaderProps> = ({
         )}
 
         <div className="flex items-center gap-1.5">
-          <label htmlFor="builder-template-select" className="text-[10px] uppercase font-bold text-gray-600 dark:text-gray-400 tracking-wider">Template:</label>
+          <label htmlFor="builder-template-select" className="text-[10px] uppercase font-bold text-gray-700 dark:text-gray-400 tracking-wider">Template:</label>
           <select
             id="builder-template-select"
+            aria-label="Select README template"
             value={template}
             onChange={(e) => setTemplate(e.target.value as READMEStyleTemplate)}
             className="px-2 py-1 text-xs rounded border border-gray-200 dark:bg-gray-800 dark:border-gray-700 focus:border-blue-500 focus:outline-none cursor-pointer text-black dark:text-white"
@@ -110,9 +112,10 @@ export const BuilderHeader: React.FC<BuilderHeaderProps> = ({
         </div>
 
         <div className="flex items-center gap-1.5">
-          <label htmlFor="builder-theme-select" className="text-[10px] uppercase font-bold text-gray-600 dark:text-gray-400 tracking-wider">Theme:</label>
+          <label htmlFor="builder-theme-select" className="text-[10px] uppercase font-bold text-gray-700 dark:text-gray-400 tracking-wider">Theme:</label>
           <select
             id="builder-theme-select"
+            aria-label="Select README theme"
             value={theme}
             onChange={(e) => setTheme(e.target.value as Theme)}
             className="px-2 py-1 text-xs rounded border border-gray-200 dark:bg-gray-800 dark:border-gray-700 focus:border-blue-500 focus:outline-none cursor-pointer text-black dark:text-white"

@@ -1893,8 +1893,10 @@ const READMEBuilderPage = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <label className="block text-2xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Category</label>
+                  <label htmlFor="publish-template-category" className="block text-2xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider">Category</label>
                   <select
+                    id="publish-template-category"
+                    aria-label="Publish Template Category"
                     value={publishForm.category}
                     onChange={(e) => setPublishForm({ ...publishForm, category: e.target.value as TemplateCategory })}
                     className="w-full px-3 py-2 text-xs rounded border border-gray-350 dark:bg-gray-850 dark:text-white dark:border-gray-700 focus:outline-none cursor-pointer"

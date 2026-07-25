@@ -96,8 +96,10 @@ export const ProjectsPanel: React.FC<ProjectsPanelProps> = ({
           {/* ── Display Options ─────────────────────── */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-left">
             <div>
-              <label className="block text-xs font-semibold mb-1 text-gray-500 dark:text-gray-400">Card Style</label>
+              <label htmlFor="projects-card-style" className="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-400">Card Style</label>
               <select
+                id="projects-card-style"
+                aria-label="Projects Card Style"
                 value={featuredProjects.cardStyle}
                 onChange={(e) => setFeaturedProjects({ cardStyle: e.target.value as any })}
                 className="w-full px-3 py-2 text-sm text-black dark:text-white rounded-md border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-600 focus:border-blue-500 transition"
@@ -110,8 +112,10 @@ export const ProjectsPanel: React.FC<ProjectsPanelProps> = ({
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold mb-1 text-gray-500 dark:text-gray-400">Layout</label>
+              <label htmlFor="projects-layout" className="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-400">Layout</label>
               <select
+                id="projects-layout"
+                aria-label="Projects Layout"
                 value={featuredProjects.layout}
                 onChange={(e) => setFeaturedProjects({ layout: e.target.value as any })}
                 className="w-full px-3 py-2 text-sm text-black dark:text-white rounded-md border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-600 focus:border-blue-500 transition"
@@ -122,8 +126,10 @@ export const ProjectsPanel: React.FC<ProjectsPanelProps> = ({
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold mb-1 text-gray-500 dark:text-gray-400">Sort By</label>
+              <label htmlFor="projects-sort-mode" className="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-400">Sort By</label>
               <select
+                id="projects-sort-mode"
+                aria-label="Projects Sort By"
                 value={featuredProjects.sortMode}
                 onChange={(e) => setFeaturedProjects({ sortMode: e.target.value as any })}
                 className="w-full px-3 py-2 text-sm text-black dark:text-white rounded-md border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-600 focus:border-blue-500 transition"
@@ -134,8 +140,10 @@ export const ProjectsPanel: React.FC<ProjectsPanelProps> = ({
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold mb-1 text-gray-500 dark:text-gray-400">Badge Style</label>
+              <label htmlFor="projects-badge-style" className="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-400">Badge Style</label>
               <select
+                id="projects-badge-style"
+                aria-label="Projects Badge Style"
                 value={featuredProjects.badgeStyle}
                 onChange={(e) => setFeaturedProjects({ badgeStyle: e.target.value as any })}
                 className="w-full px-3 py-2 text-sm text-black dark:text-white rounded-md border border-gray-300 dark:bg-[#1e1e1e] dark:border-gray-600 focus:border-blue-500 transition"

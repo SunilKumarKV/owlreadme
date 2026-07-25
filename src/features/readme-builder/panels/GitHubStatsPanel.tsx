@@ -54,9 +54,10 @@ export const GitHubStatsPanel: React.FC<GitHubStatsPanelProps> = ({
               />
             </div>
             <div>
-              <label htmlFor="stats-theme-select" className="block text-xs font-semibold mb-1 text-gray-500 dark:text-gray-400">Card Theme</label>
+              <label htmlFor="stats-theme-select" className="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-400">Card Theme</label>
               <select
                 id="stats-theme-select"
+                aria-label="GitHub Stats Card Theme"
                 value={githubStats.theme}
                 onChange={(e) => setGithubStats({ theme: e.target.value })}
                 className="w-full px-4 py-2 text-sm rounded-md border border-gray-350 dark:bg-[#1e1e1e] dark:text-white dark:border-gray-600 focus:border-blue-500 focus:ring-2 ring-blue-500 transition duration-200"

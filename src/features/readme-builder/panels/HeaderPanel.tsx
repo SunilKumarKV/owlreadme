@@ -99,6 +99,7 @@ export const HeaderPanel: React.FC<HeaderPanelProps> = ({
         <label htmlFor="readme-template-select" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300 font-semibold">README Style Template</label>
         <select
           id="readme-template-select"
+          aria-label="README Style Template"
           value={template}
           onChange={(e) => {
             triggerAutoSnapshot('template', 'Style Template Change');
@@ -230,8 +231,10 @@ export const HeaderPanel: React.FC<HeaderPanelProps> = ({
           <span className="text-sm font-semibold text-gray-700 dark:text-gray-300 block">Banner Config</span>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block text-2xs uppercase tracking-wider text-gray-400 font-bold mb-0.5">Banner Type</label>
+              <label htmlFor="header-banner-type" className="block text-2xs uppercase tracking-wider text-gray-700 dark:text-gray-400 font-bold mb-0.5">Banner Type</label>
               <select
+                id="header-banner-type"
+                aria-label="Header Banner Type"
                 value={header.bannerType || 'none'}
                 onChange={(e) => setHeader({ bannerType: e.target.value as any })}
                 className="w-full text-xs p-1.5 rounded border border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
@@ -243,8 +246,9 @@ export const HeaderPanel: React.FC<HeaderPanelProps> = ({
               </select>
             </div>
             <div>
-              <label className="block text-2xs uppercase tracking-wider text-gray-400 font-bold mb-0.5">Banner Text</label>
+              <label htmlFor="header-banner-text" className="block text-2xs uppercase tracking-wider text-gray-700 dark:text-gray-400 font-bold mb-0.5">Banner Text</label>
               <input
+                id="header-banner-text"
                 type="text"
                 placeholder="Welcome..."
                 value={header.bannerText || ''}
@@ -253,8 +257,10 @@ export const HeaderPanel: React.FC<HeaderPanelProps> = ({
               />
             </div>
             <div>
-              <label className="block text-2xs uppercase tracking-wider text-gray-400 font-bold mb-0.5">Banner Theme/Color</label>
+              <label htmlFor="header-banner-theme" className="block text-2xs uppercase tracking-wider text-gray-700 dark:text-gray-400 font-bold mb-0.5">Banner Theme/Color</label>
               <select
+                id="header-banner-theme"
+                aria-label="Header Banner Theme/Color"
                 value={header.bannerTheme || 'gradient'}
                 onChange={(e) => setHeader({ bannerTheme: e.target.value })}
                 className="w-full text-xs p-1.5 rounded border border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
@@ -444,8 +450,10 @@ export const HeaderPanel: React.FC<HeaderPanelProps> = ({
 
         {/* Visitor Placement & Views placement */}
         <div>
-          <label className="block text-xs font-semibold mb-1 text-gray-500 dark:text-gray-400 font-medium">Visitor Counter Placement</label>
+          <label htmlFor="header-visitor-placement" className="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-400 font-medium">Visitor Counter Placement</label>
           <select
+            id="header-visitor-placement"
+            aria-label="Visitor Counter Placement"
             value={header.visitorPlacement || 'hidden'}
             onChange={(e) => setHeader({ visitorPlacement: e.target.value as any })}
             className="w-full md:w-64 text-xs p-2 rounded border border-gray-305 dark:bg-gray-800 dark:text-white dark:border-gray-600 focus:border-blue-500 focus:ring-2 ring-blue-500"

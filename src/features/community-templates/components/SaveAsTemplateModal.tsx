@@ -106,8 +106,10 @@ export const SaveAsTemplateModal: React.FC<SaveAsTemplateModalProps> = ({
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1">
-              <label className="text-2xs font-bold uppercase tracking-wider text-gray-400 block">Category</label>
+              <label htmlFor="save-template-category" className="text-2xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400 block">Category</label>
               <select
+                id="save-template-category"
+                aria-label="Template Category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value as TemplateCategory)}
                 className="w-full px-3 py-2 text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:border-blue-500 focus:outline-none cursor-pointer text-gray-900 dark:text-gray-100"
@@ -121,8 +123,10 @@ export const SaveAsTemplateModal: React.FC<SaveAsTemplateModalProps> = ({
             </div>
 
             <div className="space-y-1">
-              <label className="text-2xs font-bold uppercase tracking-wider text-gray-400 block">Visibility</label>
+              <label htmlFor="save-template-visibility" className="text-2xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400 block">Visibility</label>
               <select
+                id="save-template-visibility"
+                aria-label="Template Visibility"
                 value={visibility}
                 onChange={(e) => setVisibility(e.target.value as 'public' | 'private' | 'draft')}
                 className="w-full px-3 py-2 text-xs bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl focus:border-blue-500 focus:outline-none cursor-pointer text-gray-900 dark:text-gray-100"

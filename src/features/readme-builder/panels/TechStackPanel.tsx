@@ -52,9 +52,10 @@ export const TechStackPanel: React.FC<TechStackPanelProps> = ({
           {/* Badges styling modifiers */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div>
-              <label htmlFor="tech-style-select" className="block text-xs font-semibold mb-1 text-gray-500 dark:text-gray-400">Badge Style</label>
+              <label htmlFor="tech-style-select" className="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-400">Badge Style</label>
               <select
                 id="tech-style-select"
+                aria-label="Tech Stack Badge Style"
                 value={techStack.style}
                 onChange={(e) => setTechStack({ style: e.target.value as any })}
                 className="w-full px-4 py-2 text-sm rounded-md border border-gray-300 dark:bg-[#1e1e1e] dark:text-white dark:border-gray-600 focus:border-blue-500 focus:ring-2 ring-blue-500 transition duration-200"

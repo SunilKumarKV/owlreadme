@@ -156,8 +156,10 @@ export const AchievementsPanel: React.FC<AchievementsPanelProps> = ({
                         {widgetId === 'trophy' && (
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                             <div>
-                              <label className="block text-2xs uppercase tracking-wider text-gray-400 font-bold mb-0.5">Theme</label>
+                              <label htmlFor={`trophy-theme-${widgetId}`} className="block text-2xs uppercase tracking-wider text-gray-700 dark:text-gray-400 font-bold mb-0.5">Theme</label>
                               <select
+                                id={`trophy-theme-${widgetId}`}
+                                aria-label="Trophy theme"
                                 value={widgetConfig.theme || 'flat'}
                                 onChange={(e) => updateWidgetProperty('theme', e.target.value)}
                                 className="w-full text-xs p-1.5 rounded border border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
@@ -174,8 +176,10 @@ export const AchievementsPanel: React.FC<AchievementsPanelProps> = ({
                         {widgetId === 'visitor' && (
                           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                             <div>
-                              <label className="block text-2xs uppercase tracking-wider text-gray-400 font-bold mb-0.5">Style</label>
+                              <label htmlFor={`visitor-style-${widgetId}`} className="block text-2xs uppercase tracking-wider text-gray-700 dark:text-gray-400 font-bold mb-0.5">Style</label>
                               <select
+                                id={`visitor-style-${widgetId}`}
+                                aria-label="Visitor badge style"
                                 value={widgetConfig.style || 'flat'}
                                 onChange={(e) => updateWidgetProperty('style', e.target.value)}
                                 className="w-full text-xs p-1.5 rounded border border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
@@ -187,8 +191,9 @@ export const AchievementsPanel: React.FC<AchievementsPanelProps> = ({
                               </select>
                             </div>
                             <div>
-                              <label className="block text-2xs uppercase tracking-wider text-gray-400 font-bold mb-0.5">Hex Color</label>
+                              <label htmlFor={`visitor-color-${widgetId}`} className="block text-2xs uppercase tracking-wider text-gray-700 dark:text-gray-400 font-bold mb-0.5">Hex Color</label>
                               <input
+                                id={`visitor-color-${widgetId}`}
                                 type="text"
                                 placeholder="0078d7"
                                 value={widgetConfig.color || ''}
@@ -202,8 +207,10 @@ export const AchievementsPanel: React.FC<AchievementsPanelProps> = ({
                         {widgetId === 'graph' && (
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div>
-                              <label className="block text-2xs uppercase tracking-wider text-gray-400 font-bold mb-0.5">Theme</label>
+                              <label htmlFor={`graph-theme-${widgetId}`} className="block text-2xs uppercase tracking-wider text-gray-700 dark:text-gray-400 font-bold mb-0.5">Theme</label>
                               <select
+                                id={`graph-theme-${widgetId}`}
+                                aria-label="Activity graph theme"
                                 value={widgetConfig.theme || 'github'}
                                 onChange={(e) => updateWidgetProperty('theme', e.target.value)}
                                 className="w-full text-xs p-1.5 rounded border border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"

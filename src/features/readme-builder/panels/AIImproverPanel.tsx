@@ -58,8 +58,10 @@ export const AIImproverPanel: React.FC<AIImproverPanelProps> = ({
       {/* Section selector & Original content */}
       <div className="space-y-3.5 p-4 bg-gray-50 dark:bg-gray-900/25 border border-gray-200 dark:border-gray-800/80 rounded-xl">
         <div className="space-y-1">
-          <label className="text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-550 block font-medium">Section to Improve</label>
+          <label htmlFor="improver-section-select" className="text-[10px] font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400 block font-medium">Section to Improve</label>
           <select
+            id="improver-section-select"
+            aria-label="Section to Improve"
             value={improverSection}
             onChange={(e) => {
               setImproverSection(e.target.value as any);

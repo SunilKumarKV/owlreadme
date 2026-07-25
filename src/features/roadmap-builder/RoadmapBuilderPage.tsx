@@ -54,6 +54,7 @@ const RoadmapBuilderPage = () => {
         <label htmlFor="roadmap-template-select" className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300 font-semibold">Select Roadmap Template</label>
         <select
           id="roadmap-template-select"
+          aria-label="Select Roadmap Template"
           value={template}
           onChange={(e) => handleTemplateChange(e.target.value)}
           className="w-full px-4 py-2 rounded-md border border-gray-300 dark:bg-[#1e1e1e] dark:text-white dark:border-gray-600 focus:border-blue-500 focus:ring-2 ring-blue-500 transition duration-200"

@@ -45,8 +45,10 @@ export const VisitorCounterPanel: React.FC<VisitorCounterPanelProps> = ({
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold mb-1 text-gray-500 dark:text-gray-400">Badge Style</label>
+              <label htmlFor="visitor-badge-style" className="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-400">Badge Style</label>
               <select
+                id="visitor-badge-style"
+                aria-label="Visitor Badge Style"
                 value={standaloneVisitor.style}
                 onChange={(e) => setStandaloneVisitor({ style: e.target.value })}
                 className="w-full px-4 py-2 text-sm rounded-md border border-gray-300 dark:bg-[#1e1e1e] dark:text-white dark:border-gray-600 focus:border-blue-500 focus:ring-2 ring-blue-500 transition duration-200"

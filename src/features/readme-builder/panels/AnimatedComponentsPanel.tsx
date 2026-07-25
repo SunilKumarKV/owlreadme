@@ -276,8 +276,10 @@ export const AnimatedComponentsPanel: React.FC<AnimatedComponentsPanelProps> = (
                                 />
                               </div>
                               <div className="space-y-1">
-                                <label className="text-2xs font-bold text-gray-500 uppercase tracking-wide">Cursor Style</label>
+                                <label htmlFor={`cursor-${comp.id}`} className="text-2xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wide">Cursor Style</label>
                                 <select
+                                  id={`cursor-${comp.id}`}
+                                  aria-label="Cursor Style"
                                   value={comp.config.cursor || 'pipe'}
                                   onChange={(e) => updateAnimatedComponentItem(comp.id, { config: { cursor: e.target.value } })}
                                   className="w-full px-2 py-1.5 text-xs rounded border border-gray-200 dark:bg-gray-850 dark:border-gray-700 focus:outline-none cursor-pointer"
@@ -293,7 +295,7 @@ export const AnimatedComponentsPanel: React.FC<AnimatedComponentsPanelProps> = (
                         {comp.type === 'waveHeader' && (
                           <div className="space-y-3">
                             <div className="space-y-1">
-                              <label className="text-2xs font-bold text-gray-500 uppercase tracking-wide">Welcome Title Text</label>
+                              <label className="text-2xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wide">Welcome Title Text</label>
                               <Input
                                 value={comp.config.text || ''}
                                 onChange={(e) => updateAnimatedComponentItem(comp.id, { config: { text: e.target.value } })}
@@ -302,7 +304,7 @@ export const AnimatedComponentsPanel: React.FC<AnimatedComponentsPanelProps> = (
                             </div>
                             <div className="grid grid-cols-3 gap-3">
                               <div className="col-span-2 space-y-1">
-                                <label className="text-2xs font-bold text-gray-500 uppercase tracking-wide">Theme Color</label>
+                                <label className="text-2xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wide">Theme Color</label>
                                 <Input
                                   value={comp.config.theme || 'auto'}
                                   onChange={(e) => updateAnimatedComponentItem(comp.id, { config: { theme: e.target.value } })}
@@ -310,7 +312,7 @@ export const AnimatedComponentsPanel: React.FC<AnimatedComponentsPanelProps> = (
                                 />
                               </div>
                               <div className="space-y-1">
-                                <label className="text-2xs font-bold text-gray-500 uppercase tracking-wide">Height ({comp.config.height || 120})</label>
+                                <label className="text-2xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wide">Height ({comp.config.height || 120})</label>
                                 <input
                                   type="range"
                                   min="60"
@@ -322,8 +324,10 @@ export const AnimatedComponentsPanel: React.FC<AnimatedComponentsPanelProps> = (
                               </div>
                             </div>
                             <div className="space-y-1">
-                              <label className="text-2xs font-bold text-gray-500 uppercase tracking-wide">Animation Style</label>
+                              <label htmlFor={`animation-${comp.id}`} className="text-2xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wide">Animation Style</label>
                               <select
+                                id={`animation-${comp.id}`}
+                                aria-label="Animation Style"
                                 value={comp.config.animation || 'wave'}
                                 onChange={(e) => updateAnimatedComponentItem(comp.id, { config: { animation: e.target.value } })}
                                 className="w-full px-2 py-1.5 text-xs rounded border border-gray-200 dark:bg-gray-850 dark:border-gray-700 focus:outline-none cursor-pointer"
@@ -341,8 +345,10 @@ export const AnimatedComponentsPanel: React.FC<AnimatedComponentsPanelProps> = (
                         {comp.type === 'divider' && (
                           <div className="space-y-3">
                             <div className="space-y-1">
-                              <label className="text-2xs font-bold text-gray-500 uppercase tracking-wide">Divider Style</label>
+                              <label htmlFor={`divider-${comp.id}`} className="text-2xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wide">Divider Style</label>
                               <select
+                                id={`divider-${comp.id}`}
+                                aria-label="Divider Style"
                                 value={comp.config.style || 'gradient-line'}
                                 onChange={(e) => updateAnimatedComponentItem(comp.id, { config: { style: e.target.value } })}
                                 className="w-full px-2 py-1.5 text-xs rounded border border-gray-200 dark:bg-gray-855 dark:border-gray-700 focus:outline-none cursor-pointer"

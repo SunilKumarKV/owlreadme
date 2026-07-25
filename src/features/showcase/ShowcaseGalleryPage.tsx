@@ -291,8 +291,9 @@ const ShowcaseGalleryPage = () => {
 
           {/* Sorting */}
           <div className="flex items-center gap-2 select-none justify-end">
-            <span className="text-3xs uppercase font-extrabold tracking-wider text-gray-600 dark:text-gray-400">Sort By:</span>
+            <label htmlFor="gallery-sort-select" className="text-3xs uppercase font-extrabold tracking-wider text-gray-700 dark:text-gray-400">Sort By:</label>
             <select
+              id="gallery-sort-select"
               value={sortBy}
               aria-label="Sort showcases"
               onChange={(e) => setSortBy(e.target.value as any)}
@@ -635,8 +636,10 @@ const ShowcaseGalleryPage = () => {
               </div>
 
               <div className="space-y-1.5">
-                <label className="block text-2xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Category</label>
+                <label htmlFor="showcase-category-select" className="block text-2xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider">Category</label>
                 <select
+                  id="showcase-category-select"
+                  aria-label="Showcase Category"
                   value={createForm.category}
                   onChange={(e) => setCreateForm({ ...createForm, category: e.target.value as ShowcaseCategory })}
                   className="w-full px-3 py-2 text-xs rounded border border-gray-300 dark:bg-[#16161b] dark:text-white dark:border-gray-700 focus:outline-none cursor-pointer"
@@ -655,8 +658,10 @@ const ShowcaseGalleryPage = () => {
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <label className="block text-2xs font-bold text-gray-500 dark:text-gray-400 uppercase tracking-wider">Theme Colors</label>
+                  <label htmlFor="showcase-theme-select" className="block text-2xs font-bold text-gray-700 dark:text-gray-400 uppercase tracking-wider">Theme Colors</label>
                   <select
+                    id="showcase-theme-select"
+                    aria-label="Showcase Theme Colors"
                     value={createForm.theme}
                     onChange={(e) => setCreateForm({ ...createForm, theme: e.target.value as any })}
                     className="w-full px-3 py-2 text-xs rounded border border-gray-350 dark:bg-[#16161b] dark:text-white dark:border-gray-700 focus:outline-none cursor-pointer"

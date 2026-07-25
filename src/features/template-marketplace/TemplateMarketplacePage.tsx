@@ -264,8 +264,10 @@ export const TemplateMarketplacePage: React.FC = () => {
 
             {/* Sorting Dropdown */}
             <div className="flex items-center gap-2 select-none">
-              <span className="text-2xs font-bold uppercase tracking-wider text-gray-400">Sort:</span>
+              <label htmlFor="marketplace-sort-select" className="text-2xs font-bold uppercase tracking-wider text-gray-700 dark:text-gray-400">Sort:</label>
               <select
+                id="marketplace-sort-select"
+                aria-label="Sort marketplace templates"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'trending' | 'popular' | 'downloads' | 'newest')}
                 className="px-3 py-1.5 text-xs font-bold rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 cursor-pointer focus:outline-none"

@@ -129,7 +129,7 @@ export const renderProjects = (config?: FeaturedProjectsConfig, legacyProjects?:
       for (let i = 0; i < cards.length; i += 2) {
         const left = cards[i];
         const right = cards[i + 1] || '';
-        tableRows.push(`<td valign="top" width="50%">\n\n${left}\n\n</td>\n<td valign="top" width="50%">\n\n${right}\n\n</td>`);
+        tableRows.push(`<td style="vertical-align: top;" width="50%">\n\n${left}\n\n</td>\n<td style="vertical-align: top;" width="50%">\n\n${right}\n\n</td>`);
       }
       lines.push('<table><tr>');
       lines.push(tableRows.join('</tr>\n<tr>'));

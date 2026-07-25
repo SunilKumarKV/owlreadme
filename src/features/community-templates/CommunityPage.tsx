@@ -214,8 +214,10 @@ export const CommunityPage: React.FC = () => {
           <div className="flex items-center gap-4 flex-wrap">
             {/* Sorting */}
             <div className="flex items-center gap-2">
-              <span className="font-bold text-[10px] uppercase tracking-wider text-gray-400">Sort By:</span>
+              <label htmlFor="community-sort-by" className="font-bold text-[10px] uppercase tracking-wider text-gray-700 dark:text-gray-400">Sort By:</label>
               <select
+                id="community-sort-by"
+                aria-label="Sort community templates by"
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as 'trending' | 'popular' | 'newest')}
                 className="px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 cursor-pointer focus:outline-none"
@@ -228,8 +230,10 @@ export const CommunityPage: React.FC = () => {
 
             {/* Difficulty */}
             <div className="flex items-center gap-2">
-              <span className="font-bold text-[10px] uppercase tracking-wider text-gray-400">Difficulty:</span>
+              <label htmlFor="community-difficulty" className="font-bold text-[10px] uppercase tracking-wider text-gray-700 dark:text-gray-400">Difficulty:</label>
               <select
+                id="community-difficulty"
+                aria-label="Filter community templates by difficulty"
                 value={selectedDifficulty}
                 onChange={(e) => setSelectedDifficulty(e.target.value)}
                 className="px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 cursor-pointer focus:outline-none"
@@ -244,8 +248,10 @@ export const CommunityPage: React.FC = () => {
             {/* Tech filter */}
             {allTechnologies.length > 0 && (
               <div className="flex items-center gap-2">
-                <span className="font-bold text-[10px] uppercase tracking-wider text-gray-400">Technology:</span>
+                <label htmlFor="community-tech" className="font-bold text-[10px] uppercase tracking-wider text-gray-700 dark:text-gray-400">Technology:</label>
                 <select
+                  id="community-tech"
+                  aria-label="Filter community templates by technology"
                   value={selectedTech}
                   onChange={(e) => setSelectedTech(e.target.value)}
                   className="px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 cursor-pointer focus:outline-none capitalize"

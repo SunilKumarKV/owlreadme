@@ -35,8 +35,10 @@ export const QuotesPanel: React.FC<QuotesPanelProps> = ({
         <div className="space-y-4 border-t border-gray-100 dark:border-gray-800 pt-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-semibold mb-1 text-gray-500 dark:text-gray-400">Theme</label>
+              <label htmlFor="quotes-theme-select" className="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-400">Theme</label>
               <select
+                id="quotes-theme-select"
+                aria-label="Quotes Card Theme"
                 value={quotes.theme}
                 onChange={(e) => setQuotes({ theme: e.target.value })}
                 className="w-full px-4 py-2 text-sm rounded-md border border-gray-300 dark:bg-[#1e1e1e] dark:text-white dark:border-gray-600 focus:border-blue-500 focus:ring-2 ring-blue-500 transition duration-200"
@@ -49,8 +51,10 @@ export const QuotesPanel: React.FC<QuotesPanelProps> = ({
               </select>
             </div>
             <div>
-              <label className="block text-xs font-semibold mb-1 text-gray-500 dark:text-gray-400">Quote Type</label>
+              <label htmlFor="quotes-type-select" className="block text-xs font-semibold mb-1 text-gray-700 dark:text-gray-400">Quote Type</label>
               <select
+                id="quotes-type-select"
+                aria-label="Quote Category Type"
                 value={quotes.quoteType}
                 onChange={(e) => setQuotes({ quoteType: e.target.value as any })}
                 className="w-full px-4 py-2 text-sm rounded-md border border-gray-300 dark:bg-[#1e1e1e] dark:text-white dark:border-gray-600 focus:border-blue-500 focus:ring-2 ring-blue-500 transition duration-200"
