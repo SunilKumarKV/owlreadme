@@ -39,21 +39,49 @@ test.describe('OwlReadme Visual Regression Testing', () => {
         // Set viewport size
         await page.setViewportSize({ width: vp.width, height: vp.height });
 
-        // Navigate to the target page
-        await page.goto(pageInfo.path);
+        // Navigate to target page and wait for load
+        await page.goto(pageInfo.path, { waitUntil: 'load' });
 
-        // Wait for dynamic React hydration/rendering to complete
+        // Wait for fonts to be ready
+        await page.evaluate(() => document.fonts.ready).catch(() => {});
+
+        // Inject global CSS to disable animations, transitions, caret, and scroll behavior
+        await page.addStyleTag({
+          content: `
+            *, *::before, *::after {
+              animation: none !important;
+              transition: none !important;
+              caret-color: transparent !important;
+              scroll-behavior: auto !important;
+            }
+          `
+        });
+
+        // Wait for dynamic React loading skeletons to disappear
         const loader = page.locator('text=Loading');
         if (await loader.count() > 0) {
           await loader.first().waitFor({ state: 'hidden', timeout: 5000 }).catch(() => {});
         }
-        
-        // Wait a small moment for animations and images to settle
-        await page.waitForTimeout(1000);
 
-        // Define elements to mask (like SVG charts and loading pulse blocks) to avoid flakiness
+        // Wait for all images to complete loading (with 1.5s max fallback per image)
+        await page.evaluate(async () => {
+          const images = Array.from(document.querySelectorAll('img'));
+          await Promise.all(images.map(img => {
+            if (img.complete) return Promise.resolve();
+            return new Promise(resolve => {
+              const timer = setTimeout(resolve, 1500);
+              img.addEventListener('load', () => { clearTimeout(timer); resolve(true); }, { once: true });
+              img.addEventListener('error', () => { clearTimeout(timer); resolve(true); }, { once: true });
+            });
+          }));
+        }).catch(() => {});
+
+        // Wait a short moment for final rendering stability
+        await page.waitForTimeout(500);
+
+        // Define elements to mask (like SVG charts and pulse blocks) to avoid flakiness
         const masks = [
-          page.locator('svg'),
+          page.locator('svg.recharts-surface'),
           page.locator('.animate-pulse'),
         ];
 
@@ -61,9 +89,9 @@ test.describe('OwlReadme Visual Regression Testing', () => {
         await expect(page).toHaveScreenshot(`${pageInfo.name}-${vp.name}.png`, {
           mask: masks,
           fullPage: true,
-          animations: 'disabled', // disable CSS animations
+          animations: 'disabled',
           timeout: 15000,
-          maxDiffPixelRatio: 0.05, // Allow up to 5% pixel difference
+          maxDiffPixelRatio: 0.03,
         });
       });
     }

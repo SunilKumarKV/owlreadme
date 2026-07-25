@@ -59,6 +59,9 @@ jobs:
       - name: Vitest Unit & Integration Tests (with Coverage)
         run: pnpm test:coverage
 
+      - name: Build Next.js Application
+        run: pnpm build
+
       - name: Install Playwright Browsers & Dependencies (Cache Miss)
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: pnpm exec playwright install --with-deps
@@ -78,9 +81,6 @@ jobs:
 
       - name: Playwright E2E Visual Regression Tests
         run: pnpm test:visual
-
-      - name: Build Next.js Application
-        run: pnpm build
 
       - name: Generate Quality Dashboard Summary
         if: always()
