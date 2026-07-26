@@ -7,6 +7,38 @@ test.describe('OwlReadme Visual Regression Testing', () => {
 
   test.beforeEach(async ({ page }) => {
     consoleErrors = listenForConsoleErrors(page);
+
+    // Freeze Date.now to a fixed deterministic timestamp across all visual tests
+    await page.addInitScript(() => {
+      const fixedTime = new Date('2026-07-10T12:00:00.000Z').getTime();
+      Date.now = () => fixedTime;
+    });
+
+    // Intercept external dynamic badge and counter requests with static SVG fixtures
+    await page.route('**/github-readme-stats.vercel.app/**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'image/svg+xml',
+        body: `<svg xmlns="http://www.w3.org/2000/svg" width="400" height="150"><rect width="100%" height="100%" fill="#141321"/><text x="20" y="40" fill="#fe428e" font-family="sans-serif" font-size="14">GitHub Stats (Mocked)</text></svg>`,
+      });
+    });
+
+    await page.route('**/komarev.com/ghpvc/**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'image/svg+xml',
+        body: `<svg xmlns="http://www.w3.org/2000/svg" width="150" height="20"><rect width="100%" height="100%" fill="#050505"/><text x="10" y="14" fill="#00c950" font-family="sans-serif" font-size="11">Profile Views: 100</text></svg>`,
+      });
+    });
+
+    await page.route('**/img.shields.io/**', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'image/svg+xml',
+        body: `<svg xmlns="http://www.w3.org/2000/svg" width="100" height="20"><rect width="100%" height="100%" fill="#2b7fff"/><text x="10" y="14" fill="#ffffff" font-family="sans-serif" font-size="11">Badge</text></svg>`,
+      });
+    });
+
     // Seed standard mock workspaces to guarantee identical visual data
     await seedA11yWorkspace(page);
   });
