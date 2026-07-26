@@ -28,10 +28,16 @@ export default defineConfig({
     ['junit', { outputFile: 'playwright-report/results.xml' }],
     ['list'],
   ],
+  /* Configure snapshot path template for cross-platform visual consistency across browser engines */
+  snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}',
+
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */
     baseURL: 'http://localhost:3000',
+
+    /* Standardize device scale factor to 1 for cross-platform snapshot parity */
+    deviceScaleFactor: 1,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',

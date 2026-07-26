@@ -99,7 +99,11 @@ export class ReadmeBuilderPage extends BasePage {
   // ── About Panel ──────────────────────────────────────────────────────────
 
   async fillAboutBio(text: string): Promise<void> {
-    await this.aboutBioInput.scrollIntoViewIfNeeded();
+    if (!await this.aboutBioInput.isVisible().catch(() => false)) {
+      const header = this.page.locator('h3:has-text("About Me"), button:has-text("About Me")').first();
+      if (await header.count() > 0) await header.click();
+    }
+    await this.aboutBioInput.waitFor({ state: 'visible', timeout: 5000 }).catch(() => {});
     await this.aboutBioInput.fill(text);
   }
 
