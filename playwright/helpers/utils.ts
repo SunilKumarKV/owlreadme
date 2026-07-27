@@ -33,10 +33,10 @@ export async function clearLocalStorage(page: Page): Promise<void> {
  * Helper to wait for toast messages to render.
  */
 export async function waitForToast(page: Page, message?: string): Promise<void> {
-  const locator = page.locator('.fixed.bottom-6 .flex.items-center');
-  await locator.first().waitFor({ state: 'visible', timeout: 5000 });
+  const locator = page.locator('.fixed.bottom-6.flex.items-center, .fixed.bottom-6');
+  await locator.first().waitFor({ state: 'visible', timeout: 10000 });
   if (message) {
-    await expect(page.locator('.fixed.bottom-6')).toContainText(message);
+    await expect(locator.first()).toContainText(message);
   }
 }
 

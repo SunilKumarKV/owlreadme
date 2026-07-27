@@ -1,4 +1,5 @@
 import { Page, Locator, expect } from '@playwright/test';
+import { waitForToast, waitForLoadingToFinish, waitForApi } from '../helpers/utils';
 
 export class BasePage {
   readonly page: Page;
@@ -27,24 +28,17 @@ export class BasePage {
     expect(errors).toEqual([]);
   }
 
-  // Common E2E helper Actions
+  // Common E2E helper Actions delegated to helpers/utils.ts
   async waitForToast(message?: string): Promise<void> {
-    const locator = this.page.locator('.fixed.bottom-6.flex.items-center, .fixed.bottom-6');
-    await locator.first().waitFor({ state: 'visible', timeout: 10000 });
-    if (message) {
-      await expect(locator.first()).toContainText(message);
-    }
+    await waitForToast(this.page, message);
   }
 
   async waitForLoadingToFinish(): Promise<void> {
-    const loader = this.page.locator('text=Loading');
-    if (await loader.count() > 0) {
-      await loader.first().waitFor({ state: 'hidden', timeout: 10000 });
-    }
+    await waitForLoadingToFinish(this.page);
   }
 
   async waitForApi(urlPattern: string | RegExp): Promise<void> {
-    await this.page.waitForResponse(urlPattern);
+    await waitForApi(this.page, urlPattern);
   }
 }
 
