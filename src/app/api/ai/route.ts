@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from 'next/server';
-import { AIPlatform } from '@/packages/ai-platform';
+import { AIPlatform, PromptTemplates } from '@/packages/ai-platform';
 import { rateLimiter, getClientIp } from '@/packages/rate-limiter';
 
 /** Maximum request body size we will proxy to Gemini (50 KB). */
@@ -101,22 +100,28 @@ export async function POST(req: NextRequest) {
 
     // ── AI Platform call ──────────────────────────────────────────────────────
     try {
-      const parsedResult = await AIPlatform.generate(action as any, payload as any);
+      const parsedResult = await AIPlatform.generate(
+        action as keyof typeof PromptTemplates,
+        payload as Record<string, unknown>
+      );
       return NextResponse.json({ data: parsedResult }, { headers: SECURITY_HEADERS });
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errMsg = err instanceof Error ? err.message : String(err);
       // Log full error server-side but return only a safe message to the client
-      console.error('[AI Route] AI Platform call failed:', err?.message ?? err);
+      console.error('[AI Route] AI Platform call failed:', errMsg);
       return NextResponse.json(
         { error: 'Failed to communicate with AI platform.', useLocalFallback: true },
         { status: 500, headers: SECURITY_HEADERS }
       );
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const errMsg = err instanceof Error ? err.message : String(err);
     // Outer safety net — never leak raw error details to the client
-    console.error('[AI Route] Unhandled error in handler:', err?.message ?? err);
+    console.error('[AI Route] Unhandled error in handler:', errMsg);
     return NextResponse.json(
       { error: 'An internal error occurred.', useLocalFallback: true },
       { status: 500, headers: SECURITY_HEADERS }
     );
   }
 }
+

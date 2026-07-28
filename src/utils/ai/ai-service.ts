@@ -168,16 +168,14 @@ export class DynamicLocalAIService implements AIService {
 export class SecureAPIAIService implements AIService {
   private localService = new DynamicLocalAIService();
 
-  private async callSecureAPI(action: string, payload: any): Promise<any> {
-    console.log('DEBUG APP: callSecureAPI starting for', action);
-    const res = await apiClient.post<any>('/api/ai', { action, payload });
-    console.log('DEBUG APP: callSecureAPI response for', action, 'res =', JSON.stringify(res));
+  private async callSecureAPI<T = unknown>(action: string, payload: Record<string, unknown>): Promise<T> {
+    const res = await apiClient.post<{ data?: T; useLocalFallback?: boolean; error?: string }>('/api/ai', { action, payload });
 
     if (!res.success) {
-      const errorData = res.error.data || {};
+      const errorData = (res.error.data as { useLocalFallback?: boolean; error?: string } | undefined) || {};
       if (res.error.code === 'NETWORK_ERROR' || res.error.message?.includes('fetch') || res.error.message?.includes('Network')) {
-        const netErr = new Error(res.error.message || 'Network error: Internet disconnected');
-        (netErr as any).isNetworkError = true;
+        const netErr = new Error(res.error.message || 'Network error: Internet disconnected') as Error & { isNetworkError?: boolean };
+        netErr.isNetworkError = true;
         throw netErr;
       }
       if (errorData.useLocalFallback || res.error.status === 500) {

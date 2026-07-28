@@ -1,7 +1,6 @@
 'use client';
 
-/* eslint-disable react-hooks/set-state-in-effect */
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { X, Save, Edit3 } from 'lucide-react';
 import { CommunityTemplate, TemplateCategory } from '@/stores/template-store';
 import { CATEGORIES_LIST } from '@/utils/template-registry';
@@ -19,6 +18,7 @@ export const TemplateEditorModal: React.FC<TemplateEditorModalProps> = ({
   onClose,
   onSave,
 }) => {
+  const [prevTemplateId, setPrevTemplateId] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [category, setCategory] = useState<TemplateCategory>('Developer');
@@ -27,17 +27,16 @@ export const TemplateEditorModal: React.FC<TemplateEditorModalProps> = ({
   const [difficulty, setDifficulty] = useState<'Beginner' | 'Intermediate' | 'Advanced'>('Beginner');
   const [visibility, setVisibility] = useState<'public' | 'private' | 'draft'>('private');
 
-  useEffect(() => {
-    if (template) {
-      setName(template.name || '');
-      setDescription(template.description || '');
-      setCategory(template.category || 'Developer');
-      setTagsInput((template.tags || []).join(', '));
-      setTechInput((template.technologies || []).join(', '));
-      setDifficulty(template.difficulty || 'Beginner');
-      setVisibility(template.visibility || 'private');
-    }
-  }, [template, isOpen]);
+  if (template && template.id !== prevTemplateId) {
+    setPrevTemplateId(template.id);
+    setName(template.name || '');
+    setDescription(template.description || '');
+    setCategory(template.category || 'Developer');
+    setTagsInput((template.tags || []).join(', '));
+    setTechInput((template.technologies || []).join(', '));
+    setDifficulty(template.difficulty || 'Beginner');
+    setVisibility(template.visibility || 'private');
+  }
 
   if (!isOpen || !template) return null;
 

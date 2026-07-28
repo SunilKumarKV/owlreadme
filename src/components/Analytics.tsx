@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 "use client";
 
 import React, { useEffect } from 'react';
@@ -8,8 +7,8 @@ import Script from 'next/script';
 // Global type declarations for analytics integrations
 declare global {
   interface Window {
-    gtag?: (...args: any[]) => void;
-    dataLayer?: any[];
+    gtag?: (...args: (string | number | Record<string, unknown>)[]) => void;
+    dataLayer?: Record<string, unknown>[];
   }
 }
 
