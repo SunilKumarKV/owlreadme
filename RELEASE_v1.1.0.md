@@ -1,49 +1,49 @@
 # Release Notes: OwlREADME v1.1.0 (July 2026)
 
-We are thrilled to announce the release of **OwlREADME v1.1.0**! This milestone version introduces a beautiful community showcase gallery for profile README inspiration and a robust version control snapshots system that lets developers manage workspace versions easily. 
+We are thrilled to announce the production release of **OwlREADME v1.1.0**! 
 
-We have also performed a rigorous stabilization sprint to resolve P0 and P1 issues, bringing ESLint error counts to **0** and introducing security hardening layers for our sharing and PDF exporting modules.
+This release introduces the **README Showcase Gallery**, an in-memory **Version Control Snapshots & Diff System**, strict **Content Security Policy Hardening**, and a thorough stabilization sprint achieving zero ESLint errors and strict TypeScript safety across the repository.
 
 ---
 
 ## 🚀 Key Highlights
 
-### 1. README Showcase Gallery
-Browse, search, inspect, and clone beautiful profile README designs!
-- **Grid Gallery View**: Under `/gallery`, explore responsive profile cards showing developer info, tech tags, and theme preview styles.
-- **Inspiration Overlay Modal**: Click any card to preview compiled markdown templates live, inspect raw Markdown code, or check layout statistics.
-- **Instant Duplication**: Click **"Duplicate into Editor"** to instantly clone any template configurations directly into your active workspace session.
+### 1. README Showcase Gallery (`/gallery`)
+Browse, preview, inspect, and clone beautiful community profile README configurations:
+- **Responsive Grid View:** Browse curated showcase cards with category filters, search input, star metrics, and theme tags.
+- **Live Preview Modal:** Inspect rendered markdown, copy raw source code, or check design specs.
+- **One-Click Clone:** Click **"Duplicate into Editor"** to load showcase presets directly into your active workspace.
 
-### 2. Client-Side Version History & Snapshots
-Never lose your work! Track historical edits, compare changes, and restore specific fields.
-- **Undo / Redo Stack**: Multiple undo/redo levels managed automatically, including full support for standard **Ctrl+Z** / **Ctrl+Y** shortcuts in all textareas/inputs.
-- **Automatic Snapshots**: Automatically saves current configurations on major state modifications (style template switches and GitHub profile imports).
-- **Manual Backups**: Create custom snapshots with titles and descriptions.
-- **Side-by-Side Diff Modal**: Compare any snapshot version with active editor state using visual, code diff, or modified fields summary logs.
-- **Granular Restores**: Load full configs or choose to overwrite only selected sections (e.g. name/role, skills list, tech badges, etc.).
+### 2. Version Control Snapshots & Diff Timeline
+Never lose your work! Manage workspace versions with full undo/redo stacks:
+- **HotKey Shortcuts:** Full **Ctrl+Z** (undo) and **Ctrl+Y** (redo) integration across text areas.
+- **Automatic & Manual Snapshots:** Auto-save configurations on template switches or create custom manual backup snapshots.
+- **Side-by-Side Diff Viewer:** Compare snapshot versions with active editor state using visual markdown or code diff views.
 
 ---
 
 ## 🔒 Security Hardening
 
-- **Share Payload Validation**: Enforced a size cap (256KB rejection) on sharing payloads and passed decoded data through strict `validateREADMEData`/`validateRoadmapData` schema checks.
-- **Export Sanitization**: Integrated native DOMParser HTML sanitization inside the PDF generation stream to strip script injections, invalid tags, and event listener vectors.
-- **Iframe Sandboxing**: Enabled strict iframe sandboxing policies inside the PDF print flow.
+- **Content Security Policy (CSP):** Removed `'unsafe-eval'` from `script-src` in `vercel.json`.
+- **API Key Header Transport:** Migrated Gemini API Key transit from URL query parameters to the secure `x-goog-api-key` HTTP request header.
+- **SSRF Protection:** Enforced `ALLOWED_RAW_HOSTNAMES` allowlisting (`raw.githubusercontent.com`, `gist.githubusercontent.com`) on raw README imports.
+- **Rate Limiting:** Enforced `10 requests / 60 seconds per IP` sliding window limit on `/api/ai` proxy calls.
 
 ---
 
-## 🛠️ Performance & Stability Improvements
-- **ESLint Zero Errors**: Cleared all 179 linter errors across the codebase.
-- **TypeScript Strict Safety**: Full compiler type-safety achieved.
-- **Next.js Production Readiness**: The application bundle compiles successfully with static prerendering optimizing load speeds.
-- **Test Coverage**: Expanded vitest test coverage, ensuring store stability and validation accuracy.
+## 🛠️ Stability & Performance Fixes
+
+- **Zero ESLint Errors:** Cleared all compiler warnings and explicit `any` suppressions across 36+ files.
+- **Animation Frame Cleanup:** Added `cancelAnimationFrame` cleanup to `FocusTrap.tsx`.
+- **Event Listener Optimization:** Attached `mousedown` listener in `Dropdown/index.tsx` conditionally only when `isOpen` is `true`.
+- **Race Condition Prevention:** Added `isCancelled` handling to `useGithubProfile.ts` to ignore out-of-order async resolutions.
+- **Dynamic Code-Splitting:** Lazy-loaded modal components using Next.js `dynamic()` imports to minimize initial bundle size.
 
 ---
 
-## 📦 Upgrading & Migration
-If upgrading from a previous version, local workspace schemas persisted in your browser's local storage will remain intact. If you experience schema mismatches or missing fields on old profiles, you can click **"Clear All"** at the bottom of the Version Timeline panel to re-initialize your local database schema cleanly.
+## 📦 System Requirements & Migration
 
----
+- **Node.js:** `>= 22.0.0`
+- **Package Manager:** `pnpm@10.15.0`
 
-## 🗺️ What's Next?
-In v1.2.0, we plan to release **GitHub OAuth sign-in integration** and **relational cloud syncing** with PostgreSQL/Firestore to support user accounts!
+Local workspace data saved in browser `localStorage` will migrate automatically. If upgrading from older pre-release builds, you can click **"Clear All"** in the Version Timeline panel to re-initialize your local workspace schema cleanly.

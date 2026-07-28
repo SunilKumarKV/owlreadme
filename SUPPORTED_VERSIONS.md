@@ -1,11 +1,14 @@
 # Supported Versions
 
-## Current support
+## Current Support Matrix
 
-- OwlREADME v1.1.x: Supported
-- Earlier v1.x releases: Unsupported unless otherwise noted
+| Version | Status | Node.js Runtime Requirement |
+| :--- | :--- | :--- |
+| **OwlREADME v1.1.x** | ✅ Active Support | `>= 22.0.0` |
+| **OwlREADME < v1.1.0** | ❌ Unsupported | N/A |
 
-## Support policy
+## Support Policy
 
-- Security fixes are provided for the latest minor release in the current major version.
-- Feature work and non-security fixes are shipped on the latest main branch.
+- **Security Patches:** Provided for the latest minor release (`v1.1.x`) of the current major version.
+- **Feature Releases & Maintenance:** Shipped on the primary `main` branch.
+- **Node.js Environment:** Active support targets LTS Node.js runtimes (Node 22+).
