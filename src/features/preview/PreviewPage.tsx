@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import dynamic from 'next/dynamic';
 import Button from '@/components/Button';
 import Textarea from '@/components/Textarea';
@@ -41,6 +41,7 @@ const PreviewPage = () => {
   }
 
   const theme = useThemeStore((state) => state.theme);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Adjust view mode responsively on mount and window resize
   useEffect(() => {
@@ -51,14 +52,20 @@ const PreviewPage = () => {
     };
     handleResize();
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      if (copyTimeoutRef.current) {
+        clearTimeout(copyTimeoutRef.current);
+      }
+    };
   }, []);
 
   const handleCopy = async () => {
     try {
       await navigator.clipboard.writeText(markdown);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+      copyTimeoutRef.current = setTimeout(() => setCopied(false), 2000);
       useReadmeStore.getState().incrementReadmeExports();
       useRoadmapStore.getState().incrementRoadmapExports();
     } catch (err) {

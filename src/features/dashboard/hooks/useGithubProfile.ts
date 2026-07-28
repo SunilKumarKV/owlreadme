@@ -58,6 +58,7 @@ export const useGithubProfile = (options: GithubProfileOptions) => {
 
   useEffect(() => {
     if (!username) return;
+    let isCancelled = false;
 
     const importGitHubData = async () => {
       let currentActiveId = useWorkspaceStore.getState().activeWorkspaceId;
@@ -70,6 +71,8 @@ export const useGithubProfile = (options: GithubProfileOptions) => {
       try {
         const profile = await fetchGithubProfile(username);
         const repos = await fetchGithubRepos(username);
+
+        if (isCancelled) return;
 
         setName(profile.name || profile.login || '');
 
@@ -115,14 +118,22 @@ export const useGithubProfile = (options: GithubProfileOptions) => {
           .join('\n');
         setSocials(socialList);
       } catch (err: unknown) {
-        console.error(err);
-        setError(err instanceof Error ? err.message : 'Failed to import GitHub data.');
+        if (!isCancelled) {
+          console.error(err);
+          setError(err instanceof Error ? err.message : 'Failed to import GitHub data.');
+        }
       } finally {
-        setLoading(false);
+        if (!isCancelled) {
+          setLoading(false);
+        }
       }
     };
 
     importGitHubData();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [username, setName, setRole, setAbout, setProjects, setSocials, setAvatarUrl, setFollowers, setFollowing, setPublicRepos, setRepoAnalysis, setLoading, setError]);
 
   return {

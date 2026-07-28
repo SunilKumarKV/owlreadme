@@ -19,6 +19,8 @@ export const Dropdown: FC<DropdownProps> = ({ trigger, items, align = 'right' })
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!isOpen) return;
+
     const handleOutsideClick = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setIsOpen(false);
@@ -26,7 +28,7 @@ export const Dropdown: FC<DropdownProps> = ({ trigger, items, align = 'right' })
     };
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
-  }, []);
+  }, [isOpen]);
 
   return (
     <div ref={containerRef} className="relative inline-block text-left z-[1000]">

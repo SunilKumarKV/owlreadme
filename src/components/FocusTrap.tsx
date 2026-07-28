@@ -48,12 +48,16 @@ export default function FocusTrap({ active, children, onEscape }: FocusTrapProps
     // Move focus to the first focusable element inside the trap
     const focusable = containerRef.current?.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTORS);
     const first = focusable?.[0];
+    let rafId: number | null = null;
     if (first) {
       // Use rAF to ensure the DOM is fully painted before focusing
-      requestAnimationFrame(() => first.focus());
+      rafId = requestAnimationFrame(() => first.focus());
     }
 
     return () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
       // Restore focus to the previously focused element when trap deactivates
       previouslyFocusedRef.current?.focus();
     };
