@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type {
   READMEData,
   RoadmapData,
@@ -41,7 +40,7 @@ export function safeTemplate(val: unknown): READMEStyleTemplate | undefined {
 export function validateREADMEData(data: unknown): READMEData | null {
   if (!data || typeof data !== 'object' || Array.isArray(data)) return null;
 
-  const raw = data as Record<string, any>;
+  const raw = data as Record<string, unknown>;
   const validated: READMEData = {};
 
   if ('name' in raw) validated.name = safeString(raw.name, 100);

@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 /**
  * Shared helper to create a temporary anchor element and trigger a file download.
  * Cleans up the object URL immediately after clicking.
@@ -49,8 +47,8 @@ export async function downloadZipPackage(
  * Creates a JSON file containing the serialized Zustand store data for recovery or portability
  */
 export function downloadJsonBackup(
-  readmeData: any,
-  roadmapData: any,
+  readmeData: Record<string, unknown>,
+  roadmapData: Record<string, unknown>,
   filename: string = 'owlreadme-backup.json'
 ): void {
   const backup = {

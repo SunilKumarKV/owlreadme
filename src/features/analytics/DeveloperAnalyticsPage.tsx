@@ -1,8 +1,8 @@
 "use client";
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { ArrowLeft, BarChart2, Cpu, Sparkles } from 'lucide-react';
 import { GitHubIcon } from '@/components/Icons';
 import Button from '@/components/Button';
@@ -10,11 +10,11 @@ import useWorkspaceStore from '@/stores/workspace-store';
 import useReadmeStore from '@/stores/readme-store';
 import useRoadmapStore from '@/stores/roadmap-store';
 import useThemeStore from '@/stores/theme-store';
-import DonutChart from '@/components/charts/DonutChart';
-import BarChart from '@/components/charts/BarChart';
-import AreaChart from '@/components/charts/AreaChart';
-
 import { useShallow } from 'zustand/react/shallow';
+
+const DonutChart = dynamic(() => import('@/components/charts/DonutChart'), { ssr: false });
+const BarChart = dynamic(() => import('@/components/charts/BarChart'), { ssr: false });
+const AreaChart = dynamic(() => import('@/components/charts/AreaChart'), { ssr: false });
 
 const DeveloperAnalyticsPage: React.FC = () => {
   const workspaces = useWorkspaceStore((state) => state.workspaces);

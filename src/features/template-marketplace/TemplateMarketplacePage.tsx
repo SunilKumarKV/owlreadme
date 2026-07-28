@@ -68,10 +68,18 @@ export const TemplateMarketplacePage: React.FC = () => {
   const [viewportMode, setViewportMode] = useState<'desktop' | 'tablet' | 'mobile' | 'markdown'>('desktop');
   const [copiedCode, setCopiedCode] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const toastTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  React.useEffect(() => {
+    return () => {
+      if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    };
+  }, []);
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
-    setTimeout(() => setToastMessage(null), 3000);
+    if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current);
+    toastTimeoutRef.current = setTimeout(() => setToastMessage(null), 3000);
   };
 
   const handleUseTemplate = (template: MarketplaceTemplate) => {

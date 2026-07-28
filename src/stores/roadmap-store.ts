@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
@@ -10,7 +9,7 @@ interface RoadmapState {
   template: string;
   roadmapExportsCount: number;
   templatesUsedCount: number;
-  setField: (field: RoadmapField, value: any) => void;
+  setField: (field: RoadmapField, value: string | string[] | number) => void;
   setTemplate: (template: string) => void;
   incrementRoadmapExports: () => void;
   incrementTemplatesUsed: () => void;

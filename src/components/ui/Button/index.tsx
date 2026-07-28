@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any -- Legacy codebase types rely on explicit any, refactoring would require major architecture changes */
-import type { ComponentPropsWithoutRef, FC, ReactNode } from 'react';
+import type { ComponentPropsWithoutRef, FC, ReactNode, MouseEventHandler } from 'react';
 import Link from 'next/link';
 
 export interface ButtonProps extends ComponentPropsWithoutRef<'button'> {
@@ -43,7 +42,7 @@ export const Button: FC<ButtonProps> = ({
 
   if (href && !disabled && !loading) {
     return (
-      <Link href={href} className={classes} onClick={onClick as any} {...(props as any)}>
+      <Link href={href} className={classes} onClick={onClick as MouseEventHandler<HTMLAnchorElement>}>
         {loading && <Spinner />}
         {icon && !loading && <span>{icon}</span>}
         {children}
