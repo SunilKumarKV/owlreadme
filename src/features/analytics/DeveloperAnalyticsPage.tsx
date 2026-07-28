@@ -69,7 +69,7 @@ const DeveloperAnalyticsPage: React.FC = () => {
   const estimatedContributions = hasGitHubData ? (publicRepos || 0) * 12 + totalStars * 4 + totalForks * 8 + 42 : 0;
 
   // 2. Technology Analytics
-  const languagesData = repoAnalysis?.languages.map((l: any) => ({
+  const languagesData = repoAnalysis?.languages.map((l: { name: string; count: number }) => ({
     name: l.name,
     value: l.count,
   })) || [];
@@ -118,7 +118,7 @@ const DeveloperAnalyticsPage: React.FC = () => {
   const weekdayActivity = [0, 0, 0, 0, 0, 0, 0];
 
   if (repoAnalysis?.topActive) {
-    repoAnalysis.topActive.forEach((repo: any) => {
+    repoAnalysis.topActive.forEach((repo: { lastUpdated: string }) => {
       const date = new Date(repo.lastUpdated);
       const day = date.getDay();
       weekdayActivity[day]++;
@@ -237,7 +237,7 @@ const DeveloperAnalyticsPage: React.FC = () => {
                   <div>
                     <span className="text-xs text-gray-600 dark:text-gray-400 block mb-2 uppercase font-bold tracking-wider">Top 5 Skill Recommendations</span>
                     <div className="flex flex-wrap gap-1.5">
-                      {(repoAnalysis?.suggestedSkills || []).slice(0, 5).map((skill: any) => (
+                      {(repoAnalysis?.suggestedSkills || []).slice(0, 5).map((skill: string) => (
                         <span key={skill} className="px-2 py-0.5 text-[11px] font-semibold bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded text-gray-700 dark:text-gray-300">
                           {skill}
                         </span>

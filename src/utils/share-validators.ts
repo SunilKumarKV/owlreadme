@@ -57,7 +57,7 @@ export function validateREADMEData(data: unknown): READMEData | null {
 
   // techStack?: TechStackConfig;
   if (raw.techStack && typeof raw.techStack === 'object' && !Array.isArray(raw.techStack)) {
-    const ts = raw.techStack as Record<string, any>;
+    const ts = raw.techStack as Record<string, unknown>;
     validated.techStack = {
       enabled: Boolean(ts.enabled),
       style: (ts.style === 'flat' || ts.style === 'flat-square' || ts.style === 'for-the-badge' || ts.style === 'plastic') ? ts.style : 'flat',
@@ -70,7 +70,7 @@ export function validateREADMEData(data: unknown): READMEData | null {
 
   // githubStats?: GitHubStatsConfig;
   if (raw.githubStats && typeof raw.githubStats === 'object' && !Array.isArray(raw.githubStats)) {
-    const gs = raw.githubStats as Record<string, any>;
+    const gs = raw.githubStats as Record<string, unknown>;
     const cardOrder = Array.isArray(gs.cardOrder)
       ? gs.cardOrder.filter((c) => c === 'stats' || c === 'languages' || c === 'streak')
       : ['stats', 'languages', 'streak'];
@@ -80,15 +80,18 @@ export function validateREADMEData(data: unknown): READMEData | null {
       streak: { enabled: true }
     };
     if (gs.cardConfigs && typeof gs.cardConfigs === 'object') {
-      const cc = gs.cardConfigs as Record<string, any>;
+      const cc = gs.cardConfigs as Record<string, unknown>;
       if (cc.stats && typeof cc.stats === 'object') {
-        cardConfigs.stats.enabled = Boolean(cc.stats.enabled);
+        const stats = cc.stats as Record<string, unknown>;
+        cardConfigs.stats.enabled = Boolean(stats.enabled);
       }
       if (cc.languages && typeof cc.languages === 'object') {
-        cardConfigs.languages.enabled = Boolean(cc.languages.enabled);
+        const langs = cc.languages as Record<string, unknown>;
+        cardConfigs.languages.enabled = Boolean(langs.enabled);
       }
       if (cc.streak && typeof cc.streak === 'object') {
-        cardConfigs.streak.enabled = Boolean(cc.streak.enabled);
+        const streak = cc.streak as Record<string, unknown>;
+        cardConfigs.streak.enabled = Boolean(streak.enabled);
       }
     }
     validated.githubStats = {
@@ -106,13 +109,13 @@ export function validateREADMEData(data: unknown): READMEData | null {
 
   // socialLinks?: SocialLinksConfig;
   if (raw.socialLinks && typeof raw.socialLinks === 'object' && !Array.isArray(raw.socialLinks)) {
-    const sl = raw.socialLinks as Record<string, any>;
+    const sl = raw.socialLinks as Record<string, unknown>;
     const platforms: Record<string, { enabled: boolean; value: string }> = {};
     if (sl.platforms && typeof sl.platforms === 'object') {
-      const sp = sl.platforms as Record<string, any>;
+      const sp = sl.platforms as Record<string, unknown>;
       Object.keys(sp).forEach((k) => {
         if (k.length > 50) return;
-        const item = sp[k];
+        const item = sp[k] as Record<string, unknown> | undefined;
         if (item && typeof item === 'object') {
           platforms[k] = {
             enabled: Boolean(item.enabled),
@@ -132,7 +135,7 @@ export function validateREADMEData(data: unknown): READMEData | null {
 
   // support?: SupportConfig;
   if (raw.support && typeof raw.support === 'object' && !Array.isArray(raw.support)) {
-    const sup = raw.support as Record<string, any>;
+    const sup = raw.support as Record<string, unknown>;
     validated.support = {
       enabled: Boolean(sup.enabled),
       buyMeACoffeeUsername: safeString(sup.buyMeACoffeeUsername, 100),
@@ -143,7 +146,7 @@ export function validateREADMEData(data: unknown): READMEData | null {
 
   // quotes?: QuotesConfig;
   if (raw.quotes && typeof raw.quotes === 'object' && !Array.isArray(raw.quotes)) {
-    const q = raw.quotes as Record<string, any>;
+    const q = raw.quotes as Record<string, unknown>;
     validated.quotes = {
       enabled: Boolean(q.enabled),
       theme: safeString(q.theme, 50),
@@ -153,7 +156,7 @@ export function validateREADMEData(data: unknown): READMEData | null {
 
   // customMarkdown?: CustomMarkdownConfig;
   if (raw.customMarkdown && typeof raw.customMarkdown === 'object' && !Array.isArray(raw.customMarkdown)) {
-    const cm = raw.customMarkdown as Record<string, any>;
+    const cm = raw.customMarkdown as Record<string, unknown>;
     validated.customMarkdown = {
       enabled: Boolean(cm.enabled),
       content: safeString(cm.content, 5000)
@@ -162,7 +165,7 @@ export function validateREADMEData(data: unknown): READMEData | null {
 
   // standaloneVisitor?: StandaloneVisitorConfig;
   if (raw.standaloneVisitor && typeof raw.standaloneVisitor === 'object' && !Array.isArray(raw.standaloneVisitor)) {
-    const sv = raw.standaloneVisitor as Record<string, any>;
+    const sv = raw.standaloneVisitor as Record<string, unknown>;
     validated.standaloneVisitor = {
       enabled: Boolean(sv.enabled),
       username: safeString(sv.username, 100),
@@ -173,9 +176,9 @@ export function validateREADMEData(data: unknown): READMEData | null {
 
   // featuredProjects?: FeaturedProjectsConfig;
   if (raw.featuredProjects && typeof raw.featuredProjects === 'object' && !Array.isArray(raw.featuredProjects)) {
-    const fp = raw.featuredProjects as Record<string, any>;
+    const fp = raw.featuredProjects as Record<string, unknown>;
     const projects = Array.isArray(fp.projects) ? fp.projects.filter((p) => p && typeof p === 'object').map((p) => {
-      const projItem = p as Record<string, any>;
+      const projItem = p as Record<string, unknown>;
       const proj: FeaturedProject = {
         id: safeString(projItem.id, 100),
         source: (projItem.source === 'github' || projItem.source === 'manual') ? projItem.source : 'manual'
@@ -210,7 +213,7 @@ export function validateREADMEData(data: unknown): READMEData | null {
 
   // achievements?: AchievementsConfig;
   if (raw.achievements && typeof raw.achievements === 'object' && !Array.isArray(raw.achievements)) {
-    const ac = raw.achievements as Record<string, any>;
+    const ac = raw.achievements as Record<string, unknown>;
     const widgets: Record<'trophy' | 'visitor' | 'snake' | 'graph', AchievementWidgetConfig> = {
       trophy: { enabled: false },
       visitor: { enabled: false },
@@ -218,9 +221,9 @@ export function validateREADMEData(data: unknown): READMEData | null {
       graph: { enabled: false }
     };
     if (ac.widgets && typeof ac.widgets === 'object') {
-      const aw = ac.widgets as Record<string, any>;
+      const aw = ac.widgets as Record<string, unknown>;
       for (const wKey of ['trophy', 'visitor', 'snake', 'graph'] as const) {
-        const w = aw[wKey] as Record<string, any> | undefined;
+        const w = aw[wKey] as Record<string, unknown> | undefined;
         if (w && typeof w === 'object') {
           widgets[wKey] = {
             enabled: Boolean(w.enabled),
@@ -246,16 +249,16 @@ export function validateREADMEData(data: unknown): READMEData | null {
 
   // sections?: SectionOrderConfig;
   if (raw.sections && typeof raw.sections === 'object' && !Array.isArray(raw.sections)) {
-    const s = raw.sections as Record<string, any>;
-    const sections: Record<SectionId, SectionConfig> = {} as any;
+    const s = raw.sections as Record<string, unknown>;
+    const sections: Record<SectionId, SectionConfig> = {} as Record<SectionId, SectionConfig>;
     if (s.sections && typeof s.sections === 'object') {
-      const sec = s.sections as Record<string, any>;
+      const sec = s.sections as Record<string, unknown>;
       const allowedSectionIds: SectionId[] = [
         'header', 'about', 'socials', 'techStack', 'stats', 'achievements',
         'projects', 'support', 'quotes', 'visitor', 'custom', 'animatedComponents'
       ];
       for (const sId of allowedSectionIds) {
-        const item = sec[sId] as Record<string, any> | undefined;
+        const item = sec[sId] as Record<string, unknown> | undefined;
         if (item && typeof item === 'object') {
           sections[sId] = {
             id: sId,
@@ -271,15 +274,15 @@ export function validateREADMEData(data: unknown): READMEData | null {
       order: Array.isArray(s.order) ? s.order.filter((o) => typeof o === 'string' && [
         'header', 'about', 'socials', 'techStack', 'stats', 'achievements',
         'projects', 'support', 'quotes', 'visitor', 'custom', 'animatedComponents'
-      ].includes(o)) : []
+      ].includes(o)) as SectionId[] : []
     };
   }
 
   // animatedComponents?: AnimatedComponentsConfig;
   if (raw.animatedComponents && typeof raw.animatedComponents === 'object' && !Array.isArray(raw.animatedComponents)) {
-    const ac = raw.animatedComponents as Record<string, any>;
+    const ac = raw.animatedComponents as Record<string, unknown>;
     const components = Array.isArray(ac.components) ? ac.components.filter((c) => c && typeof c === 'object').map((c) => {
-      const compItem = c as Record<string, any>;
+      const compItem = c as Record<string, unknown>;
       const comp: AnimatedComponentItem = {
         id: safeString(compItem.id, 100),
         type: (compItem.type === 'typing' || compItem.type === 'waveHeader' || compItem.type === 'divider' || compItem.type === 'snake' || compItem.type === 'decorative' || compItem.type === 'badge' || compItem.type === 'footer') ? compItem.type : 'typing',
@@ -288,7 +291,7 @@ export function validateREADMEData(data: unknown): READMEData | null {
         config: {}
       };
       if (compItem.config && typeof compItem.config === 'object' && !Array.isArray(compItem.config)) {
-        const cfg = compItem.config as Record<string, any>;
+        const cfg = compItem.config as Record<string, unknown>;
         for (const k of Object.keys(cfg)) {
           if (k.length > 50) continue;
           const v = cfg[k];
@@ -319,7 +322,7 @@ export function validateREADMEData(data: unknown): READMEData | null {
 export function validateRoadmapData(data: unknown): RoadmapData | null {
   if (!data || typeof data !== 'object' || Array.isArray(data)) return null;
 
-  const raw = data as Record<string, any>;
+  const raw = data as Record<string, unknown>;
   const validated: RoadmapData = {};
 
   if ('title' in raw) {
@@ -328,11 +331,14 @@ export function validateRoadmapData(data: unknown): RoadmapData | null {
   if ('steps' in raw) {
     if (Array.isArray(raw.steps)) {
       validated.steps = raw.steps
-        .filter((step) => typeof step === 'string')
-        .map((step) => safeString(step, 1000));
+        .filter((s) => typeof s === 'string')
+        .map((s) => safeString(s, 500));
     } else {
       validated.steps = [];
     }
+  }
+  if ('template' in raw) {
+    validated.template = safeString(raw.template, 100);
   }
 
   return validated;

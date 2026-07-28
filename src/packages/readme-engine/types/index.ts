@@ -204,4 +204,5 @@ export interface READMEData {
 export interface RoadmapData {
   title?: string;
   steps?: string[];
+  template?: string;
 }

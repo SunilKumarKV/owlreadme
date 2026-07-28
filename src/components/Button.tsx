@@ -1,12 +1,10 @@
 import type { FC } from 'react';
 import NewButton, { ButtonProps as NewButtonProps } from './ui/Button';
 
-export interface ButtonProps extends NewButtonProps {
-  title?: string;
-}
+export type ButtonProps = NewButtonProps;
 
-const Button: FC<ButtonProps> = ({ variant = 'primary', ...props }) => {
-  return <NewButton variant={variant} {...props} />;
+const Button: FC<ButtonProps> = (props) => {
+  return <NewButton {...props} />;
 };
 
 export default Button;
