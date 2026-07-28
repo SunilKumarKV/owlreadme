@@ -332,7 +332,7 @@ export function validateRoadmapData(data: unknown): RoadmapData | null {
     if (Array.isArray(raw.steps)) {
       validated.steps = raw.steps
         .filter((s) => typeof s === 'string')
-        .map((s) => safeString(s, 500));
+        .map((s) => safeString(s, 1000));
     } else {
       validated.steps = [];
     }
