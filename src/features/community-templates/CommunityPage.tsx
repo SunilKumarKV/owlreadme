@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import {
   Search,
@@ -14,7 +15,8 @@ import { useTemplateStore, CommunityTemplate } from '@/stores/template-store';
 import useReadmeStore from '@/stores/readme-store';
 import { useWorkspaceStore } from '@/stores/workspace-store';
 import { CATEGORIES_LIST } from '@/utils/template-registry';
-import TemplatePreviewModal from './components/TemplatePreviewModal';
+
+const TemplatePreviewModal = dynamic(() => import('./components/TemplatePreviewModal'), { ssr: false });
 
 export const CommunityPage: React.FC = () => {
   const router = useRouter();

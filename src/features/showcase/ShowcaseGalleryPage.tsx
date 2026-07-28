@@ -94,28 +94,30 @@ const ShowcaseGalleryPage = () => {
   }, [previewingShowcase, viewShowcase]);
 
   // Filters & Sorting
-  const filteredShowcases = showcases
-    .filter((show) => {
-      const matchesSearch =
-        show.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        show.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        show.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        show.technologies.some((tech) => tech.toLowerCase().includes(searchQuery.toLowerCase()));
+  const filteredShowcases = useMemo(() => {
+    return showcases
+      .filter((show) => {
+        const matchesSearch =
+          show.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          show.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          show.author.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          show.technologies.some((tech) => tech.toLowerCase().includes(searchQuery.toLowerCase()));
 
-      const matchesCategory = selectedCategory === 'all' || show.category === selectedCategory;
+        const matchesCategory = selectedCategory === 'all' || show.category === selectedCategory;
 
-      return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      if (sortBy === 'liked') {
-        return b.likes - a.likes;
-      }
-      if (sortBy === 'newest') {
-        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-      }
-      // default: 'popular' = likes + views score
-      return (b.likes + b.views) - (a.likes + a.views);
-    });
+        return matchesSearch && matchesCategory;
+      })
+      .sort((a, b) => {
+        if (sortBy === 'liked') {
+          return b.likes - a.likes;
+        }
+        if (sortBy === 'newest') {
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        }
+        // default: 'popular' = likes + views score
+        return (b.likes + b.views) - (a.likes + a.views);
+      });
+  }, [showcases, searchQuery, selectedCategory, sortBy]);
 
   // Duplicate layout to editor configuration
   const handleDuplicateToEditor = (show: Showcase) => {
