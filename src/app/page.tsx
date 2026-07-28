@@ -1,8 +1,5 @@
-import React from 'react';
 import LandingPage from '@/features/home/LandingPage';
 
-const HomePage: React.FC = () => {
+export default function HomePage() {
   return <LandingPage />;
-};
-
-export default HomePage;
+}
