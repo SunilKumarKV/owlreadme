@@ -19,7 +19,7 @@ export class GeminiProvider implements AIProvider {
     const responseMimeType = options?.jsonMode !== false ? 'application/json' : undefined;
 
     const result = await apiClient.post<any>(
-      `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent`,
       {
         contents: [
           {
@@ -31,7 +31,10 @@ export class GeminiProvider implements AIProvider {
         },
       },
       {
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey,
+        },
       }
     );
 
