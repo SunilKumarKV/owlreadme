@@ -21,21 +21,21 @@ export class DashboardPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.heading = page.locator('h1', { hasText: 'Developer Workspace' }).first();
-    this.createProjectButton = page.locator('button:visible', { hasText: /Create your first project|New Project/ }).first();
-    this.githubProfileImportTrigger = page.locator('a:visible', { hasText: 'Import from GitHub' }).first();
-    this.alertBox = page.locator('div[role="alert"]:not(#__next-route-announcer__):visible').first();
+    this.heading = page.getByRole('heading', { name: 'Developer Workspace' }).first();
+    this.createProjectButton = page.getByRole('button', { name: /Create your first project|New Project/i }).first();
+    this.githubProfileImportTrigger = page.getByRole('link', { name: 'Import from GitHub' }).first();
+    this.alertBox = page.getByRole('alert').filter({ hasNot: page.locator('#__next-route-announcer__') }).first();
 
     // Create workspace dialog
-    this.newProjectNameInput = page.locator('#new-project-name:visible').first();
-    this.newProjectTypeSelect = page.locator('#new-project-type:visible').first();
-    this.submitCreateProjectButton = page.locator('button[type="submit"]:visible', { hasText: 'Create Project' }).first();
+    this.newProjectNameInput = page.getByLabel(/Project Name|Workspace Name/i).or(page.locator('#new-project-name')).first();
+    this.newProjectTypeSelect = page.getByLabel(/Project Type|Type/i).or(page.locator('#new-project-type')).first();
+    this.submitCreateProjectButton = page.getByRole('button', { name: 'Create Project' }).first();
 
     // AI
-    this.consultAILocator = page.locator('button:visible', { hasText: 'Consult Owl AI' }).first();
-    this.aiReadmeTab = page.locator('button[role="tab"]:visible', { hasText: 'README' }).first();
-    this.aiRoadmapTab = page.locator('button[role="tab"]:visible', { hasText: 'Roadmap' }).first();
-    this.aiProfileTab = page.locator('button[role="tab"]:visible', { hasText: 'Profile' }).first();
+    this.consultAILocator = page.getByRole('button', { name: 'Consult Owl AI' }).first();
+    this.aiReadmeTab = page.getByRole('tab', { name: 'README' }).first();
+    this.aiRoadmapTab = page.getByRole('tab', { name: 'Roadmap' }).first();
+    this.aiProfileTab = page.getByRole('tab', { name: 'Profile' }).first();
   }
 
   async navigate(): Promise<void> {
@@ -61,13 +61,12 @@ export class DashboardPage extends BasePage {
     await this.newProjectNameInput.fill(name);
     await this.newProjectTypeSelect.selectOption(type);
     await this.submitCreateProjectButton.click();
+    await this.page.waitForTimeout(500);
   }
 
   async clickImportFromGithub(): Promise<void> {
     await this.githubProfileImportTrigger.first().click();
   }
-
-
 
   async consultOwlAI(): Promise<void> {
     await this.consultAILocator.waitFor({ state: 'visible' });
@@ -92,15 +91,15 @@ export class DashboardPage extends BasePage {
     else if (section === 'Skills') title = 'Suggested Core Skills';
     else if (section === 'Projects') title = 'Suggested Projects Section';
 
-    const container = this.page.locator('div.flex.justify-between:visible').filter({ has: this.page.locator('span', { hasText: title }) }).first();
-    const applyBtn = container.locator('button', { hasText: 'Apply' });
+    const container = this.page.getByText(title).locator('..').locator('..').first();
+    const applyBtn = container.getByRole('button', { name: 'Apply' }).first();
     await applyBtn.click();
   }
 
   async applyRoadmapSuggestion(): Promise<void> {
     await this.selectAiTab('roadmap');
-    const container = this.page.locator('div.flex.justify-between:visible').filter({ has: this.page.locator('span', { hasText: 'Recommended Steps Workflow' }) }).first();
-    const applyBtn = container.locator('button', { hasText: 'Apply Steps' });
+    const container = this.page.getByText('Recommended Steps Workflow').locator('..').locator('..').first();
+    const applyBtn = container.getByRole('button', { name: 'Apply Steps' }).first();
     await applyBtn.click();
   }
 
@@ -110,8 +109,8 @@ export class DashboardPage extends BasePage {
     if (section === 'Bio') title = 'Suggested Bio Improvement';
     else if (section === 'Tagline') title = 'Portfolio Tagline Suggestion';
 
-    const container = this.page.locator('div.flex.justify-between:visible').filter({ has: this.page.locator('span', { hasText: title }) }).first();
-    const applyBtn = container.locator('button', { hasText: 'Apply' });
+    const container = this.page.getByText(title).locator('..').locator('..').first();
+    const applyBtn = container.getByRole('button', { name: 'Apply' }).first();
     await applyBtn.click();
   }
 
@@ -121,22 +120,22 @@ export class DashboardPage extends BasePage {
   }
 
   async clickOpenWorkspace(name: string): Promise<void> {
-    const row = this.page.locator('div:visible').filter({ has: this.page.locator('h3', { hasText: name }) }).first();
-    const openBtn = row.locator('button', { hasText: 'Open' });
+    const row = this.page.getByRole('heading', { name, level: 3 }).locator('..').locator('..').first();
+    const openBtn = row.getByRole('button', { name: 'Open' });
     await openBtn.click();
   }
 
   async clickDeleteWorkspace(name: string): Promise<void> {
-    const row = this.page.locator('div:visible').filter({ has: this.page.locator('h3', { hasText: name }) }).first();
-    const trashBtn = row.locator('button[title="Delete project"]');
+    const row = this.page.getByRole('heading', { name, level: 3 }).locator('..').locator('..').first();
+    const trashBtn = row.getByRole('button', { name: /Delete/i });
     await trashBtn.click();
-    const confirmBtn = row.locator('button', { hasText: 'Yes' });
+    const confirmBtn = row.getByRole('button', { name: 'Yes' });
     await confirmBtn.click();
   }
 
   async clickDuplicateWorkspace(name: string): Promise<void> {
-    const row = this.page.locator('div:visible').filter({ has: this.page.locator('h3', { hasText: name }) }).first();
-    const duplicateBtn = row.locator('button[title="Duplicate project"]');
+    const row = this.page.getByRole('heading', { name, level: 3 }).locator('..').locator('..').first();
+    const duplicateBtn = row.getByRole('button', { name: /Duplicate/i });
     await duplicateBtn.click();
   }
 }

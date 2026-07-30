@@ -97,7 +97,7 @@ test.describe('Navigation & Regression Scenarios E2E Suite', () => {
 
     // Create project in Tab 1
     await dashboardPage.createWorkspace('Shared Tab Project', 'readme');
-    await expect(page.locator('h3', { hasText: 'Shared Tab Project' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Shared Tab Project' })).toBeVisible();
 
     // Open Tab 2
     const page2 = await context.newPage();
@@ -106,7 +106,7 @@ test.describe('Navigation & Regression Scenarios E2E Suite', () => {
     await dashboard2.verifyPage();
 
     // Verify workspace is synced to Tab 2 via shared localStorage
-    await expect(page2.locator('h3', { hasText: 'Shared Tab Project' })).toBeVisible();
+    await expect(page2.getByRole('heading', { name: 'Shared Tab Project' })).toBeVisible();
     await page2.close();
   });
 

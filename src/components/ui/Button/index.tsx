@@ -62,7 +62,7 @@ export const Button: FC<ButtonProps> = (props) => {
   const classes = `${baseStyle} ${variants[variant]} ${icon ? 'gap-2' : ''} ${className}`;
 
   if (props.href !== undefined) {
-    const { href, disabled, ...linkProps } = props;
+    const { href, disabled, variant: _v, icon: _i, loading: _l, className: _c, ...linkProps } = props;
     const isDisabled = disabled || loading;
     const linkClasses = `${classes} ${isDisabled ? 'opacity-50 pointer-events-none' : ''}`;
 
@@ -80,7 +80,7 @@ export const Button: FC<ButtonProps> = (props) => {
     );
   }
 
-  const { type = 'button', disabled, ...buttonProps } = props;
+  const { type = 'button', disabled, variant: _v, icon: _i, loading: _l, className: _c, ...buttonProps } = props;
 
   return (
     <button

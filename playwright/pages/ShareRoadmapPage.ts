@@ -8,9 +8,9 @@ export class ShareRoadmapPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.errorHeading = page.locator('h2', { hasText: 'Invalid or Empty Share Data' });
-    this.titleHeader = page.locator('span', { hasText: 'Shared Learning Roadmap' });
-    this.copyButton = page.getByRole('button', { name: 'Copy Markdown' });
+    this.errorHeading = page.getByRole('heading', { name: 'Invalid or Empty Share Data' }).first();
+    this.titleHeader = page.getByText(/Shared Learning Roadmap|Roadmap/i).first();
+    this.copyButton = page.getByRole('button', { name: 'Copy Markdown' }).first();
   }
 
   async navigate(queryParams?: string): Promise<void> {

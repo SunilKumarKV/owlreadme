@@ -57,9 +57,9 @@ test.describe('OwlReadme Core Functional Flows E2E Suite', () => {
     });
 
     await page.goto('/dashboard?username=octocat');
-    await expect(page.locator('h3', { hasText: 'The Octocat' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'The Octocat' })).toBeVisible();
     
-    // Wait for the 500ms debounced workspace store save to complete before navigating
+    // Wait for the workspace store save to complete before navigating
     await page.waitForTimeout(1000);
     
     // Now return to analytics page
@@ -82,9 +82,8 @@ test.describe('OwlReadme Core Functional Flows E2E Suite', () => {
     await page.reload();
     await themePage.verifyPage();
 
-    // Confirm that the class is applied to the page body or HTML container
-    const bodyClass = await page.locator('body').getAttribute('class');
-    expect(bodyClass).toContain('theme-terminal');
+    // Confirm that the class is applied to the page body or HTML container using auto-retrying assertion
+    await expect(page.locator('body')).toHaveClass(/theme-terminal/);
   });
 
   test('3. Template Gallery Search and Discovery', async ({ page }) => {

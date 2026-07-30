@@ -9,9 +9,9 @@ export class AnalyticsPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.heading = page.locator('h1', { hasText: 'Developer Analytics' });
-    this.syncWarningCard = page.locator('h3', { hasText: 'GitHub Profile Sync Required' });
-    this.statsCards = page.locator('.grid >> div >> h3');
+    this.heading = page.getByRole('heading', { name: 'Developer Analytics' }).first();
+    this.syncWarningCard = page.getByRole('heading', { name: 'GitHub Profile Sync Required' }).first();
+    this.statsCards = page.getByRole('heading', { level: 3 });
   }
 
   async navigate(): Promise<void> {

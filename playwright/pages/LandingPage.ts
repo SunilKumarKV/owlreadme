@@ -10,10 +10,10 @@ export class LandingPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.usernameInput = page.locator('#hero-github-username');
-    this.getStartedButton = page.locator('button[type="submit"]', { hasText: 'Get Started' });
+    this.usernameInput = page.getByLabel('GitHub Username').first();
+    this.getStartedButton = page.getByRole('button', { name: 'Get Started' }).first();
     this.themeToggle = page.getByRole('button', { name: 'Toggle theme' });
-    this.heroHeading = page.locator('h1', { hasText: 'Your GitHub Profile' });
+    this.heroHeading = page.getByRole('heading', { name: /Your GitHub Profile/i }).first();
   }
 
   async navigate(): Promise<void> {
@@ -32,8 +32,10 @@ export class LandingPage extends BasePage {
   }
 
   async enterUsername(username: string): Promise<void> {
-    await this.usernameInput.click();
+    await this.usernameInput.scrollIntoViewIfNeeded();
+    await this.usernameInput.focus();
     await this.usernameInput.fill(username);
+    await this.usernameInput.dispatchEvent('input');
   }
 
   async clickGetStarted(): Promise<void> {

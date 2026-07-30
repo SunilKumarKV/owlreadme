@@ -14,15 +14,14 @@ export class ExportPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.heading = page.locator('h1', { hasText: 'Export Studio' });
+    this.heading = page.getByRole('heading', { name: 'Export Studio' }).first();
     this.backToWorkspaceLink = page.getByRole('link', { name: 'Back to Workspace' });
     
-    // Formatting grid card buttons using child CSS selectors to avoid outer wrapper collisions
-    this.downloadReadmeButton = page.locator('div.grid > div').filter({ has: page.locator('h3', { hasText: 'README.md' }) }).locator('button', { hasText: 'Download' }).first();
-    this.downloadRoadmapButton = page.locator('div.grid > div').filter({ has: page.locator('h3', { hasText: 'roadmap.md' }) }).locator('button', { hasText: 'Download' }).first();
-    this.downloadZipButton = page.locator('div.grid > div').filter({ has: page.locator('h3', { hasText: 'ZIP Package' }) }).locator('button', { hasText: 'Download ZIP' }).first();
-    this.downloadJsonButton = page.locator('div.grid > div').filter({ has: page.locator('h3', { hasText: 'JSON Backup' }) }).locator('button', { hasText: 'Backup Store' }).first();
-    this.printPdfButton = page.locator('div.grid > div').filter({ has: page.locator('h3', { hasText: 'PDF Export' }) }).locator('button', { hasText: 'Print PDF' }).first();
+    this.downloadReadmeButton = page.getByRole('heading', { name: 'README.md' }).locator('..').locator('..').getByRole('button', { name: /Download/i }).first();
+    this.downloadRoadmapButton = page.getByRole('heading', { name: 'roadmap.md' }).locator('..').locator('..').getByRole('button', { name: /Download/i }).first();
+    this.downloadZipButton = page.getByRole('button', { name: /Download ZIP/i }).first();
+    this.downloadJsonButton = page.getByRole('button', { name: /Backup Store/i }).first();
+    this.printPdfButton = page.getByRole('button', { name: /Print PDF/i }).first();
   }
 
   async navigate(): Promise<void> {
