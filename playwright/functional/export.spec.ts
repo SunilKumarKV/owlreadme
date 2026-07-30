@@ -1,8 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 import { test, expect } from '@playwright/test';
 import ExportPage from '../pages/ExportPage';
-import RoadmapBuilderPage from '../pages/RoadmapBuilderPage';
 import { listenForConsoleErrors, expectNoErrors } from '../helpers/utils';
+import { seedA11yWorkspace } from '../helpers/a11y-helpers';
 
 test.describe('Export Studio E2E Tests', () => {
   let consoleErrors: string[];
@@ -10,41 +9,8 @@ test.describe('Export Studio E2E Tests', () => {
   test.beforeEach(async ({ page }) => {
     consoleErrors = listenForConsoleErrors(page);
     
-    // Mock the profile API call so we have github data loaded (prerequisite for README markdown generation)
-    await page.route('https://api.github.com/users/octocat', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify({
-          login: 'octocat',
-          name: 'The Octocat',
-          bio: 'GitHub mascot',
-          avatar_url: 'https://avatars.githubusercontent.com/u/5832347?v=4',
-          html_url: 'https://github.com/octocat',
-          followers: 10,
-          following: 10,
-          public_repos: 5,
-        }),
-      });
-    });
-
-    await page.route('https://api.github.com/users/octocat/repos?sort=updated&per_page=100', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify([
-          {
-            name: 'octocat-react-project',
-            html_url: 'https://github.com/octocat/octocat-react-project',
-            description: 'React project description.',
-            stargazers_count: 5,
-            forks_count: 1,
-            fork: false,
-            language: 'TypeScript',
-          },
-        ]),
-      });
-    });
+    // Seed workspace data directly into localStorage to avoid multi-page navigation delays
+    await seedA11yWorkspace(page);
 
     // Intercept document/iframe attachment and document opens to stub window.print() inside the sandboxed PDF iframe
     await page.addInitScript(() => {
@@ -80,17 +46,6 @@ test.describe('Export Studio E2E Tests', () => {
         return result as any;
       };
     });
-
-    // Navigate to dashboard with query param to trigger import and markdown compile
-    await page.goto('/dashboard?username=octocat');
-    await page.locator('h3', { hasText: 'The Octocat' }).waitFor({ state: 'visible' });
-    await page.waitForTimeout(1000);
-
-    // Populate roadmap content
-    const roadmapPage = new RoadmapBuilderPage(page);
-    await roadmapPage.navigate();
-    await roadmapPage.selectTemplate('backend');
-    await page.waitForTimeout(1000);
   });
 
   test.afterEach(async () => {

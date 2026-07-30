@@ -8,9 +8,9 @@ export class ShareReadmePage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.errorHeading = page.locator('h2', { hasText: 'Invalid or Empty Share Data' });
-    this.titleHeader = page.locator('span', { hasText: 'Shared Profile README' }).or(page.locator('h2', { hasText: 'Created via' }));
-    this.copyButton = page.getByRole('button', { name: 'Copy Markdown' });
+    this.errorHeading = page.getByRole('heading', { name: 'Invalid or Empty Share Data' }).first();
+    this.titleHeader = page.getByText(/Shared Profile README|Created via/i).first();
+    this.copyButton = page.getByRole('button', { name: 'Copy Markdown' }).first();
   }
 
   async navigate(queryParams?: string): Promise<void> {

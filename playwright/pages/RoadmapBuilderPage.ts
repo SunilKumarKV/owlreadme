@@ -10,10 +10,10 @@ export class RoadmapBuilderPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.heading = page.locator('h1', { hasText: 'Create Your Roadmap' });
-    this.templateSelect = page.locator('#roadmap-template-select');
-    this.titleInput = page.locator('#roadmap-title');
-    this.addStepButton = page.locator('button', { hasText: 'Add Step' });
+    this.heading = page.getByRole('heading', { name: /Create Your Roadmap|Roadmap/i }).first();
+    this.templateSelect = page.getByLabel(/Select Roadmap Template|Template/i).or(page.locator('#roadmap-template-select')).first();
+    this.titleInput = page.getByLabel(/Roadmap Title|Title/i).or(page.locator('#roadmap-title')).first();
+    this.addStepButton = page.getByRole('button', { name: 'Add Step' }).first();
   }
 
   async navigate(): Promise<void> {

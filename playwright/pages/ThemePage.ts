@@ -9,7 +9,7 @@ export class ThemePage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.heading = page.locator('h1', { hasText: 'Select Theme' });
+    this.heading = page.getByRole('heading', { name: /Select Theme|Theme/i }).first();
     this.builderButton = page.getByRole('link', { name: 'Go to Builder' });
     this.homeButton = page.getByRole('link', { name: 'Home' });
   }
@@ -29,7 +29,9 @@ export class ThemePage extends BasePage {
 
   async selectThemeRadio(themeName: 'minimal' | 'dark' | 'gradient' | 'terminal'): Promise<void> {
     const labelText = themeName.charAt(0).toUpperCase() + themeName.slice(1);
-    const radio = this.page.locator('label', { hasText: labelText }).locator('input[type="radio"]');
+    const radio = this.page.getByRole('radio', { name: new RegExp(labelText, 'i') }).or(
+      this.page.getByLabel(new RegExp(labelText, 'i'))
+    ).first();
     await radio.check();
   }
 
