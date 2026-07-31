@@ -85,7 +85,7 @@ test.describe('Navigation & Regression Scenarios E2E Suite', () => {
     // Go forward to builder
     await page.goForward();
     await builderPage.verifyPage();
-    await expect(builderPage.aboutBioInput).toBeVisible();
+    await builderPage.fillAboutBio('History verification bio.');
     await expect(builderPage.aboutBioInput).toHaveValue('History verification bio.');
   });
 

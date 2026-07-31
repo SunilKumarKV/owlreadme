@@ -58,12 +58,12 @@ test.describe('OwlReadme Responsive Layout Audits', () => {
             }
           }
 
-          // 2. Verify critical controls or headers are visible
+          // 2. Verify critical controls or headers are visible using robust semantic locators
           if (pageInfo.path === '/') {
-            const getStarted = page.locator('button:has-text("Get Started"), a:has-text("Get Started")').first();
+            const getStarted = page.getByRole('button', { name: 'Get Started' }).first();
             await expect(getStarted).toBeVisible();
           } else if (pageInfo.path === '/dashboard') {
-            const createBtn = page.locator('button:visible', { hasText: /Create|New Project/ }).first();
+            const createBtn = page.getByRole('button', { name: /Create|New Project/ }).first();
             await expect(createBtn).toBeVisible();
           } else if (pageInfo.path === '/readme-builder') {
             await expect(page.locator('body')).toBeVisible();
