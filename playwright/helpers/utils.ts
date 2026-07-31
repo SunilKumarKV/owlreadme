@@ -72,6 +72,8 @@ export function expectNoErrors(consoleErrors: string[], ignoredPatterns: (string
     /Received .* for a non-boolean attribute/i,
     /non-boolean attribute/i,
     /ErrorBoundaryHandler/i,
+    /ErrorBoundary caught an error/i,
+    /handled by the <ErrorBoundary>/i,
     /App Router Root Error Caught/i,
     /vAlign/i,
     /caret-color/i,

@@ -68,7 +68,12 @@ jobs:
 
       - name: Install Playwright OS Dependencies (Cache Hit)
         if: steps.playwright-cache.outputs.cache-hit == 'true'
-        run: pnpm exec playwright install-deps
+        run: sudo pnpm exec playwright install-deps
+
+      - name: Start Production Application Server
+        run: |
+          pnpm start &
+          npx wait-on http://localhost:3000 --timeout 60000
 
       - name: Playwright E2E Smoke Tests
         run: pnpm test:smoke
