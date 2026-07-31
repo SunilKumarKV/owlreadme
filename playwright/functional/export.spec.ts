@@ -25,7 +25,7 @@ test.describe('Export Studio E2E Tests', () => {
             writable: true,
             configurable: true
           });
-        } catch (e) {}
+        } catch {}
       };
 
       const originalAppendChild = Node.prototype.appendChild;
@@ -40,10 +40,10 @@ test.describe('Export Studio E2E Tests', () => {
 
       const originalOpen = Document.prototype.open;
       Document.prototype.open = function(this: Document, ...args: unknown[]) {
-        const result = originalOpen.apply(this, args as any);
+        const result = (originalOpen as (...a: unknown[]) => Document).apply(this, args);
         const win = this.defaultView;
         if (win && win !== window.top) stubPrint(win);
-        return result as any;
+        return result;
       };
     });
   });
