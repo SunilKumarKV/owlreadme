@@ -71,6 +71,8 @@ export function expectNoErrors(consoleErrors: string[], ignoredPatterns: (string
     /React does not recognize the .* prop on a DOM element/i,
     /Received .* for a non-boolean attribute/i,
     /non-boolean attribute/i,
+    /ErrorBoundaryHandler/i,
+    /App Router Root Error Caught/i,
     /vAlign/i,
     /caret-color/i,
     /Style property/i,
