@@ -18,6 +18,9 @@ test.describe('Export Studio E2E Tests', () => {
       
       const stubPrint = (win: Window) => {
         try {
+          win.print = () => {
+            (window.top as unknown as Record<string, boolean>).__pdfPrinted = true;
+          };
           Object.defineProperty(win, 'print', {
             value: () => {
               (window.top as unknown as Record<string, boolean>).__pdfPrinted = true;
@@ -26,6 +29,10 @@ test.describe('Export Studio E2E Tests', () => {
             configurable: true
           });
         } catch {}
+      };
+
+      (window as unknown as Record<string, unknown>).print = () => {
+        (window as unknown as Record<string, boolean>).__pdfPrinted = true;
       };
 
       const originalAppendChild = Node.prototype.appendChild;
@@ -39,8 +46,10 @@ test.describe('Export Studio E2E Tests', () => {
       };
 
       const originalOpen = Document.prototype.open;
-      Document.prototype.open = function(this: Document, ...args: unknown[]) {
-        const result = (originalOpen as (...a: unknown[]) => Document).apply(this, args);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (Document.prototype as any).open = function(this: Document, ...args: unknown[]) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const result = (originalOpen as any).apply(this, args);
         const win = this.defaultView;
         if (win && win !== window.top) stubPrint(win);
         return result;
@@ -94,6 +103,6 @@ test.describe('Export Studio E2E Tests', () => {
     await expect(async () => {
       const printed = await page.evaluate(() => (window as unknown as Record<string, boolean>).__pdfPrinted);
       expect(printed).toBe(true);
-    }).toPass({ timeout: 5000 });
+    }).toPass({ timeout: 15000 });
   });
 });

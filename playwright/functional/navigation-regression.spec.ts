@@ -75,18 +75,17 @@ test.describe('Navigation & Regression Scenarios E2E Suite', () => {
 
     // Wait for the state to sync to the markdown editor preview before going back
     await expect(builderPage.rawMarkdownEditor).toHaveValue(/History verification bio\./);
-    
-    // Wait for the debounced store save to write to localStorage before navigating
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
     
     // Go back to dashboard
     await page.goBack();
     await dashboardPage.verifyPage();
-    await expect(page.locator('h3', { hasText: 'History Project Workspace' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'History Project Workspace' })).toBeVisible();
 
     // Go forward to builder
     await page.goForward();
     await builderPage.verifyPage();
+    await expect(builderPage.aboutBioInput).toBeVisible();
     await expect(builderPage.aboutBioInput).toHaveValue('History verification bio.');
   });
 
@@ -222,7 +221,8 @@ test.describe('Navigation & Regression Scenarios E2E Suite', () => {
 
     // Only one instance of the project card should be created/visible in the workspaces grid
     await dashboardPage.verifyPage();
-    const count = await page.locator('h3', { hasText: 'Single Instance project' }).count();
-    expect(count).toBe(1);
+    const headingLocator = page.getByRole('heading', { name: 'Single Instance project' });
+    await expect(headingLocator).toBeVisible();
+    await expect(headingLocator).toHaveCount(1);
   });
 });

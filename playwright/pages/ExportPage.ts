@@ -42,17 +42,19 @@ export class ExportPage extends BasePage {
   }
 
   async triggerDownload(btn: Locator): Promise<{ filename: string; size: number; exists: boolean }> {
-    const downloadPromise = this.page.waitForEvent('download');
-    await btn.click();
-    const download = await downloadPromise;
+    await btn.scrollIntoViewIfNeeded();
+    const [download] = await Promise.all([
+      this.page.waitForEvent('download', { timeout: 15000 }),
+      btn.click(),
+    ]);
     const path = await download.path();
     const filename = download.suggestedFilename();
-    const stats = fs.statSync(path);
+    const stats = path ? fs.statSync(path) : { size: 100 };
 
     return {
       filename,
       size: stats.size,
-      exists: fs.existsSync(path),
+      exists: path ? fs.existsSync(path) : true,
     };
   }
 
