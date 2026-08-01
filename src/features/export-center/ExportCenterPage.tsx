@@ -454,7 +454,7 @@ const ExportCenterPage = () => {
             </div>
 
             {/* Target Select Tabs */}
-            <div role="tablist" className="flex border-b border-gray-100 dark:border-gray-800 mb-4 text-xs font-semibold">
+            <div role="tablist" className="flex overflow-x-auto scrollbar-none select-none border-b border-gray-100 dark:border-gray-800 mb-4 text-xs font-semibold">
               <button
                 role="tab"
                 aria-selected={activeTab === 'readme'}
@@ -520,7 +520,7 @@ const ExportCenterPage = () => {
             </div>
 
             {/* Quick Actions Panel */}
-            <div className="flex justify-between items-center mt-4 text-xs">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mt-4 text-xs">
               <span className="text-gray-600 dark:text-gray-400">
                 Viewing: <b className="text-gray-800 dark:text-gray-200">{activeTitle}</b>
               </span>
