@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { listenForConsoleErrors, expectNoErrors } from '../helpers/utils';
+import { listenForConsoleErrors, expectNoErrors, waitForScrollHeightToStabilize } from '../helpers/utils';
 import { seedA11yWorkspace } from '../helpers/a11y-helpers';
 
 test.describe('OwlReadme Visual Regression Testing', () => {
@@ -121,8 +121,8 @@ test.describe('OwlReadme Visual Regression Testing', () => {
         // Wait for two animation frames for ResizeObserver and layout recalculations to settle
         await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
 
-        // Wait a short moment for final rendering stability
-        await page.waitForTimeout(500);
+        // Wait until document.documentElement.scrollHeight remains identical for at least 500ms
+        await waitForScrollHeightToStabilize(page, 500);
 
         // Define elements to mask (like SVG charts, chart containers, and pulse blocks) to avoid flakiness
         const masks = [

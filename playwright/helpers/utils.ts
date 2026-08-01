@@ -94,3 +94,32 @@ export function expectNoErrors(consoleErrors: string[] = [], ignoredPatterns: (s
   });
   expect(filtered).toEqual([]);
 }
+
+/**
+ * Helper function that polls document.documentElement.scrollHeight and waits until
+ * page height remains identical for at least stableDurationMs (default 500ms)
+ * before taking screenshots.
+ */
+export async function waitForScrollHeightToStabilize(
+  page: Page,
+  stableDurationMs = 500,
+  timeoutMs = 15000
+): Promise<void> {
+  const startTime = Date.now();
+  let lastHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  let lastChangeTime = Date.now();
+
+  while (Date.now() - startTime < timeoutMs) {
+    await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
+    const currentHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+    const now = Date.now();
+
+    if (currentHeight !== lastHeight) {
+      lastHeight = currentHeight;
+      lastChangeTime = now;
+    } else if (now - lastChangeTime >= stableDurationMs) {
+      return;
+    }
+  }
+}
+
