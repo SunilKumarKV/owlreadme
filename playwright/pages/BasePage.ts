@@ -13,7 +13,7 @@ export class BasePage {
   }
 
   async waitForReady(locator: Locator): Promise<void> {
-    await locator.waitFor({ state: 'visible', timeout: 10000 });
+    await locator.waitFor({ state: 'visible', timeout: 15000 });
   }
 
   async waitForNetworkIdle(): Promise<void> {

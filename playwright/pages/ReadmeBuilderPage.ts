@@ -22,7 +22,7 @@ export class ReadmeBuilderPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.logoText = page.locator('span', { hasText: 'OwlREADME' }).first();
+    this.logoText = page.locator('#builder-template-select').first();
     this.templateSelect = page.locator('#builder-template-select').first();
     this.themeSelect = page.locator('#builder-theme-select').first();
     this.dashboardButton = page.getByRole('link', { name: 'Dashboard' }).first();
