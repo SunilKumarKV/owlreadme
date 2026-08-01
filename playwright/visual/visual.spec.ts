@@ -74,10 +74,13 @@ test.describe('OwlReadme Visual Regression Testing', () => {
         // Navigate to target page and wait for load
         await page.goto(pageInfo.path, { waitUntil: 'load' });
 
+        // Wait for network idle to ensure async client components and dynamic imports settle
+        await page.waitForLoadState('networkidle').catch(() => {});
+
         // Wait for fonts to be ready
         await page.evaluate(() => document.fonts.ready).catch(() => {});
 
-        // Inject global CSS to disable animations, transitions, caret, and scroll behavior
+        // Inject global CSS to disable animations, transitions, carets, scroll behavior, and hide scrollbars
         await page.addStyleTag({
           content: `
             *, *::before, *::after {
@@ -85,6 +88,13 @@ test.describe('OwlReadme Visual Regression Testing', () => {
               transition: none !important;
               caret-color: transparent !important;
               scroll-behavior: auto !important;
+            }
+            ::-webkit-scrollbar {
+              display: none !important;
+            }
+            * {
+              -ms-overflow-style: none !important;
+              scrollbar-width: none !important;
             }
           `
         });
@@ -108,12 +118,16 @@ test.describe('OwlReadme Visual Regression Testing', () => {
           }));
         }).catch(() => {});
 
+        // Wait for two animation frames for ResizeObserver and layout recalculations to settle
+        await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))));
+
         // Wait a short moment for final rendering stability
         await page.waitForTimeout(500);
 
-        // Define elements to mask (like SVG charts and pulse blocks) to avoid flakiness
+        // Define elements to mask (like SVG charts, chart containers, and pulse blocks) to avoid flakiness
         const masks = [
           page.locator('svg.recharts-surface'),
+          page.locator('.recharts-responsive-container'),
           page.locator('.animate-pulse'),
         ];
 
