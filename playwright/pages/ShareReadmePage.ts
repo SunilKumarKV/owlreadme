@@ -19,7 +19,7 @@ export class ShareReadmePage extends BasePage {
   }
 
   async isLoaded(): Promise<void> {
-    await this.titleHeader.waitFor({ state: 'visible', timeout: 5000 });
+    await this.waitForReady(this.titleHeader);
   }
 
   async verifyPage(): Promise<void> {
