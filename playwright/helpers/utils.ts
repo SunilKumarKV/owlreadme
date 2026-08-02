@@ -96,30 +96,36 @@ export function expectNoErrors(consoleErrors: string[] = [], ignoredPatterns: (s
 }
 
 /**
- * Helper function that polls document.documentElement.scrollHeight and waits until
- * page height remains identical for at least stableDurationMs (default 500ms)
- * before taking screenshots.
+ * Helper function that polls document.documentElement.scrollHeight inside browser context
+ * and waits until page height remains identical for at least stableDurationMs (default 500ms)
+ * before taking screenshots. Uses performance.now() to be immune to Date.now mocking.
  */
 export async function waitForScrollHeightToStabilize(
   page: Page,
   stableDurationMs = 500,
-  timeoutMs = 15000
+  timeoutMs = 5000
 ): Promise<void> {
-  const startTime = Date.now();
-  let lastHeight = await page.evaluate(() => document.documentElement.scrollHeight);
-  let lastChangeTime = Date.now();
+  await page
+    .evaluate(
+      async ({ stableMs, maxMs }) => {
+        const start = performance.now();
+        let lastH = document.documentElement.scrollHeight;
+        let lastChange = performance.now();
 
-  while (Date.now() - startTime < timeoutMs) {
-    await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(resolve)));
-    const currentHeight = await page.evaluate(() => document.documentElement.scrollHeight);
-    const now = Date.now();
-
-    if (currentHeight !== lastHeight) {
-      lastHeight = currentHeight;
-      lastChangeTime = now;
-    } else if (now - lastChangeTime >= stableDurationMs) {
-      return;
-    }
-  }
+        while (performance.now() - start < maxMs) {
+          await new Promise((r) => requestAnimationFrame(r));
+          const curH = document.documentElement.scrollHeight;
+          const now = performance.now();
+          if (curH !== lastH) {
+            lastH = curH;
+            lastChange = now;
+          } else if (now - lastChange >= stableMs) {
+            return;
+          }
+        }
+      },
+      { stableMs: stableDurationMs, maxMs: timeoutMs }
+    )
+    .catch(() => {});
 }
 

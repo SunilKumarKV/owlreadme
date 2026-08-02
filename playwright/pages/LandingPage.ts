@@ -34,7 +34,7 @@ export class LandingPage extends BasePage {
   async enterUsername(username: string): Promise<void> {
     await this.usernameInput.scrollIntoViewIfNeeded();
     await this.usernameInput.focus();
-    await this.usernameInput.pressSequentially(username, { delay: 30 });
+    await this.usernameInput.fill(username);
     await this.usernameInput.dispatchEvent('input');
     await this.usernameInput.dispatchEvent('change');
   }
