@@ -1,9 +1,10 @@
 import React, { Suspense } from 'react';
 import READMEBuilderPage from '@/features/readme-builder/READMEBuilderPage';
+import { LoadingScreen } from '@/components/loading';
 
 const READMEBuilder: React.FC = () => {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-[#1e1e1e] text-black dark:text-white font-semibold">Loading builder...</div>}>
+    <Suspense fallback={<LoadingScreen status="Loading Profile README Builder Workspace..." />}>
       <READMEBuilderPage />
     </Suspense>
   );

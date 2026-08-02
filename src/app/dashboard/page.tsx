@@ -1,9 +1,10 @@
 import React, { Suspense } from 'react';
 import DeveloperDashboardPage from '@/features/dashboard/DeveloperDashboardPage';
+import { LoadingScreen } from '@/components/loading';
 
 const Dashboard: React.FC = () => {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center h-screen bg-gray-100 dark:bg-[#1e1e1e] text-black dark:text-white font-semibold">Loading Dashboard...</div>}>
+    <Suspense fallback={<LoadingScreen status="Initializing Developer Workspace..." />}>
       <DeveloperDashboardPage />
     </Suspense>
   );

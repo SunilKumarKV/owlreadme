@@ -13,6 +13,7 @@ import {
 } from '@/components/ui';
 import { GitHubIcon } from '@/components/Icons';
 import { BRANDING } from '@/config/branding';
+import { isValidGithubUsername } from '@/packages/github/validators';
 import {
   Sparkles,
   ArrowRight,
@@ -62,6 +63,8 @@ const LandingPage: React.FC = () => {
     };
   }, []);
 
+  const isUsernameValid = isValidGithubUsername(username);
+
   useEffect(() => {
     if (typeof window === 'undefined' || reduceMotion) {
       return;
@@ -72,17 +75,18 @@ const LandingPage: React.FC = () => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
             entry.target.classList.add('reveal-visible');
+            entry.target.classList.remove('opacity-0', 'translate-y-6');
             observer.unobserve(entry.target);
           }
         });
       },
       {
-        threshold: 0.16,
-        rootMargin: '0px 0px -10% 0px'
+        threshold: 0.1,
+        rootMargin: '0px 0px -5% 0px'
       }
     );
 
-    const elements = document.querySelectorAll<HTMLElement>('[data-reveal="true"]');
+    const elements = document.querySelectorAll<HTMLElement>('[data-reveal="true"], .reveal-item');
     elements.forEach((element) => observer.observe(element));
 
     return () => observer.disconnect();
@@ -337,18 +341,18 @@ const LandingPage: React.FC = () => {
 
             {/* Premium Hero Mock Illustration */}
             <div className="flex-1 w-full max-w-lg lg:max-w-none" data-reveal="true">
-              <div className="bg-[#121212] border border-gray-800 rounded-xl shadow-2xl overflow-hidden p-6 font-mono text-[10px] text-gray-400 leading-normal w-full relative reveal-item opacity-0 translate-y-6 transition-all duration-500">
+              <div data-reveal="true" className="bg-[#121212] border border-gray-800 rounded-xl shadow-2xl overflow-hidden p-6 font-mono text-[10px] text-gray-400 leading-normal w-full relative reveal-item opacity-0 translate-y-6 transition-all duration-500">
                 <div className="flex items-center gap-1.5 border-b border-gray-800 pb-3 mb-4">
                   <div className="w-2.5 h-2.5 rounded-full bg-red-500/80" />
                   <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/80" />
                   <div className="w-2.5 h-2.5 rounded-full bg-green-500/80" />
-                  <span className="text-[9px] text-gray-600 ml-2">owlreadme-output.md</span>
+                  <span className="text-[9px] text-gray-400 ml-2">owlreadme-output.md</span>
                 </div>
 
                 <div className="space-y-4">
                   <div>
                     <span className="text-blue-500 font-bold"># Hi, I&apos;m Sunil Kumar</span>
-                    <span className="text-gray-600 block">&lt;!-- Full-Stack Engineer --&gt;</span>
+                    <span className="text-gray-400 block">&lt;!-- Full-Stack Engineer --&gt;</span>
                   </div>
 
                   <div className="space-y-1">
@@ -363,7 +367,7 @@ const LandingPage: React.FC = () => {
 
                   <div className="border border-gray-800 rounded-lg p-3 bg-black/40 space-y-2">
                     <span className="text-green-500 font-bold flex items-center gap-1">📊 GitHub Activity Stats</span>
-                    <div className="grid grid-cols-2 gap-2 text-[9px] text-gray-500">
+                    <div className="grid grid-cols-2 gap-2 text-[9px] text-gray-300">
                       <div>Total Stars: <span className="text-white font-bold">2.4k</span></div>
                       <div>Total Commits: <span className="text-white font-bold">12,504</span></div>
                       <div>Primary Lang: <span className="text-white font-bold">TypeScript</span></div>
@@ -376,11 +380,11 @@ const LandingPage: React.FC = () => {
                     <div className="grid grid-cols-2 gap-2">
                       <div className="p-2 border border-gray-800 rounded bg-[#18181b]">
                         <span className="text-white font-bold block text-[9px]">owlreadme</span>
-                        <span className="text-[8px] text-gray-500">Premium profile README builder tools</span>
+                        <span className="text-[8px] text-gray-300">Premium profile README builder tools</span>
                       </div>
                       <div className="p-2 border border-gray-800 rounded bg-[#18181b]">
                         <span className="text-white font-bold block text-[9px]">owlreadme</span>
-                        <span className="text-[8px] text-gray-500">Interactive roadmap timeline creators</span>
+                        <span className="text-[8px] text-gray-300">Interactive roadmap timeline creators</span>
                       </div>
                     </div>
                   </div>
@@ -486,9 +490,9 @@ const LandingPage: React.FC = () => {
 
               {/* Realistic CSS Preview Grid of the actual split view */}
               <div className="flex-1 w-full" data-reveal="true">
-                <div className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden shadow-lg bg-white dark:bg-[#121212] flex flex-col h-[320px] reveal-item opacity-0 translate-y-6 transition-all duration-500">
+                <div data-reveal="true" className="border border-gray-200 dark:border-gray-800 rounded-xl overflow-hidden shadow-lg bg-white dark:bg-[#121212] flex flex-col h-[320px] reveal-item opacity-0 translate-y-6 transition-all duration-500">
                   {/* Top Editor Bar */}
-                  <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200/80 dark:border-gray-800 bg-gray-50 dark:bg-black/10 text-3xs font-semibold text-gray-500">
+                  <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-200/80 dark:border-gray-800 bg-gray-50 dark:bg-black/10 text-3xs font-semibold text-gray-600 dark:text-gray-300">
                     <span className="flex items-center gap-1">✏️ OwlREADME Builder Workspace</span>
                     <span className="text-blue-500">Live Syncing Active</span>
                   </div>
@@ -497,14 +501,14 @@ const LandingPage: React.FC = () => {
                   <div className="flex flex-1 overflow-hidden">
                     {/* Left: configuration panel mock */}
                     <div className="w-1/3 border-r border-gray-200 dark:border-gray-850 p-4 space-y-3 bg-gray-50/20 dark:bg-black/5 overflow-hidden">
-                      <span className="text-[8px] font-bold uppercase tracking-wider text-gray-400 block">Section Manager</span>
+                      <span className="text-[8px] font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 block">Section Manager</span>
                       <div className="h-6 bg-blue-500/10 border border-blue-500/20 rounded flex items-center px-2 text-[8px] font-semibold text-blue-600 dark:text-blue-400 select-none">
                         ✓ Header Profile
                       </div>
                       <div className="h-6 bg-blue-500/10 border border-blue-500/20 rounded flex items-center px-2 text-[8px] font-semibold text-blue-600 dark:text-blue-400 select-none">
                         ✓ Tech Stack
                       </div>
-                      <div className="h-6 bg-gray-100 dark:bg-gray-800/60 rounded flex items-center px-2 text-[8px] select-none">
+                      <div className="h-6 bg-gray-100 dark:bg-gray-800/60 rounded flex items-center px-2 text-[8px] select-none text-gray-600 dark:text-gray-300">
                         ⚙ GitHub Stats
                       </div>
                     </div>
@@ -512,7 +516,7 @@ const LandingPage: React.FC = () => {
                     {/* Right: preview panel mock */}
                     <div className="flex-1 p-4 bg-white dark:bg-[#0c0c0e] flex flex-col justify-between overflow-hidden">
                       <div className="space-y-3">
-                        <span className="text-[8px] font-bold uppercase tracking-wider text-gray-400 block">Live Preview Output</span>
+                        <span className="text-[8px] font-bold uppercase tracking-wider text-gray-600 dark:text-gray-300 block">Live Preview Output</span>
                         <div className="flex items-center gap-2">
                           <div className="h-8 w-8 rounded-full bg-indigo-500 flex items-center justify-center text-[10px] text-white font-bold shadow-sm select-none">
                             SK
@@ -526,7 +530,7 @@ const LandingPage: React.FC = () => {
                         <div className="h-1.5 bg-gray-200 dark:bg-gray-800 rounded w-5/6" />
                       </div>
 
-                      <div className="flex items-center justify-between text-[8px] border-t border-gray-100 dark:border-gray-850 pt-2 mt-2 text-gray-400">
+                      <div className="flex items-center justify-between text-[8px] border-t border-gray-100 dark:border-gray-850 pt-2 mt-2 text-gray-600 dark:text-gray-300">
                         <span>Workspace theme: minimal</span>
                         <Link href="/dashboard" className="text-blue-500 font-semibold hover:underline">Launch Editor &rarr;</Link>
                       </div>
@@ -614,7 +618,7 @@ const LandingPage: React.FC = () => {
         {/* Final Call-to-Action Section */}
         <Section spacing="lg" className="relative overflow-hidden">
           <Container size="md" className="text-center" data-reveal="true">
-            <Card className="p-8 sm:p-12 bg-gradient-to-tr from-indigo-950/20 via-purple-950/20 to-blue-950/20 border-indigo-500/20 flex flex-col items-center gap-6 relative overflow-hidden reveal-item opacity-0 translate-y-6 transition-all duration-500">
+            <Card data-reveal="true" className="p-8 sm:p-12 bg-gradient-to-tr from-indigo-950/20 via-purple-950/20 to-blue-950/20 border-indigo-500/20 flex flex-col items-center gap-6 relative overflow-hidden reveal-item opacity-0 translate-y-6 transition-all duration-500">
               {/* background bubbles */}
               <div className="absolute -top-12 -left-12 w-48 h-48 rounded-full bg-blue-500/5 blur-2xl pointer-events-none animate-glow-bubble-3" />
               <div className="absolute -bottom-12 -right-12 w-48 h-48 rounded-full bg-purple-500/5 blur-2xl pointer-events-none" />

@@ -34,6 +34,15 @@ export function validateGithubUsername(username: string): void {
   }
 }
 
+export function isValidGithubUsername(username: string): boolean {
+  try {
+    validateGithubUsername(username);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function validateGithubRepoName(repo: string): void {
   if (!repo || typeof repo !== 'string') {
     throw new Error('Invalid GitHub repository name. Please provide a valid repository name.');
