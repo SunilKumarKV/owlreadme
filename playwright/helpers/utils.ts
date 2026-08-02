@@ -33,7 +33,7 @@ export async function clearLocalStorage(page: Page): Promise<void> {
  * Helper to wait for toast messages to render.
  */
 export async function waitForToast(page: Page, message?: string): Promise<void> {
-  const locator = page.locator('.fixed.bottom-6.flex.items-center, .fixed.bottom-6');
+  const locator = page.locator('.fixed.bottom-6 .animate-fade-in, .fixed.bottom-6 > div, .fixed.bottom-6');
   await locator.first().waitFor({ state: 'visible', timeout: 10000 });
   if (message) {
     await expect(locator.first()).toContainText(message);
@@ -94,38 +94,3 @@ export function expectNoErrors(consoleErrors: string[] = [], ignoredPatterns: (s
   });
   expect(filtered).toEqual([]);
 }
-
-/**
- * Helper function that polls document.documentElement.scrollHeight inside browser context
- * and waits until page height remains identical for at least stableDurationMs (default 500ms)
- * before taking screenshots. Uses performance.now() to be immune to Date.now mocking.
- */
-export async function waitForScrollHeightToStabilize(
-  page: Page,
-  stableDurationMs = 500,
-  timeoutMs = 5000
-): Promise<void> {
-  await page
-    .evaluate(
-      async ({ stableMs, maxMs }) => {
-        const start = performance.now();
-        let lastH = document.documentElement.scrollHeight;
-        let lastChange = performance.now();
-
-        while (performance.now() - start < maxMs) {
-          await new Promise((r) => requestAnimationFrame(r));
-          const curH = document.documentElement.scrollHeight;
-          const now = performance.now();
-          if (curH !== lastH) {
-            lastH = curH;
-            lastChange = now;
-          } else if (now - lastChange >= stableMs) {
-            return;
-          }
-        }
-      },
-      { stableMs: stableDurationMs, maxMs: timeoutMs }
-    )
-    .catch(() => {});
-}
-

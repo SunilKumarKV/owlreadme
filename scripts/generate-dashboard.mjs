@@ -108,11 +108,6 @@ All 11 routes audited successfully under WCAG 2.2 AA standards:
 - Chromium, Firefox, and WebKit checked.
 - No critical violations detected on any loaded pages.
 
-## 📸 Visual Regression Audits
-All page layouts match snapshot baselines:
-- Checked across 3 viewports: Desktop, Tablet, and Mobile.
-- 5% pixel difference tolerance (\`maxDiffPixelRatio: 0.05\`) applied to handle dynamic times.
-
 ---
 *Generated automatically on ${new Date().toISOString()}*
 `;

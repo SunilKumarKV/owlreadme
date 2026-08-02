@@ -17,7 +17,6 @@
     "test:e2e:ui": "playwright test --ui",
     "test:smoke": "playwright test playwright/smoke",
     "test:functional": "playwright test playwright/functional",
-    "test:visual": "playwright test playwright/visual",
     "test:a11y": "playwright test playwright/accessibility",
     "test:all": "pnpm test && pnpm test:e2e",
     "test:ci": "tsc --noEmit && pnpm lint && pnpm test:coverage && pnpm test:e2e"

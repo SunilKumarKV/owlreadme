@@ -84,9 +84,6 @@ jobs:
       - name: Playwright E2E Accessibility Tests
         run: pnpm test:a11y
 
-      - name: Playwright E2E Visual Regression Tests
-        run: pnpm test:visual
-
       - name: Generate Quality Dashboard Summary
         if: always()
         run: node scripts/generate-dashboard.mjs

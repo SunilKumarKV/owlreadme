@@ -28,9 +28,6 @@ export default defineConfig({
     ['junit', { outputFile: 'playwright-report/results.xml' }],
     ['list'],
   ],
-  /* Configure snapshot path template for cross-platform visual consistency across browser engines */
-  snapshotPathTemplate: '{testDir}/{testFileDir}/{testFileName}-snapshots/{arg}-{projectName}{ext}',
-
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('')`. */

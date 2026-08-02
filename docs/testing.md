@@ -1,12 +1,12 @@
 # 🧪 OwlReadme Automated Testing & Quality Assurance Documentation
 
-This document describes how to execute, write, debug, and maintain automated tests for OwlReadme. It serves as a guide for engineering teams to maintain high code quality and prevent regressions in both functional behavior and visual appearance.
+This document describes how to execute, write, debug, and maintain automated tests for OwlReadme. It serves as a guide for engineering teams to maintain high code quality and prevent regressions.
 
 ---
 
 ## 🚀 Running Tests Locally
 
-OwlReadme uses **Vitest** for unit/integration tests and **Playwright** for End-to-End (E2E) audits (functional, smoke, accessibility, and visual).
+OwlReadme uses **Vitest** for unit/integration tests and **Playwright** for End-to-End (E2E) audits (functional, smoke, and accessibility).
 
 Always run commands via `pnpm`:
 
@@ -27,7 +27,7 @@ pnpm test:coverage
 Ensure the application is built and running locally (or let Playwright auto-launch the local dev server on port `3000` via its configured `webServer` block).
 
 ```bash
-# Run all E2E test suites (Smoke, Functional, Accessibility, Visual)
+# Run all E2E test suites (Smoke, Functional, Accessibility)
 pnpm test:e2e
 
 # Run only Smoke tests (basic route loading checks)
@@ -38,9 +38,6 @@ pnpm test:functional
 
 # Run only Accessibility audits (axe-core WCAG checks)
 pnpm test:a11y
-
-# Run only Visual Regression audits (snapshot matches)
-pnpm test:visual
 ```
 
 ### 3. Run Everything Locally
@@ -48,17 +45,6 @@ To run all linting, type checks, unit tests, and E2E tests in sequence matching 
 ```bash
 pnpm test:all
 ```
-
----
-
-## 📸 Updating Visual Snapshots
-
-When making intentional UI changes that alter layout design, you must regenerate the visual baseline screenshots. Run:
-
-```bash
-pnpm test:visual --update-snapshots
-```
-*Note: A 5% pixel discrepancy buffer (`maxDiffPixelRatio: 0.05`) is configured inside `playwright.config.ts` to allow for minor font anti-aliasing variations or dynamic timestamp outputs across browser engines without triggering false failures.*
 
 ---
 
@@ -99,10 +85,9 @@ graph TD
   E --> F[Playwright Smoke Tests]
   F --> G[Playwright Functional Tests]
   G --> H[Playwright Accessibility Tests]
-  H --> I[Playwright Visual Regression Tests]
-  I --> J[Next.js Production Build]
-  J --> K[Generate QA Quality Dashboard]
-  K --> L[Upload Artifacts & HTML Reports]
+  H --> I[Next.js Production Build]
+  I --> J[Generate QA Quality Dashboard]
+  J --> K[Upload Artifacts & HTML Reports]
 ```
 
 ### 🚪 Release Merging Gates
