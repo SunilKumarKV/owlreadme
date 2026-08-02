@@ -51,8 +51,28 @@ export default function RootLayout({
     <html
       lang="en"
       className="h-full antialiased"
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var mode = localStorage.getItem('owlreadme-color-mode') || 'system';
+                  var isDark = mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                  if (isDark) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col bg-white dark:bg-[#0c0c0e] text-gray-900 dark:text-white transition-colors duration-300">
         <ThemeProvider>
           {children}
         </ThemeProvider>
