@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import useThemeStore from '@/stores/theme-store';
 import useWorkspaceStore from '@/stores/workspace-store';
+import { ThemeModeProvider } from './ThemeModeContext';
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const theme = useThemeStore((state) => state.theme);
@@ -23,9 +24,14 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
   useEffect(() => {
     // Remove any existing theme classes
     document.body.classList.remove('theme-minimal', 'theme-dark', 'theme-gradient', 'theme-terminal');
-    // Add the current theme class
+    // Add the current workspace theme class
     document.body.classList.add(`theme-${theme}`);
   }, [theme]);
 
-  return <>{children}</>;
+  return (
+    <ThemeModeProvider>
+      {children}
+    </ThemeModeProvider>
+  );
 }
+

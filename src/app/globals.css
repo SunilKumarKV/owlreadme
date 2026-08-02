@@ -272,15 +272,56 @@ body.theme-gradient .theme-preview-container blockquote {
   background: rgba(255, 255, 255, 0.03) !important;
 }
 
+/* Premium SaaS Glassmorphism and Mesh Background Utilities */
+.glass-nav {
+  background-color: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+}
+
+.dark .glass-nav {
+  background-color: rgba(12, 12, 14, 0.75);
+  border-bottom: 1px solid rgba(38, 38, 38, 0.5);
+}
+
+.glass-card {
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(229, 231, 235, 0.7);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+}
+
+.dark .glass-card {
+  background-color: rgba(18, 18, 20, 0.55);
+  border: 1px solid rgba(38, 38, 42, 0.7);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+}
+
+/* Background Grid Pattern */
+.hero-grid-pattern {
+  background-size: 40px 40px;
+  background-image: 
+    linear-gradient(to right, rgba(156, 163, 175, 0.07) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(156, 163, 175, 0.07) 1px, transparent 1px);
+}
+
+.dark .hero-grid-pattern {
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+}
+
 /* Landing Page Animations */
 @keyframes float {
   0%, 100% {
-    transform: translateY(0) scale(1);
-    opacity: 0.15;
+    transform: translateY(0) scale(1) translateZ(0);
+    opacity: 0.2;
   }
   50% {
-    transform: translateY(-20px) scale(1.05);
-    opacity: 0.25;
+    transform: translateY(-20px) scale(1.08) translateZ(0);
+    opacity: 0.35;
   }
 }
 
@@ -289,20 +330,42 @@ body.theme-gradient .theme-preview-container blockquote {
     box-shadow: 0 0 15px rgba(59, 130, 246, 0.15);
   }
   50% {
-    box-shadow: 0 0 30px rgba(59, 130, 246, 0.35);
+    box-shadow: 0 0 35px rgba(59, 130, 246, 0.4);
   }
+}
+
+@keyframes beam-sweep {
+  0% {
+    transform: translateX(-100%) rotate(-45deg) translateZ(0);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateX(200%) rotate(-45deg) translateZ(0);
+    opacity: 0;
+  }
+}
+
+.animate-beam-sweep {
+  animation: beam-sweep 8s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform, opacity;
 }
 
 .animate-glow-bubble-1 {
   animation: float 8s ease-in-out infinite;
+  will-change: transform, opacity;
 }
 
 .animate-glow-bubble-2 {
   animation: float 12s ease-in-out infinite 2s;
+  will-change: transform, opacity;
 }
 
 .animate-glow-bubble-3 {
   animation: float 10s ease-in-out infinite 4s;
+  will-change: transform, opacity;
 }
 
 .animate-pulse-glow {
@@ -312,11 +375,11 @@ body.theme-gradient .theme-preview-container blockquote {
 @keyframes fade-in-smooth {
   from {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(8px) translateZ(0);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) translateZ(0);
   }
 }
 
@@ -331,10 +394,10 @@ body.theme-gradient .theme-preview-container blockquote {
 
 @keyframes float-slow {
   0%, 100% {
-    transform: translateY(0px) scale(1);
+    transform: translateY(0px) scale(1) translateZ(0);
   }
   50% {
-    transform: translateY(-12px) scale(1.03);
+    transform: translateY(-12px) scale(1.03) translateZ(0);
   }
 }
 
@@ -353,6 +416,7 @@ body.theme-gradient .theme-preview-container blockquote {
 
 .animate-float-slow {
   animation: float-slow 6s ease-in-out infinite;
+  will-change: transform;
 }
 
 .animate-shimmer-slide {
@@ -365,14 +429,15 @@ body.theme-gradient .theme-preview-container blockquote {
 
 .reveal-item {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(18px) translateZ(0);
   transition: opacity 0.55s ease-out, transform 0.55s ease-out;
+  will-change: opacity, transform;
 }
 
 .reveal-visible,
 .reveal-item.reveal-visible {
   opacity: 1 !important;
-  transform: translateY(0) !important;
+  transform: translateY(0) translateZ(0) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -381,6 +446,8 @@ body.theme-gradient .theme-preview-container blockquote {
   .animate-glow-bubble-3,
   .animate-pulse-glow,
   .animate-fade-in-smooth,
+  .animate-beam-sweep,
+  .animate-float-slow,
   .reveal-item,
   .reveal-visible {
     animation: none !important;
