@@ -1,7 +1,11 @@
 export { default as LandingPage } from './LandingPage';
 export { default as GitHubUsernameInput } from './GitHubUsernameInput';
+export * from './components/announcement';
 export * from './types/landing.types';
+export * from './types/announcement';
 export * from './constants/landing.constants';
+export * from './constants/announcement';
 export * from './animations/landing.animations';
 export * from './hooks/useScrollReveal';
 export * from './hooks/useLandingScroll';
+export * from './hooks/useAnnouncement';
