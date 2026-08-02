@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { useScrollReveal } from './hooks/useScrollReveal';
+import { AnnouncementBar } from './components/announcement';
 
 import HeroSection from './components/hero/HeroSection';
 import HighlightMetricsBar from './components/metrics/HighlightMetricsBar';
@@ -31,6 +32,7 @@ export const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-[#0c0c0e] text-gray-900 dark:text-white transition-colors duration-300 animate-fade-in-smooth selection:bg-blue-500 selection:text-white">
+      <AnnouncementBar />
       <Navbar />
 
       <main className="flex-1">
