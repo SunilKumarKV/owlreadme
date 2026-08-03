@@ -8,13 +8,14 @@ import PreviewScrollArea from './PreviewScrollArea';
 import PreviewBody from './PreviewBody';
 
 export const ReadmePreview: React.FC<ReadmePreviewProps> = ({
+  variant = 'glow',
   fileName = DEFAULT_PREVIEW_CONFIG.fileName,
   children,
   className = '',
   maxHeight = DEFAULT_PREVIEW_CONFIG.maxHeight,
 }) => {
   return (
-    <PreviewBrowser fileName={fileName} className={className}>
+    <PreviewBrowser variant={variant} fileName={fileName} className={className}>
       <PreviewScrollArea maxHeight={maxHeight}>
         <PreviewBody>{children}</PreviewBody>
       </PreviewScrollArea>

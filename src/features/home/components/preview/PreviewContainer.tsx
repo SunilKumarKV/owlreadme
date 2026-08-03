@@ -4,13 +4,38 @@ import React from 'react';
 import { PreviewContainerProps } from '../../types/preview';
 
 export const PreviewContainer: React.FC<PreviewContainerProps> = ({
+  variant = 'glow',
   children,
   className = '',
 }) => {
+  const getBorderStyles = () => {
+    switch (variant) {
+      case 'thin':
+        return 'border border-gray-200/60 dark:border-gray-800/60';
+      case 'gradient':
+        return 'border border-gray-300/80 dark:border-gray-700/80 shadow-xl';
+      case 'glow':
+      default:
+        return 'border border-gray-200/80 dark:border-gray-800/80 shadow-2xl shadow-blue-500/10 dark:shadow-indigo-500/20 hover:shadow-blue-500/20 dark:hover:shadow-indigo-500/30 hover:border-blue-500/30 dark:hover:border-blue-500/30';
+    }
+  };
+
   return (
     <div
-      className={`relative w-full rounded-2xl border border-gray-200/80 dark:border-gray-800/80 bg-white/70 dark:bg-[#0d1117]/80 backdrop-blur-xl shadow-2xl shadow-blue-500/5 dark:shadow-black/60 overflow-hidden transition-all duration-300 ${className}`}
+      className={`group relative w-full rounded-2xl bg-white/70 dark:bg-[#0d1117]/80 backdrop-blur-2xl ring-1 ring-white/30 dark:ring-white/10 overflow-hidden transition-all duration-500 hover:-translate-y-1 ${getBorderStyles()} ${className}`}
     >
+      {/* Soft Light Reflection Overlay (Top Edge) */}
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/60 dark:via-white/20 to-transparent"
+        aria-hidden="true"
+      />
+
+      {/* Subtle Inner Corner Ambient Highlight */}
+      <div
+        className="pointer-events-none absolute -top-24 -right-24 w-48 h-48 bg-blue-500/10 dark:bg-blue-400/10 blur-2xl rounded-full transition-opacity duration-500 group-hover:opacity-100 opacity-60"
+        aria-hidden="true"
+      />
+
       {children}
     </div>
   );

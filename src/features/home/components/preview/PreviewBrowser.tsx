@@ -6,12 +6,13 @@ import PreviewContainer from './PreviewContainer';
 import PreviewHeader from './PreviewHeader';
 
 export const PreviewBrowser: React.FC<PreviewBrowserProps> = ({
+  variant = 'glow',
   fileName,
   children,
   className = '',
 }) => {
   return (
-    <PreviewContainer className={className}>
+    <PreviewContainer variant={variant} className={className}>
       <PreviewHeader fileName={fileName} />
       {children}
     </PreviewContainer>

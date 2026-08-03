@@ -1,5 +1,7 @@
 import React from 'react';
 
+export type PreviewBorderVariant = 'thin' | 'gradient' | 'glow';
+
 export interface PreviewWindowControlsProps {
   onClose?: () => void;
   onMinimize?: () => void;
@@ -30,17 +32,20 @@ export interface PreviewBodyProps {
 }
 
 export interface PreviewContainerProps {
+  variant?: PreviewBorderVariant;
   children?: React.ReactNode;
   className?: string;
 }
 
 export interface PreviewBrowserProps {
+  variant?: PreviewBorderVariant;
   fileName?: string;
   children?: React.ReactNode;
   className?: string;
 }
 
 export interface ReadmePreviewProps {
+  variant?: PreviewBorderVariant;
   fileName?: string;
   children?: React.ReactNode;
   className?: string;
