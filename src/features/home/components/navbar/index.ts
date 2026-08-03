@@ -1,4 +1,6 @@
 export { default as Navbar } from './Navbar';
+export { default as NavbarContainer } from './NavbarContainer';
+export { default as NavbarBrand } from './NavbarBrand';
 export { default as NavbarLogo } from './NavbarLogo';
 export { default as NavbarLinks } from './NavbarLinks';
 export { default as NavbarLink } from './NavbarLink';

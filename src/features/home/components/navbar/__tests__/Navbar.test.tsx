@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import Navbar from '../Navbar';
+import NavbarBrand from '../NavbarBrand';
 import NavbarLogo from '../NavbarLogo';
 import NavbarLink from '../NavbarLink';
 import ThemeToggle from '../ThemeToggle';
@@ -27,11 +28,18 @@ describe('Production Navbar Component Suite', () => {
     window.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
   });
 
-  describe('NavbarLogo', () => {
+  describe('NavbarLogo & NavbarBrand', () => {
     it('renders brand logo icon and title', () => {
       render(<NavbarLogo />);
       expect(screen.getByLabelText(/OwlREADME Home/i)).toBeInTheDocument();
       expect(screen.getByText('OwlREADME')).toBeInTheDocument();
+    });
+
+    it('renders NavbarBrand with home link', () => {
+      render(<NavbarBrand />);
+      const brandLink = screen.getByRole('link', { name: /OwlREADME Home/i });
+      expect(brandLink).toBeInTheDocument();
+      expect(brandLink).toHaveAttribute('href', '/');
     });
   });
 
@@ -88,6 +96,10 @@ describe('Production Navbar Component Suite', () => {
       expect(screen.getByText('OwlREADME')).toBeInTheDocument();
       expect(screen.getByText('Features')).toBeInTheDocument();
       expect(screen.getByText('How It Works')).toBeInTheDocument();
+      expect(screen.getByText('Preview')).toBeInTheDocument();
+      expect(screen.getByText('FAQ')).toBeInTheDocument();
+      expect(screen.getByText('Templates')).toBeInTheDocument();
+      expect(screen.getByText('Pricing')).toBeInTheDocument();
       expect(screen.getAllByText('Dashboard').length).toBeGreaterThan(0);
       expect(screen.getAllByText('Start Building').length).toBeGreaterThan(0);
     });
