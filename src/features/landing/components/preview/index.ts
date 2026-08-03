@@ -5,3 +5,16 @@ export { default as PreviewHeader } from './PreviewHeader';
 export { default as PreviewBody } from './PreviewBody';
 export { default as WindowControls } from './WindowControls';
 export { default as PreviewFileName } from './PreviewFileName';
+
+export { default as ReadmeContent } from './ReadmeContent';
+export { default as ReadmeHeading } from './ReadmeHeading';
+export { default as DeveloperComment } from './DeveloperComment';
+export { default as TechStackSection } from './TechStackSection';
+export { default as TechBadgeGroup } from './TechBadgeGroup';
+export { default as TechBadge } from './TechBadge';
+export { default as GithubStatsCard } from './GithubStatsCard';
+export { default as GithubStat } from './GithubStat';
+export { default as FeaturedRepositories } from './FeaturedRepositories';
+export { default as RepositoryCard } from './RepositoryCard';
+export { default as RepositoryCardHeader } from './RepositoryCardHeader';
+export { default as RepositoryCardFooter } from './RepositoryCardFooter';
