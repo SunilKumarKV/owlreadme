@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { ShieldCheck, Zap, Sparkles, CheckCircle } from 'lucide-react';
+import { ShieldCheck, Zap, Sparkles, Database, Lock, CheckCircle } from 'lucide-react';
 import { FeatureChipProps } from '../../types/hero';
 
 export const FeatureChip: React.FC<FeatureChipProps> = ({ chip, className = '' }) => {
@@ -9,6 +9,10 @@ export const FeatureChip: React.FC<FeatureChipProps> = ({ chip, className = '' }
     switch (chip.icon) {
       case 'shield-check':
         return <ShieldCheck className="h-3.5 w-3.5 text-blue-500 shrink-0" />;
+      case 'database':
+        return <Database className="h-3.5 w-3.5 text-indigo-500 shrink-0" />;
+      case 'lock':
+        return <Lock className="h-3.5 w-3.5 text-emerald-500 shrink-0" />;
       case 'zap':
         return <Zap className="h-3.5 w-3.5 text-amber-500 shrink-0" />;
       case 'sparkles':

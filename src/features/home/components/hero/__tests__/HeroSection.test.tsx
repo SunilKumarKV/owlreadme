@@ -2,6 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import HeroSection from '../HeroSection';
+import HeroLeft from '../HeroLeft';
 import HeroBadge from '../HeroBadge';
 import HeroHeading from '../HeroHeading';
 import HeroDescription from '../HeroDescription';
@@ -16,7 +17,7 @@ class MockIntersectionObserver {
   disconnect = vi.fn();
 }
 
-describe('Hero Section Foundation Component Suite', () => {
+describe('Hero Section Component Suite', () => {
   beforeEach(() => {
     localStorage.clear();
     window.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
@@ -25,23 +26,23 @@ describe('Hero Section Foundation Component Suite', () => {
 
   describe('HeroBadge', () => {
     it('renders release badge pill', () => {
-      render(<HeroBadge text="v1.2.0 Release" icon="sparkles" />);
-      expect(screen.getByText('v1.2.0 Release')).toBeInTheDocument();
+      render(<HeroBadge text="✨ Introducing OwlREADME v1.2.0" icon="sparkles" />);
+      expect(screen.getByText('✨ Introducing OwlREADME v1.2.0')).toBeInTheDocument();
     });
   });
 
   describe('HeroHeading', () => {
     it('renders prefix, highlight, and suffix correctly inside h1', () => {
-      render(<HeroHeading prefix="Build" highlight="Beautiful" suffix="READMEs" />);
+      render(<HeroHeading prefix="Your GitHub Profile Automated in " highlight="Seconds." suffix="" />);
       const heading = screen.getByRole('heading', { level: 1 });
-      expect(heading).toHaveTextContent('Build Beautiful READMEs');
+      expect(heading).toHaveTextContent('Your GitHub Profile Automated in Seconds.');
     });
   });
 
   describe('HeroDescription', () => {
     it('renders description subtitle text', () => {
-      render(<HeroDescription text="Sample hero description paragraph" />);
-      expect(screen.getByText('Sample hero description paragraph')).toBeInTheDocument();
+      render(<HeroDescription text="Professional GitHub README Builder for developers." />);
+      expect(screen.getByText('Professional GitHub README Builder for developers.')).toBeInTheDocument();
     });
   });
 
@@ -49,9 +50,9 @@ describe('Hero Section Foundation Component Suite', () => {
     it('renders input field with clear button when text is entered', () => {
       const onChange = vi.fn();
       const onClear = vi.fn();
-      render(<HeroInput value="octocat" onChange={onChange} onClear={onClear} placeholder="Enter username" />);
+      render(<HeroInput value="octocat" onChange={onChange} onClear={onClear} placeholder="Enter GitHub username" />);
 
-      const input = screen.getByPlaceholderText('Enter username');
+      const input = screen.getByPlaceholderText('Enter GitHub username');
       expect(input).toHaveValue('octocat');
 
       const clearBtn = screen.getByRole('button', { name: 'Clear username input' });
@@ -69,13 +70,13 @@ describe('Hero Section Foundation Component Suite', () => {
 
   describe('HeroCTA', () => {
     it('renders CTA button with label', () => {
-      render(<HeroCTA label="Get Started" />);
+      render(<HeroCTA label="Get Started →" />);
       const button = screen.getByRole('button', { name: /Get Started/i });
       expect(button).toBeInTheDocument();
     });
 
     it('is disabled when disabled prop is true', () => {
-      render(<HeroCTA label="Get Started" disabled />);
+      render(<HeroCTA label="Get Started →" disabled />);
       const button = screen.getByRole('button', { name: /Get Started/i });
       expect(button).toBeDisabled();
     });
@@ -84,9 +85,18 @@ describe('Hero Section Foundation Component Suite', () => {
   describe('FeatureChips', () => {
     it('renders dynamic feature chips from configuration', () => {
       render(<FeatureChips chips={HERO_CONFIG.featureChips} />);
-      expect(screen.getByText('100% Free & Open Source')).toBeInTheDocument();
-      expect(screen.getByText('Instant Live Sync')).toBeInTheDocument();
-      expect(screen.getByText('Zero Configuration')).toBeInTheDocument();
+      expect(screen.getByText('Free & Open Source')).toBeInTheDocument();
+      expect(screen.getByText('Local Browser Storage')).toBeInTheDocument();
+      expect(screen.getByText('1-Click Export Pack')).toBeInTheDocument();
+    });
+  });
+
+  describe('HeroLeft', () => {
+    it('renders hero left column components correctly', () => {
+      render(<HeroLeft />);
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Your GitHub Profile Automated in Seconds.');
+      expect(screen.getByPlaceholderText('Enter GitHub username')).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Get Started/i })).toBeInTheDocument();
     });
   });
 
@@ -95,8 +105,8 @@ describe('Hero Section Foundation Component Suite', () => {
       const onStartBuilding = vi.fn();
       render(<HeroSection onStartBuilding={onStartBuilding} />);
 
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Build Beautiful GitHub READMEs In Seconds');
-      expect(screen.getByPlaceholderText('Enter your GitHub username')).toBeInTheDocument();
+      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Your GitHub Profile Automated in Seconds.');
+      expect(screen.getByPlaceholderText('Enter GitHub username')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /Get Started/i })).toBeInTheDocument();
     });
   });

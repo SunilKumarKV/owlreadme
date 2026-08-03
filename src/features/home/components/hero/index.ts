@@ -1,8 +1,11 @@
 export { default as HeroSection } from './HeroSection';
+export { default as Hero } from './HeroSection';
+export { default as HeroLeft } from './HeroLeft';
 export { default as HeroBadge } from './HeroBadge';
 export { default as HeroHeading } from './HeroHeading';
 export { default as HeroDescription } from './HeroDescription';
 export { default as HeroInput } from './HeroInput';
+export { default as UsernameInput } from './UsernameInput';
 export { default as HeroCTA } from './HeroCTA';
 export { default as FeatureChip } from './FeatureChip';
 export { default as FeatureChips } from './FeatureChips';
