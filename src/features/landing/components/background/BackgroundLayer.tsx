@@ -6,11 +6,12 @@ export const BackgroundLayer: React.FC<BackgroundLayerProps> = ({
   className = '',
   zIndex = 0,
   ariaHidden = true,
+  style,
 }) => {
   return (
     <div
       className={`absolute inset-0 pointer-events-none ${className}`}
-      style={{ zIndex }}
+      style={{ zIndex, ...style }}
       aria-hidden={ariaHidden}
     >
       {children}
