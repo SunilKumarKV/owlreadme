@@ -8,3 +8,8 @@ export * from './constants/background-animation';
 export * from './utils/animation';
 export * from './hooks/useReducedMotion';
 export * from './hooks/useBackgroundAnimation';
+
+export * from './components/preview';
+export * from './types/preview';
+export * from './constants/preview';
+export * from './utils/preview';
