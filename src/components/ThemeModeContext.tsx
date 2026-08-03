@@ -14,22 +14,22 @@ const ThemeModeContext = createContext<ThemeModeContextType | undefined>(undefin
 
 const COLOR_MODE_KEY = 'owlreadme-color-mode';
 
-const getInitialColorMode = (): ColorMode => {
-  if (typeof window === 'undefined') return 'system';
-  try {
-    const savedMode = localStorage.getItem(COLOR_MODE_KEY) as ColorMode | null;
-    if (savedMode === 'light' || savedMode === 'dark' || savedMode === 'system') {
-      return savedMode;
-    }
-  } catch {
-    // Ignore storage errors in restricted browser contexts
-  }
-  return 'system';
-};
-
 export function ThemeModeProvider({ children }: { children: React.ReactNode }) {
-  const [colorMode, setColorModeState] = useState<ColorMode>(getInitialColorMode);
+  const [colorMode, setColorModeState] = useState<ColorMode>('system');
   const [resolvedMode, setResolvedMode] = useState<'light' | 'dark'>('dark');
+
+  // Load saved preference post-hydration to guarantee 100% initial SSR/client HTML match
+  useEffect(() => {
+    try {
+      const savedMode = localStorage.getItem(COLOR_MODE_KEY) as ColorMode | null;
+      if (savedMode && (savedMode === 'light' || savedMode === 'dark' || savedMode === 'system')) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setColorModeState(savedMode);
+      }
+    } catch {
+      // Ignore storage errors in restricted contexts
+    }
+  }, []);
 
   useEffect(() => {
     const root = document.documentElement;

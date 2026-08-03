@@ -1,34 +1,38 @@
 "use client";
 
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { AnnouncementConfig } from '../types/announcement';
 import { DEFAULT_ANNOUNCEMENT_CONFIG } from '../constants/announcement';
 
 export function useAnnouncement(config: AnnouncementConfig = DEFAULT_ANNOUNCEMENT_CONFIG) {
-  const [isVisible, setIsVisible] = useState<boolean>(() => {
-    if (!config.visible) return false;
+  const [dismissed, setDismissed] = useState(false);
 
-    if (typeof window !== 'undefined' && config.dismissible && config.dismissKey) {
-      try {
-        const isDismissed = localStorage.getItem(config.dismissKey) === 'true';
-        if (isDismissed) return false;
-      } catch {
-        // Ignore localStorage read error
+  // Sync with localStorage after initial mount to prevent SSR hydration mismatch
+  useEffect(() => {
+    if (!config.dismissible || !config.dismissKey) return;
+    try {
+      const isDismissed = localStorage.getItem(config.dismissKey) === 'true';
+      if (isDismissed) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setDismissed(true);
       }
+    } catch {
+      // Ignore localStorage read error
     }
-    return true;
-  });
+  }, [config.dismissible, config.dismissKey]);
 
   const dismiss = useCallback(() => {
-    setIsVisible(false);
+    setDismissed(true);
     if (config.dismissible && config.dismissKey) {
       try {
         localStorage.setItem(config.dismissKey, 'true');
       } catch {
-        // Ignore localStorage write error
+        // Ignore storage write error
       }
     }
   }, [config.dismissible, config.dismissKey]);
+
+  const isVisible = config.visible && !dismissed;
 
   return {
     isVisible,
