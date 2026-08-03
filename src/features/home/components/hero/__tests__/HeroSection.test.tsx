@@ -105,7 +105,8 @@ describe('Hero Section Component Suite', () => {
       const onStartBuilding = vi.fn();
       render(<HeroSection onStartBuilding={onStartBuilding} />);
 
-      expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('Your GitHub Profile Automated in Seconds.');
+      const headings = screen.getAllByRole('heading', { level: 1 });
+      expect(headings[0]).toHaveTextContent('Your GitHub Profile Automated in Seconds.');
       expect(screen.getByPlaceholderText('Enter GitHub username')).toBeInTheDocument();
       expect(screen.getByRole('button', { name: /Get Started/i })).toBeInTheDocument();
     });
