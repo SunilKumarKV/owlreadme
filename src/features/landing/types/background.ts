@@ -11,6 +11,7 @@ export interface BackgroundLayerProps {
   className?: string;
   zIndex?: number;
   ariaHidden?: boolean;
+  style?: React.CSSProperties;
 }
 
 export interface BackgroundGradientProps {
@@ -43,12 +44,27 @@ export interface BackgroundBlurProps {
   blurLevel?: BlurLevel;
 }
 
+export interface BackgroundLightsProps {
+  className?: string;
+  speed?: number;
+  opacity?: number;
+}
+
+export interface BackgroundOverlayProps {
+  className?: string;
+  opacity?: number;
+}
+
 export interface LandingBackgroundProps {
   children?: React.ReactNode;
   className?: string;
   variant?: BackgroundVariant;
-  showGrid?: boolean;
-  showWave?: boolean;
+  showGradient?: boolean;
   showGlow?: boolean;
   showBlur?: boolean;
+  showGrid?: boolean;
+  showWave?: boolean;
+  showLights?: boolean;
+  showParticles?: boolean;
+  showOverlay?: boolean;
 }

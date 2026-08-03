@@ -8,6 +8,7 @@ export * from './constants/background-animation';
 export * from './utils/animation';
 export * from './hooks/useReducedMotion';
 export * from './hooks/useBackgroundAnimation';
+export * from './hooks/useBackgroundEffects';
 
 export * from './components/preview';
 export * from './types/preview';
