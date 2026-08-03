@@ -14,13 +14,23 @@ export const NAV_ITEMS: NavItem[] = [
   },
   {
     id: 'preview',
-    label: 'Workspace',
+    label: 'Preview',
     href: '#preview-showcase',
   },
   {
     id: 'faq',
     label: 'FAQ',
     href: '#faq',
+  },
+  {
+    id: 'templates',
+    label: 'Templates',
+    href: '/templates',
+  },
+  {
+    id: 'pricing',
+    label: 'Pricing',
+    href: '#pricing',
   },
   {
     id: 'github',
