@@ -1,48 +1,41 @@
 "use client";
 
 import React from 'react';
-import { Sparkles, Wrench, Calendar } from 'lucide-react';
+import { Sparkles, Wrench, Calendar, Tag } from 'lucide-react';
 import { AnnouncementContentProps } from '../../types/announcement';
-import { ANNOUNCEMENT_TYPE_STYLES } from '../../constants/announcement';
+import AnnouncementBadge from './AnnouncementBadge';
 
-export const AnnouncementContent: React.FC<AnnouncementContentProps> = ({
-  config,
-  className = '',
-}) => {
-  const styles = ANNOUNCEMENT_TYPE_STYLES[config.type] || ANNOUNCEMENT_TYPE_STYLES.release;
-
+export const AnnouncementContent: React.FC<AnnouncementContentProps> = ({ config, className = '' }) => {
   const renderIcon = () => {
-    switch (config.type) {
-      case 'feature':
-        return <Sparkles className="h-3.5 w-3.5 text-emerald-500 shrink-0" />;
+    switch (config.icon) {
+      case 'sparkles':
+        return <Sparkles className="h-4 w-4 text-amber-500 dark:text-amber-400 shrink-0 animate-pulse" />;
       case 'maintenance':
-        return <Wrench className="h-3.5 w-3.5 text-amber-500 shrink-0" />;
+        return <Wrench className="h-4 w-4 text-amber-600 dark:text-amber-500 shrink-0" />;
       case 'event':
-        return <Calendar className="h-3.5 w-3.5 text-purple-500 shrink-0" />;
-      case 'release':
+        return <Calendar className="h-4 w-4 text-purple-500 dark:text-purple-400 shrink-0" />;
       default:
-        return <Sparkles className="h-3.5 w-3.5 text-blue-500 shrink-0 animate-pulse" />;
+        return <Tag className="h-4 w-4 text-blue-500 dark:text-blue-400 shrink-0" />;
     }
   };
 
+  const badgeText = config.badge || config.version || 'v1.2.0';
+  const titleText = config.title;
+  const headlineText = config.headline || config.subtitle;
+
   return (
-    <div className={`flex flex-wrap items-center justify-center gap-2 text-xs text-gray-900 dark:text-white ${className}`}>
+    <div className={`flex flex-wrap items-center gap-2 text-xs text-gray-800 dark:text-gray-200 font-medium ${className}`}>
       {renderIcon()}
 
-      {config.badge && (
-        <span className={`px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider rounded-full shadow-xs ${styles.badge}`}>
-          {config.badge}
-        </span>
-      )}
+      {badgeText && <AnnouncementBadge text={badgeText} type={config.type} />}
 
-      <span className="font-bold tracking-tight">
-        {config.title}
-      </span>
+      {titleText && <span className="font-bold">{titleText}</span>}
 
-      {config.subtitle && (
-        <span className="hidden md:inline text-gray-600 dark:text-gray-300 font-normal">
-          — {config.subtitle}
-        </span>
+      {headlineText && (
+        <>
+          <span className="hidden md:inline text-gray-400 dark:text-gray-500">•</span>
+          <span className="font-medium text-gray-600 dark:text-gray-300">{headlineText}</span>
+        </>
       )}
     </div>
   );

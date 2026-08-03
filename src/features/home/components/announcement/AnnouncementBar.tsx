@@ -1,13 +1,13 @@
 "use client";
 
 import React from 'react';
-import { X } from 'lucide-react';
 import { Container } from '@/components/ui';
 import { AnnouncementBarProps } from '../../types/announcement';
 import { ANNOUNCEMENT_TYPE_STYLES, DEFAULT_ANNOUNCEMENT_CONFIG } from '../../constants/announcement';
 import { useAnnouncement } from '../../hooks/useAnnouncement';
 import AnnouncementContent from './AnnouncementContent';
-import AnnouncementLink from './AnnouncementLink';
+import AnnouncementCTA from './AnnouncementCTA';
+import AnnouncementCloseButton from './AnnouncementCloseButton';
 
 export const AnnouncementBar: React.FC<AnnouncementBarProps> = ({
   config = DEFAULT_ANNOUNCEMENT_CONFIG,
@@ -25,6 +25,9 @@ export const AnnouncementBar: React.FC<AnnouncementBarProps> = ({
     onDismiss?.();
   };
 
+  const ctaLabel = config.ctaLabel || config.buttonText;
+  const ctaHref = config.ctaHref || config.buttonLink;
+
   return (
     <aside
       role="region"
@@ -35,21 +38,10 @@ export const AnnouncementBar: React.FC<AnnouncementBarProps> = ({
         <div className="flex-1 flex flex-wrap items-center justify-center sm:justify-between gap-2.5">
           <AnnouncementContent config={config} />
 
-          {config.buttonText && config.buttonLink && (
-            <AnnouncementLink text={config.buttonText} href={config.buttonLink} />
-          )}
+          {ctaLabel && ctaHref && <AnnouncementCTA label={ctaLabel} href={ctaHref} />}
         </div>
 
-        {config.dismissible && (
-          <button
-            type="button"
-            onClick={handleDismiss}
-            aria-label="Dismiss announcement"
-            className="p-1 rounded-lg text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 cursor-pointer shrink-0"
-          >
-            <X className="h-3.5 w-3.5" />
-          </button>
-        )}
+        {config.dismissible && <AnnouncementCloseButton onDismiss={handleDismiss} />}
       </Container>
     </aside>
   );
