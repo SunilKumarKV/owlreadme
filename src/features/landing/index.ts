@@ -30,3 +30,10 @@ export * from './types/trust-metrics';
 export * from './constants/trust-metrics';
 export * from './utils/trust-metrics';
 export * from './hooks/useTrustMetrics';
+
+export * from './components/product-hunt';
+export * from './types/product-hunt';
+export * from './constants/product-hunt';
+export * from './utils/product-hunt';
+export * from './services/productHunt.service';
+export * from './hooks/useProductHunt';
