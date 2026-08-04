@@ -4,14 +4,16 @@ import TrustMetricIcon from './TrustMetricIcon';
 import TrustMetricValue from './TrustMetricValue';
 import TrustMetricTitle from './TrustMetricTitle';
 import TrustMetricDescription from './TrustMetricDescription';
+import { GlassCard } from '@/design-system/components/card';
 
 export const TrustMetricCard: React.FC<TrustMetricCardProps> = ({
   metric,
   className = '',
 }) => {
   return (
-    <div
-      className={`group relative p-6 rounded-2xl border border-gray-200/80 dark:border-gray-800/80 bg-white/70 dark:bg-[#0d1117]/80 backdrop-blur-xl shadow-xl shadow-gray-900/5 dark:shadow-black/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-500/10 dark:hover:shadow-indigo-500/20 hover:border-blue-500/30 dark:hover:border-blue-500/30 flex flex-col justify-between space-y-4 ${className}`}
+    <GlassCard
+      hover
+      className={`flex flex-col justify-between space-y-4 hover:border-blue-500/30 ${className}`}
     >
       <div className="flex items-center justify-between">
         <TrustMetricIcon icon={metric.icon} colorTheme={metric.colorTheme} />
@@ -28,7 +30,7 @@ export const TrustMetricCard: React.FC<TrustMetricCardProps> = ({
       </div>
 
       <TrustMetricDescription description={metric.description} />
-    </div>
+    </GlassCard>
   );
 };
 
