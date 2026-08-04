@@ -2,6 +2,7 @@ import React from 'react';
 import { TrustMetricsProps } from '../../types/trust-metrics';
 import useTrustMetrics from '../../hooks/useTrustMetrics';
 import TrustMetricsGrid from './TrustMetricsGrid';
+import { MotionWrapper } from '@/design-system';
 
 export const TrustMetrics: React.FC<TrustMetricsProps> = ({
   config,
@@ -15,7 +16,7 @@ export const TrustMetrics: React.FC<TrustMetricsProps> = ({
       className={`py-16 sm:py-24 relative overflow-hidden ${className}`}
       aria-label="Trust Metrics"
     >
-      <div className="w-full mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10 space-y-12">
+      <MotionWrapper preset="sectionFade" className="w-full mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl relative z-10 space-y-12">
         {(sectionConfig.title || sectionConfig.subtitle) && (
           <div className="text-center space-y-3 max-w-3xl mx-auto">
             {sectionConfig.title && (
@@ -32,7 +33,7 @@ export const TrustMetrics: React.FC<TrustMetricsProps> = ({
         )}
 
         <TrustMetricsGrid metrics={sectionConfig.metrics} />
-      </div>
+      </MotionWrapper>
     </section>
   );
 };

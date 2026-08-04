@@ -21,3 +21,15 @@ export * from './types/card';
 export * from './constants/card';
 export * from './hooks/useCard';
 export * from './utils/card';
+
+export * from './icons';
+export * from './types/icon';
+export * from './constants/icons';
+export * from './hooks/useIcon';
+export * from './utils/icon';
+
+export * from './motion';
+export * from './types/motion';
+export * from './constants/motion';
+export * from './hooks/useMotion';
+export * from './utils/motion';
