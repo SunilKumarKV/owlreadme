@@ -20,24 +20,24 @@ if (typeof window !== 'undefined') {
   // Mock URL.createObjectURL and revokeObjectURL
   window.URL.createObjectURL = vi.fn(() => 'blob:mock-url');
   window.URL.revokeObjectURL = vi.fn();
-  
-  // Mock document.createElement a element click & download triggers
-  // HTMLAnchorElement click method does nothing in jsdom, but we can spy/stub it.
 
   // Mock ResizeObserver — required by components using layout APIs
-  global.ResizeObserver = vi.fn().mockImplementation(() => ({
-    observe: vi.fn(),
-    unobserve: vi.fn(),
-    disconnect: vi.fn(),
-  }));
+  class MockResizeObserver {
+    observe = vi.fn();
+    unobserve = vi.fn();
+    disconnect = vi.fn();
+  }
+  global.ResizeObserver = MockResizeObserver as unknown as typeof ResizeObserver;
 
   // Mock IntersectionObserver — required by components using visibility APIs
-  global.IntersectionObserver = vi.fn().mockImplementation(() => ({
-    observe: vi.fn(),
-    unobserve: vi.fn(),
-    disconnect: vi.fn(),
-    root: null,
-    rootMargin: '',
-    thresholds: [],
-  }));
+  class MockIntersectionObserver {
+    root = null;
+    rootMargin = '';
+    thresholds = [];
+    observe = vi.fn();
+    unobserve = vi.fn();
+    disconnect = vi.fn();
+    takeRecords = vi.fn(() => []);
+  }
+  global.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
 }

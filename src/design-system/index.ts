@@ -27,3 +27,9 @@ export * from './types/icon';
 export * from './constants/icons';
 export * from './hooks/useIcon';
 export * from './utils/icon';
+
+export * from './motion';
+export * from './types/motion';
+export * from './constants/motion';
+export * from './hooks/useMotion';
+export * from './utils/motion';
