@@ -3,3 +3,9 @@ export * from './themes';
 export * from './types/colors';
 export * from './constants/colors';
 export * from './utils/colors';
+
+export * from './typography';
+export * from './types/typography';
+export * from './constants/typography';
+export * from './utils/typography';
+export { default as Typography } from './components/Typography';
