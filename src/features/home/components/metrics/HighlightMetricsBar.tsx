@@ -5,9 +5,9 @@ import { Container } from '@/components/ui';
 
 export const HighlightMetricsBar: React.FC = () => {
   return (
-    <section className="bg-gray-100/80 dark:bg-[#101014] border-y border-gray-200/80 dark:border-gray-800/80 py-8 transition-colors select-none">
+    <section className="bg-gray-100/80 dark:bg-[#101014] border-y border-gray-200/80 dark:border-gray-800/80 py-6 sm:py-8 transition-colors select-none">
       <Container size="lg">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
           <div className="p-4 rounded-xl glass-card border border-gray-200/60 dark:border-gray-800/60">
             <span className="block text-2xl sm:text-3xl font-black text-blue-600 dark:text-blue-400">100%</span>
             <span className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400 mt-1 block">Client-Side Logic</span>
