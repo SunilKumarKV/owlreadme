@@ -8,7 +8,7 @@ export const PreviewBody: React.FC<PreviewBodyProps> = ({
 }) => {
   return (
     <div
-      className={`p-6 sm:p-8 overflow-y-auto custom-scrollbar bg-white/70 dark:bg-[#0d1117]/80 backdrop-blur-xl ${className}`}
+      className={`p-4 sm:p-6 md:p-8 overflow-y-auto overflow-x-auto max-w-full custom-scrollbar bg-white/70 dark:bg-[#0d1117]/80 backdrop-blur-xl ${className}`}
       style={{ maxHeight }}
     >
       {children}
