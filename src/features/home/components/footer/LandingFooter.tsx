@@ -7,7 +7,7 @@ import { BRANDING } from '@/config/branding';
 
 export const LandingFooter: React.FC = () => {
   return (
-    <footer className="bg-gray-50/90 dark:bg-[#0a0a0c] border-t border-gray-200/80 dark:border-gray-800/80 py-12 px-4 transition-colors">
+    <footer className="bg-gray-50/90 dark:bg-[#0a0a0c] border-t border-gray-200/80 dark:border-gray-800/80 pt-10 pb-[calc(2.5rem+env(safe-area-inset-bottom))] px-4 transition-colors">
       <Container size="lg" className="flex flex-col md:flex-row justify-between items-center gap-6">
         <div className="flex items-center space-x-3 text-gray-600 dark:text-gray-400 select-none">
           <div className="p-2 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl shadow-sm">
@@ -24,12 +24,12 @@ export const LandingFooter: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex flex-wrap justify-center gap-6 text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400">
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 text-xs font-bold uppercase tracking-wider text-gray-600 dark:text-gray-400">
           <a
             href={BRANDING.socialLinks.github}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5"
+            className="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center gap-1.5 min-h-[44px] px-2"
           >
             <GitHubIcon className="h-4 w-4" /> Repository
           </a>
@@ -37,13 +37,13 @@ export const LandingFooter: React.FC = () => {
             href={BRANDING.documentationUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-blue-600 dark:hover:text-blue-400 transition"
+            className="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center min-h-[44px] px-2"
           >
             Documentation
           </a>
           <a
             href={`mailto:${BRANDING.supportEmail}`}
-            className="hover:text-blue-600 dark:hover:text-blue-400 transition"
+            className="hover:text-blue-600 dark:hover:text-blue-400 transition flex items-center min-h-[44px] px-2"
           >
             Contact Support
           </a>
