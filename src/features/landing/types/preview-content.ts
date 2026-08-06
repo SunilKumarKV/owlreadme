@@ -34,6 +34,8 @@ export interface RepositoryCardConfig {
 
 export interface ReadmeContentConfig {
   username: string;
+  name?: string | null;
+  avatarUrl?: string;
   developerTitle?: string;
   commentText?: string;
   techStackTitle?: string;
@@ -45,6 +47,8 @@ export interface ReadmeContentConfig {
 
 export interface ReadmeHeadingProps {
   username: string;
+  name?: string | null;
+  avatarUrl?: string;
   className?: string;
 }
 

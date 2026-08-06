@@ -15,7 +15,11 @@ export const ReadmeContent: React.FC<ReadmeContentProps> = ({
     <div className={`space-y-6 text-left ${className}`}>
       {/* README Header & Comment */}
       <div className="space-y-2">
-        <ReadmeHeading username={config.username} />
+        <ReadmeHeading
+          username={config.username}
+          name={config.name}
+          avatarUrl={config.avatarUrl}
+        />
         <DeveloperComment comment={config.commentText || config.developerTitle} />
       </div>
 
