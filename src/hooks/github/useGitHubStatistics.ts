@@ -12,31 +12,35 @@ export function useGitHubStatistics(username?: string) {
     fromCache: false,
   });
 
-  const fetchStatistics = useCallback(async () => {
+  const fetchStatistics = useCallback(async (isCancelled?: () => boolean) => {
     if (!username || !username.trim()) {
-      setState({
-        statistics: null,
-        isLoading: false,
-        error: null,
-        rateLimit: null,
-        fromCache: false,
-      });
+      if (!isCancelled?.()) {
+        setState({
+          statistics: null,
+          isLoading: false,
+          error: null,
+          rateLimit: null,
+          fromCache: false,
+        });
+      }
       return;
     }
 
     const trimmed = username.trim();
     if (!isValidGitHubUsername(trimmed)) {
-      setState({
-        statistics: null,
-        isLoading: false,
-        error: {
-          code: 'INVALID_USERNAME',
-          message: `Invalid GitHub username format: "${username}"`,
-          userMessage: 'Please enter a valid GitHub username.',
-        },
-        rateLimit: null,
-        fromCache: false,
-      });
+      if (!isCancelled?.()) {
+        setState({
+          statistics: null,
+          isLoading: false,
+          error: {
+            code: 'INVALID_USERNAME',
+            message: `Invalid GitHub username format: "${username}"`,
+            userMessage: 'Please enter a valid GitHub username.',
+          },
+          rateLimit: null,
+          fromCache: false,
+        });
+      }
       return;
     }
 
@@ -44,6 +48,8 @@ export function useGitHubStatistics(username?: string) {
 
     try {
       const res = await githubStatisticsService.getStatistics(trimmed);
+
+      if (isCancelled?.()) return;
 
       if (res.success && res.data) {
         setState({
@@ -67,6 +73,8 @@ export function useGitHubStatistics(username?: string) {
         });
       }
     } catch (err: unknown) {
+      if (isCancelled?.()) return;
+
       setState({
         statistics: null,
         isLoading: false,
@@ -82,8 +90,12 @@ export function useGitHubStatistics(username?: string) {
   }, [username]);
 
   useEffect(() => {
+    let cancelled = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchStatistics();
+    fetchStatistics(() => cancelled);
+    return () => {
+      cancelled = true;
+    };
   }, [fetchStatistics]);
 
   return {

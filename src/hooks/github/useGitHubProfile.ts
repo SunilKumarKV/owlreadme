@@ -35,31 +35,35 @@ export function useGitHubProfile(username?: string) {
     fromCache: false,
   });
 
-  const fetchProfile = useCallback(async () => {
+  const fetchProfile = useCallback(async (isCancelled?: () => boolean) => {
     if (!username || !username.trim()) {
-      setState({
-        profile: null,
-        isLoading: false,
-        error: null,
-        rateLimit: null,
-        fromCache: false,
-      });
+      if (!isCancelled?.()) {
+        setState({
+          profile: null,
+          isLoading: false,
+          error: null,
+          rateLimit: null,
+          fromCache: false,
+        });
+      }
       return;
     }
 
     const trimmed = username.trim();
     if (!isValidGitHubUsername(trimmed)) {
-      setState({
-        profile: null,
-        isLoading: false,
-        error: {
-          code: 'INVALID_USERNAME',
-          message: `Invalid GitHub username format: "${username}"`,
-          userMessage: 'Please enter a valid GitHub username.',
-        },
-        rateLimit: null,
-        fromCache: false,
-      });
+      if (!isCancelled?.()) {
+        setState({
+          profile: null,
+          isLoading: false,
+          error: {
+            code: 'INVALID_USERNAME',
+            message: `Invalid GitHub username format: "${username}"`,
+            userMessage: 'Please enter a valid GitHub username.',
+          },
+          rateLimit: null,
+          fromCache: false,
+        });
+      }
       return;
     }
 
@@ -67,6 +71,8 @@ export function useGitHubProfile(username?: string) {
 
     try {
       const res = await githubService.getUserProfile(trimmed);
+
+      if (isCancelled?.()) return;
 
       if (res.success && res.data) {
         const mappedProfile = mapRawUserToUserProfile(res.data);
@@ -91,6 +97,8 @@ export function useGitHubProfile(username?: string) {
         });
       }
     } catch (err: unknown) {
+      if (isCancelled?.()) return;
+
       setState({
         profile: null,
         isLoading: false,
@@ -106,8 +114,12 @@ export function useGitHubProfile(username?: string) {
   }, [username]);
 
   useEffect(() => {
+    let cancelled = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchProfile();
+    fetchProfile(() => cancelled);
+    return () => {
+      cancelled = true;
+    };
   }, [fetchProfile]);
 
   return {

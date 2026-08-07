@@ -8,6 +8,7 @@ import {
   renderTechStack,
   renderGitHubStats,
   renderSocialLinks,
+  renderProjects,
   renderAchievements,
   renderTemplates,
 } from '../sections';
@@ -168,6 +169,11 @@ export const generateREADME = (data: READMEData): string => {
   const socialLinksMarkdown = renderSocialLinks(data.socialLinks);
   if (socialLinksMarkdown) {
     output = [output, socialLinksMarkdown].filter(Boolean).join('\n\n');
+  }
+
+  const projectsMarkdown = renderProjects(data.featuredProjects);
+  if (projectsMarkdown) {
+    output = [output, projectsMarkdown].filter(Boolean).join('\n\n');
   }
 
   const achievementsMarkdown = renderAchievements(data.achievements);

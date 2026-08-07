@@ -74,31 +74,35 @@ export function useRepositories(username?: string, initialOptions: RepositoryFil
     fromCache: false,
   });
 
-  const fetchRepositories = useCallback(async () => {
+  const fetchRepositories = useCallback(async (isCancelled?: () => boolean) => {
     if (!username || !username.trim()) {
-      setState({
-        repositories: [],
-        isLoading: false,
-        error: null,
-        rateLimit: null,
-        fromCache: false,
-      });
+      if (!isCancelled?.()) {
+        setState({
+          repositories: [],
+          isLoading: false,
+          error: null,
+          rateLimit: null,
+          fromCache: false,
+        });
+      }
       return;
     }
 
     const trimmed = username.trim();
     if (!isValidGitHubUsername(trimmed)) {
-      setState({
-        repositories: [],
-        isLoading: false,
-        error: {
-          code: 'INVALID_USERNAME',
-          message: `Invalid GitHub username format: "${username}"`,
-          userMessage: 'Please enter a valid GitHub username.',
-        },
-        rateLimit: null,
-        fromCache: false,
-      });
+      if (!isCancelled?.()) {
+        setState({
+          repositories: [],
+          isLoading: false,
+          error: {
+            code: 'INVALID_USERNAME',
+            message: `Invalid GitHub username format: "${username}"`,
+            userMessage: 'Please enter a valid GitHub username.',
+          },
+          rateLimit: null,
+          fromCache: false,
+        });
+      }
       return;
     }
 
@@ -109,6 +113,8 @@ export function useRepositories(username?: string, initialOptions: RepositoryFil
         sort: 'updated',
         per_page: 100,
       });
+
+      if (isCancelled?.()) return;
 
       if (res.success && res.data) {
         const mappedRepos = res.data.map(mapRawRepoToRepository);
@@ -133,6 +139,8 @@ export function useRepositories(username?: string, initialOptions: RepositoryFil
         });
       }
     } catch (err: unknown) {
+      if (isCancelled?.()) return;
+
       setState({
         repositories: [],
         isLoading: false,
@@ -148,8 +156,12 @@ export function useRepositories(username?: string, initialOptions: RepositoryFil
   }, [username]);
 
   useEffect(() => {
+    let cancelled = false;
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    fetchRepositories();
+    fetchRepositories(() => cancelled);
+    return () => {
+      cancelled = true;
+    };
   }, [fetchRepositories]);
 
   const setOptions = useCallback((newOptions: Partial<RepositoryFilterOptions>) => {
