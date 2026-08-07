@@ -50,4 +50,15 @@ export interface GitHubRawRepoResponse {
   open_issues_count: number;
   topics?: string[];
   default_branch: string;
+  archived?: boolean;
+  disabled?: boolean;
+  is_template?: boolean;
+  license?: { key: string; name: string; spdx_id: string | null; url: string | null } | null;
+  owner?: {
+    login: string;
+    id: number;
+    avatar_url: string;
+    html_url: string;
+    type: string;
+  };
 }
