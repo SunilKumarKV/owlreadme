@@ -49,7 +49,6 @@ The initial public release of OwlREADME.
 - **Relational Cloud Sync** — PostgreSQL / Firestore database to persist workspaces across devices and accounts.
 - **Visual Roadmap Canvas** — Drag-and-drop node graph replacing the list-based editor.
 - **Static Share Page SEO** — Pre-rendered public profile and roadmap pages for search engine indexing.
-
 ---
 
 *OwlREADME follows [Semantic Versioning](https://semver.org/).*
