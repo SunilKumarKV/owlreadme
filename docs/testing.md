@@ -45,7 +45,6 @@ To run all linting, type checks, unit tests, and E2E tests in sequence matching 
 ```bash
 pnpm test:all
 ```
-
 ---
 
 ## 🛠️ Debugging Playwright E2E Tests
@@ -69,7 +68,6 @@ On failures, Playwright automatically outputs a `trace.zip` zip archive containi
 ```bash
 pnpm exec playwright show-trace test-results/<test-name>/trace.zip
 ```
-
 ---
 
 ## 🛡️ CI/CD Pipeline & Quality Release Gates
@@ -92,7 +90,6 @@ graph TD
 
 ### 🚪 Release Merging Gates
 A pull request will be **blocked** from merging if any step in the pipeline fails (e.g. failing test, build error, type mismatch, or lint violation).
-
 ---
 
 ## ✏️ Writing New E2E Tests & Best Practices
