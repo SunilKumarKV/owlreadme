@@ -35,7 +35,7 @@ export const HeroLeft: React.FC<HeroSectionProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
+    if (validate(currentUsername)) {
       onStartBuilding?.(e);
     }
   };

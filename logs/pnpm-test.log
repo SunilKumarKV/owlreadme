@@ -1,0 +1,14 @@
+ WARN  Unsupported engine: wanted: {"node":">=22.0.0"} (current: {"node":"v20.20.2","pnpm":"10.15.0"})
+
+> owlreadme@1.1.0 test /Users/sunilkumarkv/Desktop/Projects/owlreadme
+> vitest run
+
+
+ RUN  v4.1.10 /Users/sunilkumarkv/Desktop/Projects/owlreadme
+
+
+ Test Files  66 passed (66)
+      Tests  484 passed (484)
+   Start at  18:53:03
+   Duration  40.31s (transform 27.38s, setup 26.31s, import 60.09s, tests 25.20s, environment 267.94s)
+

@@ -19,13 +19,10 @@ export function useHero(initialUsername: string = '') {
     setError(null);
   }, []);
 
-  const validate = useCallback(() => {
-    if (!username.trim()) {
+  const validate = useCallback((targetUsername?: string) => {
+    const val = targetUsername !== undefined ? targetUsername : username;
+    if (!val.trim()) {
       setError('Please enter a GitHub username.');
-      return false;
-    }
-    if (!isValidGitHubUsername(username.trim())) {
-      setError('Please enter a valid GitHub username.');
       return false;
     }
     setError(null);

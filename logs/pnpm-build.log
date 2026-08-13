@@ -1,0 +1,43 @@
+ WARN  Unsupported engine: wanted: {"node":">=22.0.0"} (current: {"node":"v20.20.2","pnpm":"10.15.0"})
+
+> owlreadme@1.1.0 build /Users/sunilkumarkv/Desktop/Projects/owlreadme
+> next build
+
+▲ Next.js 16.2.9 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 7.4s
+  Running TypeScript ...
+  Finished TypeScript in 17.2s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/20) ...
+  Generating static pages using 11 workers (5/20) 
+  Generating static pages using 11 workers (10/20) 
+  Generating static pages using 11 workers (15/20) 
+✓ Generating static pages using 11 workers (20/20) in 979ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /analytics
+├ ƒ /api/ai
+├ ○ /community
+├ ○ /dashboard
+├ ○ /export
+├ ○ /gallery
+├ ○ /my-templates
+├ ○ /preview
+├ ○ /readme-builder
+├ ○ /roadmap-builder
+├ ○ /robots.txt
+├ ○ /share/readme
+├ ○ /share/roadmap
+├ ○ /sitemap.xml
+├ ○ /templates
+└ ○ /theme
+
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
