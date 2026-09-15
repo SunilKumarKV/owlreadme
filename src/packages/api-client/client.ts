@@ -201,11 +201,21 @@ class ApiClient {
   }
 
   async post<T>(url: string, body?: any, config?: Omit<RequestConfig, 'method' | 'body'>): Promise<ApiResult<T>> {
-    return this.request<T>(url, { ...config, method: 'POST', body });
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(config?.headers as Record<string, string> | undefined),
+    };
+    const serializedBody = typeof body === 'string' ? body : body !== undefined ? JSON.stringify(body) : undefined;
+    return this.request<T>(url, { ...config, method: 'POST', headers, body: serializedBody });
   }
 
   async put<T>(url: string, body?: any, config?: Omit<RequestConfig, 'method' | 'body'>): Promise<ApiResult<T>> {
-    return this.request<T>(url, { ...config, method: 'PUT', body });
+    const headers = {
+      'Content-Type': 'application/json',
+      ...(config?.headers as Record<string, string> | undefined),
+    };
+    const serializedBody = typeof body === 'string' ? body : body !== undefined ? JSON.stringify(body) : undefined;
+    return this.request<T>(url, { ...config, method: 'PUT', headers, body: serializedBody });
   }
 
   async delete<T>(url: string, config?: Omit<RequestConfig, 'method'>): Promise<ApiResult<T>> {

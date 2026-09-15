@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback } from 'react';
-import { isValidGitHubUsername } from '../utils/hero';
 
 export function useHero(initialUsername: string = '') {
   const [username, setUsername] = useState(initialUsername);
