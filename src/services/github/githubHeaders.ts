@@ -4,7 +4,7 @@ export function buildGitHubHeaders(
   customToken?: string,
   extraHeaders?: Record<string, string>
 ): Record<string, string> {
-  const token = customToken || (typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_GITHUB_TOKEN || process.env.GITHUB_TOKEN : undefined);
+  const token = customToken || (typeof process !== 'undefined' ? process.env.GITHUB_TOKEN : undefined);
 
   const headers: Record<string, string> = {
     Accept: 'application/vnd.github.v3+json',

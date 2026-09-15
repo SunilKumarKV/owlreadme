@@ -48,7 +48,8 @@ function useAnalyticsPageViews() {
   useEffect(() => {
     if (!GA_MEASUREMENT_ID || typeof window === 'undefined' || !window.gtag) return;
 
-    const url = pathname + searchParams.toString();
+    const query = searchParams.toString();
+    const url = query ? `${pathname}?${query}` : pathname;
     window.gtag('config', GA_MEASUREMENT_ID, {
       page_path: url,
     });

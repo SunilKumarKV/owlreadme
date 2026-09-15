@@ -24,7 +24,7 @@ export function validateRepositoryParam(owner: string, repo: string): void {
 }
 
 export function validateEnvironmentToken(): { hasToken: boolean; isPublicMode: boolean } {
-  const token = typeof process !== 'undefined' ? process.env.NEXT_PUBLIC_GITHUB_TOKEN || process.env.GITHUB_TOKEN : undefined;
+  const token = typeof process !== 'undefined' ? process.env.GITHUB_TOKEN : undefined;
   const hasToken = Boolean(token && token.trim());
   return {
     hasToken,
